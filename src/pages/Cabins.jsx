@@ -1,7 +1,7 @@
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 
-function Cottages() {
+function Cabins() {
   return (
     <Row type="horizontal">
       <Heading as="h1">All cabins</Heading>
@@ -10,4 +10,4 @@ function Cottages() {
   );
 }
 
-export default Cottages;
+export default Cabins;

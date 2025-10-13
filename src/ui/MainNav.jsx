@@ -77,9 +77,9 @@ function MainNav() {
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/cottages">
+          <StyledNavLink to="/cabins">
             <MdOutlineCottage />
-            <span>Cottages</span>
+            <span>Cabins</span>
           </StyledNavLink>
         </li>
         <li>
