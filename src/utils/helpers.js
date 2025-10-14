@@ -1,5 +1,5 @@
-import { formatDistance, parseISO } from 'date-fns';
-import { differenceInDays } from 'date-fns/esm';
+import { formatDistance, parseISO } from "date-fns";
+import { differenceInDays } from "date-fns";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1, dateStr2) =>
@@ -9,8 +9,8 @@ export const formatDistanceFromNow = (dateStr) =>
   formatDistance(parseISO(dateStr), new Date(), {
     addSuffix: true,
   })
-    .replace('about ', '')
-    .replace('in', 'In');
+    .replace("about ", "")
+    .replace("in", "In");
 
 // Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, which isn't good. So we use this trick to remove any time
 export const getToday = function (options = {}) {
@@ -24,7 +24,28 @@ export const getToday = function (options = {}) {
   return today.toISOString();
 };
 
-export const formatCurrency = (value) =>
-  new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(
-    value
-  );
+export const formatCurrency = (value) => {
+  const formattedString = new Intl.NumberFormat("en", {
+    style: "currency",
+    currency: "INR",
+  }).format(value);
+  // return formattedString.replace("₹", "₹ ");
+  return formattedString;
+};
+export function calculateDiscount(regularPrice, discountPercentage) {
+  // 1. Convert inputs to numbers
+  const price = Number(regularPrice);
+  const percentage = Number(discountPercentage);
+
+  // 2. Check for invalid or non-numeric results (NaN)
+  if (isNaN(price) || isNaN(percentage)) {
+    return 0;
+  }
+
+  // 3. Calculate the raw discount amount
+  // Formula: price * (percentage / 100)
+  const rawDiscountAmount = price * (percentage / 100);
+
+  // 4. Round to the nearest integer
+  return Math.round(rawDiscountAmount);
+}
