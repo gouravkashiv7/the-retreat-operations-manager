@@ -2,11 +2,9 @@ import { useState } from "react";
 
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
-import ItemTable from "../features/common/ItemTable";
+import CabinTable from "../features/cabins/CabinTable";
 import Button from "../ui/Button";
-import CreateItemForm from "../features/common/CreateItemForm";
-
-import { getCabins } from "../services/apiCabins";
+import CreateCabinForm from "../features/cabins/CreateCabinForm";
 
 function Cabins() {
   const [showForm, setShowForm] = useState(false);
@@ -17,13 +15,11 @@ function Cabins() {
         <p>Sort/Filter</p>
       </Row>
       <Row>
-        <ItemTable queryKey="rooms" queryFn={getCabins} itemName="cabin" />
+        <CabinTable />
         <Button onClick={() => setShowForm((show) => !show)}>
           {!showForm ? "Add New Cabin" : "Close Form"}
         </Button>
-        {showForm && (
-          <CreateItemForm onClose={() => setShowForm(false)} itemName="cabin" />
-        )}
+        {showForm && <CreateCabinForm onClose={() => setShowForm(false)} />}
       </Row>
     </>
   );

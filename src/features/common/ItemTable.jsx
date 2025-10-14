@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import Spinner from "../../ui/Spinner";
-import CabinRow from "./CabinRow";
+import ItemRow from "./ItemRow";
 
-import { useCabins } from "./UseCabins";
+import { useItems } from "./useItems";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -28,8 +28,9 @@ const TableHeader = styled.header`
   padding: 1.6rem 2.4rem;
 `;
 
-function CabinTable() {
-  const { isLoading, cabins } = useCabins();
+function ItemTable({ queryKey, queryFn, itemName }) {
+  const { isLoading, items } = useItems(queryKey, queryFn);
+  console.log(items);
 
   if (isLoading) return <Spinner />;
 
@@ -43,11 +44,16 @@ function CabinTable() {
         <div>Discount</div>
         <div></div>
       </TableHeader>
-      {cabins.map((cabin) => (
-        <CabinRow cabin={cabin} key={cabin.id} />
+      {items.map((item) => (
+        <ItemRow
+          item={item}
+          key={item.id}
+          queryKey={queryKey}
+          itemName={itemName}
+        />
       ))}
     </Table>
   );
 }
 
-export default CabinTable;
+export default ItemTable;

@@ -1,13 +1,12 @@
 import { useState } from "react";
 
 import styled from "styled-components";
-import Row from "../../ui/Row";
-import CreateCabinForm from "./CreateCabinForm";
+import CreateItemForm from "./CreateItemForm";
 
 import { calculateDiscount, formatCurrency } from "../../utils/helpers";
-import { useDeleteCabin } from "./useDeleteCabin.js";
+import { useDeleteItem } from "./useDeleteItem.js";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
-import { useCreateCabin } from "./useCreateCabin.js";
+import { useCreateItem } from "./useCreateItem.js";
 
 const TableRow = styled.div`
   display: grid;
@@ -30,7 +29,7 @@ const Img = styled.img`
   transform: scale(1.5) translateX(-7px);
 `;
 
-const Cabin = styled.div`
+const Item = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
@@ -48,24 +47,24 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
-function CabinRow({ cabin }) {
+function ItemRow({ item, queryKey, itemName }) {
   const {
-    id: cabinId,
+    id: itemId,
     name,
     maxCapacity,
     regularPrice,
     discount: discountPercentage,
     image,
     description,
-  } = cabin;
+  } = item;
 
   const discount = calculateDiscount(regularPrice, discountPercentage);
-  const { isDeleting, deleteCabin } = useDeleteCabin();
+  const { isDeleting, deleteItem } = useDeleteItem(itemName, queryKey);
   const [showForm, setShowForm] = useState(false);
-  const { isCreating, createCabin } = useCreateCabin();
+  const { isCreating, createItem } = useCreateItem(itemName, queryKey);
 
   function handleDuplicate() {
-    createCabin({
+    createItem({
       name: `Copy of ${name}`,
       maxCapacity,
       regularPrice,
@@ -79,7 +78,7 @@ function CabinRow({ cabin }) {
     <>
       <TableRow role="row">
         <Img src={image} />
-        <Cabin>{name}</Cabin>
+        <Item>{name}</Item>
         <div> Fits upto {maxCapacity} guests.</div>
         <Price>{formatCurrency(regularPrice)}</Price>
         {discount ? (
@@ -94,14 +93,15 @@ function CabinRow({ cabin }) {
           <button onClick={() => setShowForm((show) => !show)}>
             <HiPencil />
           </button>
-          <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
+          <button onClick={() => deleteItem(itemId)} disabled={isDeleting}>
             <HiTrash />
           </button>
         </div>
       </TableRow>
       {showForm && (
-        <CreateCabinForm
-          cabinToEdit={cabin}
+        <CreateItemForm
+          itemToEdit={item}
+          itemName={itemName}
           onClose={() => setShowForm(false)}
         />
       )}
@@ -109,4 +109,4 @@ function CabinRow({ cabin }) {
   );
 }
 
-export default CabinRow;
+export default ItemRow;

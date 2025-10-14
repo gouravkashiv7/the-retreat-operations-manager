@@ -7,24 +7,24 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 
-import { useCreateCabin } from "./useCreateCabin";
-import { useEditCabin } from "./useEditCabin";
+import { useCreateItem } from "./useCreateItem";
+import { useEditItem } from "./useEditItem";
 
-function CreateCabinForm({ cabinToEdit = {}, onClose }) {
-  const { id: editId, ...editValues } = cabinToEdit;
+function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
+  const { id: editId, ...editValues } = itemToEdit;
   const isEditSession = Boolean(editId);
 
   const { register, handleSubmit, reset, formState } = useForm({
     defaultValues: isEditSession ? editValues : {},
   });
-  const { isCreating, createCabin } = useCreateCabin();
-  const { isEditing, editCabin } = useEditCabin();
+  const { isCreating, createItem } = useCreateItem(itemName, queryKey);
+  const { isEditing, editItem } = useEditItem(itemName, queryKey);
 
   const isWorking = isEditing || isCreating;
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
-    const cabinData = {
+    const itemData = {
       ...data,
       image,
       maxCapacity: Number(data.maxCapacity),
@@ -33,8 +33,8 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
     };
 
     if (isEditSession) {
-      editCabin(
-        { cabinData, id: editId },
+      editItem(
+        { newItemData: itemData, id: editId },
         {
           onSuccess: () => {
             reset();
@@ -43,7 +43,7 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
         }
       );
     } else {
-      createCabin(cabinData, {
+      createItem(itemData, {
         onSuccess: () => {
           reset();
           onClose?.();
@@ -56,7 +56,7 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow
-        label="Cabin name"
+        label={`${itemName.charAt(0).toUpperCase() + itemName.slice(1)} Name`}
         error={errors?.name?.message}
         disabled={isWorking}
       >
@@ -122,7 +122,6 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
         disabled={isWorking}
       >
         <Textarea
-          type="number"
           id="description"
           defaultValue=""
           {...register("description", {
@@ -131,7 +130,7 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
         />
       </FormRow>
 
-      <FormRow label="Cabin Photo" error={errors?.image?.message}>
+      <FormRow label={`${itemName} Photo`} error={errors?.image?.message}>
         <FileInput
           id="image"
           accept="image/*"
@@ -152,11 +151,13 @@ function CreateCabinForm({ cabinToEdit = {}, onClose }) {
         </Button>
 
         <Button disabled={isWorking}>
-          {isEditSession ? "Edit Cabin" : "Add cabin"}
+          {isEditSession
+            ? `Edit ${itemName.charAt(0).toUpperCase() + itemName.slice(1)} `
+            : `Add ${itemName.charAt(0).toUpperCase() + itemName.slice(1)} `}
         </Button>
       </FormRow>
     </Form>
   );
 }
 
-export default CreateCabinForm;
+export default CreateItemForm;
