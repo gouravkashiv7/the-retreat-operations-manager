@@ -1,4 +1,3 @@
-import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import ItemTable from "../features/common/ItemTable";
 import ItemHeader from "../ui/ItemHeader";

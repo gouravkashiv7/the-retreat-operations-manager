@@ -1,17 +1,44 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
 
+const TableContainer = styled.div`
+  width: 100%;
+
+  /* Horizontal scroll ONLY on mobile */
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+  }
+`;
+
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
   font-size: 1.4rem;
   background-color: var(--color-grey-0);
   border-radius: 7px;
   overflow: hidden;
+  width: 100%; /* Normal width on desktop */
 
+  /* Mobile-specific styles */
   @media (max-width: 768px) {
     font-size: 1.3rem;
     border-radius: 5px;
-    overflow-x: auto;
+    min-width: max-content; /* Only expand on mobile when needed */
+    width: auto; /* Allow expansion beyond container */
   }
 `;
 
@@ -21,10 +48,12 @@ const CommonRow = styled.div`
   column-gap: 2.4rem;
   align-items: center;
   transition: none;
+  width: 100%; /* Normal behavior on desktop */
 
+  /* Mobile-specific */
   @media (max-width: 768px) {
     column-gap: 1.6rem;
-    min-width: max-content; /* Prevent grid from shrinking too much */
+    min-width: max-content; /* Only on mobile */
   }
 
   @media (max-width: 480px) {
@@ -43,6 +72,7 @@ const StyledHeader = styled(CommonRow)`
 
   @media (max-width: 768px) {
     padding: 1.4rem 2rem;
+    min-width: max-content; /* Only on mobile */
   }
 
   @media (max-width: 480px) {
@@ -60,6 +90,7 @@ const StyledRow = styled(CommonRow)`
 
   @media (max-width: 768px) {
     padding: 1rem 2rem;
+    min-width: max-content; /* Only on mobile */
   }
 
   @media (max-width: 480px) {
@@ -69,19 +100,19 @@ const StyledRow = styled(CommonRow)`
 
 const StyledBody = styled.section`
   margin: 0.4rem 0;
+  width: 100%;
 
   @media (max-width: 768px) {
     margin: 0.2rem 0;
+    min-width: max-content; /* Only on mobile */
   }
 `;
-
 const Footer = styled.footer`
   background-color: var(--color-grey-50);
   display: flex;
   justify-content: center;
   padding: 1.2rem;
 
-  /* This will hide the footer when it contains no child elements. Possible thanks to the parent selector :has 🎉 */
   &:not(:has(*)) {
     display: none;
   }
@@ -116,9 +147,11 @@ const TableContext = createContext();
 
 function Table({ columns, children }) {
   return (
-    <TableContext.Provider value={{ columns }}>
-      <StyledTable role="table">{children}</StyledTable>
-    </TableContext.Provider>
+    <TableContainer>
+      <TableContext.Provider value={{ columns }}>
+        <StyledTable role="table">{children}</StyledTable>
+      </TableContext.Provider>
+    </TableContainer>
   );
 }
 
