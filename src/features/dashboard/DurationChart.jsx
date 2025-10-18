@@ -160,9 +160,9 @@ function DurationChart({ confirmedStays }) {
     const viewportWidth = window.innerWidth;
     if (viewportWidth <= 768) {
       return {
-        innerRadius: 42,
+        innerRadius: 45,
         outerRadius: 55,
-        width: "50%",
+        width: "42%",
         height: 180,
       };
     }

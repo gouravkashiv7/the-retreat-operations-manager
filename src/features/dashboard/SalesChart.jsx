@@ -105,6 +105,27 @@ function SalesChart({ bookings, numDays }) {
       extrasSales,
     };
   });
+  const getResponsiveValues = () => {
+    if (typeof window === "undefined")
+      return {
+        width: "100%",
+        height: 300,
+      };
+
+    const viewportWidth = window.innerWidth;
+    if (viewportWidth <= 768) {
+      return {
+        width: "95%",
+        height: 210,
+      };
+    }
+    return {
+      width: "100%",
+      height: 300,
+    };
+  };
+
+  const { width, height } = getResponsiveValues();
 
   const { isDarkMode } = useDarkMode();
   const colors = isDarkMode
@@ -127,7 +148,7 @@ function SalesChart({ bookings, numDays }) {
         Sales from {format(allDates.at(0), "MMM dd yyyy")} &mdash;{" "}
         {format(allDates.at(-1), "MMM dd yyyy")}
       </ChartHeading>
-      <ResponsiveContainer height={220} width="80%">
+      <ResponsiveContainer height={height} width={width}>
         <AreaChart data={data}>
           <XAxis
             dataKey="label"
