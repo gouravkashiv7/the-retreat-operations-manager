@@ -64,7 +64,7 @@ const TodayList = styled.ul`
 
   /* Mobile - Ensure full width and proper item display */
   @media (max-width: 768px) {
-    max-height: 25rem;
+    max-height: 30rem;
 
     /* Ensure TodayItem components take full width */
     & li {

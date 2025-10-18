@@ -52,7 +52,7 @@ function TodayItem({ activity }) {
           as={Link}
           to={`/checkin/${id}`}
         >
-          Check-in
+          Checkin
         </Button>
       )}
       {status === "checked-in" && <CheckoutButton bookingId={id} />}
