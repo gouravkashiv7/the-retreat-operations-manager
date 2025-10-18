@@ -15,6 +15,44 @@ const StyledModal = styled.div`
   box-shadow: var(--shadow-lg);
   padding: 3.2rem 4rem;
   transition: all 0.5s;
+  max-width: 80rem;
+  width: auto;
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    padding: 2.8rem 3.2rem;
+    max-width: 90vw;
+  }
+
+  /* Mobile - Major size reduction */
+  @media (max-width: 768px) {
+    padding: 2rem 2.4rem;
+    border-radius: var(--border-radius-md);
+    max-width: 95vw;
+    width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  /* Small Mobile - Even smaller */
+  @media (max-width: 480px) {
+    padding: 1.6rem 2rem;
+    border-radius: var(--border-radius-sm);
+    max-width: 98vw;
+    width: 98vw;
+    max-height: 90vh;
+    margin: 0;
+  }
+
+  /* Very Small Mobile - Minimal size */
+  @media (max-width: 360px) {
+    padding: 1.2rem 1.6rem;
+    max-width: 100vw;
+    width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    margin: 0;
+  }
 `;
 
 const Overlay = styled.div`
@@ -27,6 +65,17 @@ const Overlay = styled.div`
   backdrop-filter: blur(4px);
   z-index: 1000;
   transition: all 0.5s;
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    backdrop-filter: blur(2px);
+  }
+
+  /* Very Small Mobile - Full screen modal */
+  @media (max-width: 360px) {
+    background-color: var(--color-grey-0);
+    backdrop-filter: none;
+  }
 `;
 
 const Button = styled.button`
@@ -39,6 +88,7 @@ const Button = styled.button`
   position: absolute;
   top: 1.2rem;
   right: 1.9rem;
+  z-index: 1001;
 
   &:hover {
     background-color: var(--color-grey-100);
@@ -47,10 +97,81 @@ const Button = styled.button`
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    /* Sometimes we need both */
-    /* fill: var(--color-grey-500);
-    stroke: var(--color-grey-500); */
     color: var(--color-grey-500);
+  }
+
+  /* Tablet */
+  @media (max-width: 768px) {
+    top: 1rem;
+    right: 1.4rem;
+    padding: 0.4rem;
+
+    & svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    top: 0.8rem;
+    right: 1rem;
+    padding: 0.3rem;
+    transform: translateX(0);
+    background-color: var(--color-grey-100);
+
+    & svg {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+
+  /* Very Small Mobile */
+  @media (max-width: 360px) {
+    top: 0.6rem;
+    right: 0.8rem;
+    padding: 0.4rem;
+    background-color: var(--color-grey-200);
+
+    & svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+`;
+
+const ModalContent = styled.div`
+  width: 100%;
+  height: 100%;
+
+  /* Mobile - ensure content fits */
+  @media (max-width: 768px) {
+    & > * {
+      max-width: 100%;
+    }
+
+    /* Scale down any large content */
+    & table,
+    & .large-content {
+      transform: scale(0.95);
+      transform-origin: top left;
+    }
+  }
+
+  /* Very Small Mobile - more aggressive scaling */
+  @media (max-width: 480px) {
+    & table,
+    & .large-content {
+      transform: scale(0.9);
+    }
+
+    /* Ensure form elements are mobile-friendly */
+    & input,
+    & select,
+    & textarea {
+      font-size: 16px; /* Prevent zoom on iOS */
+      min-height: 4.4rem;
+    }
   }
 `;
 
@@ -85,7 +206,9 @@ function Window({ children, name }) {
         <Button onClick={close}>
           <HiXMark />
         </Button>
-        <div>{cloneElement(children, { onCloseModal: close })}</div>
+        <ModalContent>
+          {cloneElement(children, { onCloseModal: close })}
+        </ModalContent>
       </StyledModal>
     </Overlay>,
     document.body

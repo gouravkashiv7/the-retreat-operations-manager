@@ -169,6 +169,7 @@ function CreateItemForm({
           $variation="secondary"
           type={isEditSession ? "button" : "reset"}
           onClick={() => onCloseModal?.()}
+          style={{ marginRight: "2rem" }}
         >
           Cancel
         </Button>

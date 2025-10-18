@@ -8,7 +8,7 @@ function Bookings() {
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
-        <ItemHeader title="All Bookings!!" />
+        <ItemHeader title="All Bookings!!" as="h1" />
         <BookingTableOperations />
       </Row>
       <BookingTable />

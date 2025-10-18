@@ -9,6 +9,7 @@ function Settings() {
     <Row>
       <UserHeader
         title="Update Hotel Settings"
+        as="h1"
         subtitle="Modify hotel's information and preferences"
       />
       <UpdateSettingsForm />

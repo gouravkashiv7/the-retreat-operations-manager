@@ -10,7 +10,7 @@ function Cabins() {
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
-        <ItemHeader title="All Cabins!!" />
+        <ItemHeader title="All Cabins!!" as="h1" />
         <ItemTableOperations />
       </Row>
       <Row>

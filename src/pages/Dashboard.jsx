@@ -7,7 +7,7 @@ function Dashboard() {
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
-        <ItemHeader title="DashBoard" />
+        <ItemHeader title="DashBoard" as="h1" />
         <DashboardFilter />
       </Row>
       <DashboardLayout />

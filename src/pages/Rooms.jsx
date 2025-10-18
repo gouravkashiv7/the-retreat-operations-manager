@@ -10,7 +10,7 @@ function Rooms() {
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
-        <ItemHeader title="All Rooms!!" />
+        <ItemHeader title="All Rooms!!" as="h1" />
         <ItemTableOperations />
       </Row>
       <Row>

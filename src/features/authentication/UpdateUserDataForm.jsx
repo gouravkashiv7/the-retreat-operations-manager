@@ -69,6 +69,7 @@ function UpdateUserDataForm() {
           $variation="secondary"
           onClick={handleCancel}
           disabled={isLoading}
+          style={{ marginRight: "8rem" }}
         >
           Cancel
         </Button>

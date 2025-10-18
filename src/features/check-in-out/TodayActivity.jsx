@@ -19,26 +19,33 @@ const StyledToday = styled.div`
 
   /* Tablet */
   @media (max-width: 1024px) {
-    grid-column: 1 / -1; /* Take full width on tablet */
-    padding: 2.8rem;
-    gap: 2rem;
+    grid-column: 1 / -1;
+    padding: 2.4rem;
+    gap: 1.8rem;
   }
 
-  /* Mobile */
+  /* Mobile - Smaller padding and gaps */
   @media (max-width: 768px) {
-    padding: 2.4rem;
-    gap: 1.6rem;
+    padding: 1.8rem;
+    gap: 1.2rem;
     border-radius: var(--border-radius-sm);
   }
 
-  /* Small Mobile */
+  /* Small Mobile - Even more compact */
   @media (max-width: 480px) {
-    padding: 2rem;
-    gap: 1.2rem;
-    margin: 0 -1rem; /* Use full width on small screens */
+    padding: 1.4rem;
+    gap: 1rem;
+    margin: 0 -0.8rem;
     border-left: none;
     border-right: none;
     border-radius: 0;
+  }
+
+  /* Very Small Mobile - Minimal padding */
+  @media (max-width: 360px) {
+    padding: 1rem;
+    gap: 0.8rem;
+    margin: 0 -0.5rem;
   }
 `;
 
@@ -53,14 +60,19 @@ const TodayList = styled.ul`
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  /* Mobile */
+  /* Mobile - Smaller max height */
   @media (max-width: 768px) {
-    max-height: 30rem; /* Limit height on mobile */
+    max-height: 25rem;
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
-    max-height: 25rem;
+    max-height: 20rem;
+  }
+
+  /* Very Small Mobile */
+  @media (max-width: 360px) {
+    max-height: 18rem;
   }
 `;
 
@@ -72,14 +84,37 @@ const NoActivity = styled.p`
 
   /* Mobile */
   @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin-top: 0.4rem;
+  }
+
+  /* Small Mobile */
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+    margin-top: 0.2rem;
+  }
+
+  /* Very Small Mobile */
+  @media (max-width: 360px) {
+    font-size: 1.2rem;
+    margin-top: 0;
+  }
+`;
+
+const CompactHeading = styled(Heading)`
+  /* Mobile - Smaller heading */
+  @media (max-width: 768px) {
     font-size: 1.6rem;
-    margin-top: 0.6rem;
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
     font-size: 1.4rem;
-    margin-top: 0.4rem;
+  }
+
+  /* Very Small Mobile */
+  @media (max-width: 360px) {
+    font-size: 1.3rem;
   }
 `;
 
@@ -89,7 +124,7 @@ function TodayActivity() {
   return (
     <StyledToday>
       <Row type="horizontal">
-        <Heading as="h2">Today</Heading>
+        <CompactHeading as="h2">Today</CompactHeading>
       </Row>
       {!isLoading ? (
         activeBookings?.length ? (

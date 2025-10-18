@@ -7,6 +7,7 @@ function NewUsers() {
     <Heading as="h1">
       <UserHeader
         title="Create New User"
+        as="h1"
         subtitle="Add a new user account to the system with email and password"
       />
       <SignupForm />
