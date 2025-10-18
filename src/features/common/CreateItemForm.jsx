@@ -8,19 +8,26 @@ import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 
 import { useCreateItem } from "./useCreateItem";
-import { useEditItem } from "./useEditItem";
+import { useUpdateItem } from "./useUpdateItem";
+import DiscountCalculator from "./DiscountCalculator";
 
-function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
-  const { id: editId, ...editValues } = itemToEdit;
-  const isEditSession = Boolean(editId);
+function CreateItemForm({
+  itemToUpdate = {},
+  onCloseModal,
+  queryKey,
+  itemName,
+}) {
+  const { id: updateId, ...updateValues } = itemToUpdate;
+  const isEditSession = Boolean(updateId);
 
-  const { register, handleSubmit, reset, formState } = useForm({
-    defaultValues: isEditSession ? editValues : {},
+  const { register, handleSubmit, reset, formState, watch } = useForm({
+    defaultValues: isEditSession ? updateValues : {},
   });
-  const { isCreating, createItem } = useCreateItem(itemName, queryKey);
-  const { isEditing, editItem } = useEditItem(itemName, queryKey);
 
-  const isWorking = isEditing || isCreating;
+  const { isCreating, createItem } = useCreateItem(itemName, queryKey);
+  const { isUpdating, updateItem } = useUpdateItem(itemName, queryKey);
+
+  const isWorking = isUpdating || isCreating;
 
   function onSubmit(data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
@@ -33,12 +40,12 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
     };
 
     if (isEditSession) {
-      editItem(
-        { newItemData: itemData, id: editId },
+      updateItem(
+        { newItemData: itemData, id: updateId },
         {
           onSuccess: () => {
             reset();
-            onClose?.();
+            onCloseModal?.();
           },
         }
       );
@@ -46,7 +53,7 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
       createItem(itemData, {
         onSuccess: () => {
           reset();
-          onClose?.();
+          onCloseModal?.();
         },
       });
     }
@@ -54,7 +61,10 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
   const { errors } = formState;
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow
         label={`${itemName.charAt(0).toUpperCase() + itemName.slice(1)} Name`}
         error={errors?.name?.message}
@@ -112,8 +122,18 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
               value: 100,
               message: "Discount should be less than 100%",
             },
+            min: {
+              value: 0,
+              message: "Discount cannot be a negative value",
+            },
           })}
         />
+        {!errors?.discount && (
+          <DiscountCalculator
+            regularPrice={watch("regularPrice") || 0}
+            discount={watch("discount") || 0}
+          />
+        )}
       </FormRow>
 
       <FormRow
@@ -130,7 +150,10 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
         />
       </FormRow>
 
-      <FormRow label={`${itemName} Photo`} error={errors?.image?.message}>
+      <FormRow
+        label={`${itemName.charAt(0).toUpperCase() + itemName.slice(1)} Photo`}
+        error={errors?.image?.message}
+      >
         <FileInput
           id="image"
           accept="image/*"
@@ -145,9 +168,9 @@ function CreateItemForm({ itemToEdit = {}, onClose, queryKey, itemName }) {
         <Button
           $variation="secondary"
           type={isEditSession ? "button" : "reset"}
-          onClick={isEditSession ? onClose : undefined}
+          onClick={() => onCloseModal?.()}
         >
-          {isEditSession ? "Close" : "Reset"}
+          Cancel
         </Button>
 
         <Button disabled={isWorking}>

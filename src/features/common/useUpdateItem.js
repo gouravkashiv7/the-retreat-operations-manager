@@ -1,25 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { createEditCabin } from "../../services/apiCabins.js";
-import { createEditRoom } from "../../services/apiRooms.js";
+import { createUpdateCabin } from "../../services/apiCabins.js";
+import { createUpdateRoom } from "../../services/apiRooms.js";
 
-export function useEditItem(itemName, queryKey) {
+export function useUpdateItem(itemName, queryKey) {
   const queryClient = useQueryClient();
 
   // Determine the correct mutation function based on itemName
   const getMutationFn = () => {
     switch (itemName) {
       case "cabin":
-        return createEditCabin;
+        return createUpdateCabin;
       case "room":
-        return createEditRoom;
+        return createUpdateRoom;
       default:
         throw new Error(`Unknown item type: ${itemName}`);
     }
   };
 
-  const { isPending: isEditing, mutate: editItem } = useMutation({
+  const { isPending: isUpdating, mutate: updateItem } = useMutation({
     mutationFn: ({ newItemData, id }) => getMutationFn()(newItemData, id),
     onSuccess: () => {
       toast.success(
@@ -34,5 +34,5 @@ export function useEditItem(itemName, queryKey) {
     onError: (err) => toast.error(err.message),
   });
 
-  return { isEditing, editItem };
+  return { isUpdating, updateItem };
 }

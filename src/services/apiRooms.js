@@ -12,7 +12,7 @@ export async function deleteRoom(id) {
   return data;
 }
 
-export async function createEditRoom(newRoom, id) {
+export async function createUpdateRoom(newRoom, id) {
   // Room-specific logic (can copy from cabins initially)
   const isImageFile = newRoom.image instanceof File;
   const hasImagePath =

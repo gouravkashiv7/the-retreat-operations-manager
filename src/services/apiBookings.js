@@ -1,19 +1,156 @@
+import { PAGE_SIZE } from "../utils/constants";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+import { getAccommodationName } from "../utils/helpers";
+
+export async function getBookings({ filter, sortBy, page }) {
+  let query = supabase.from("bookings").select(
+    `
+            id,
+            created_at,
+            startDate,
+            endDate,
+            numNights,
+            numGuests,
+            totalPrice,
+            status,
+            guests:guestId  (
+              fullName,
+              email
+            ),
+            booking_cabins (
+              cabins (
+                name
+              )
+            ),
+            booking_rooms (
+              rooms (
+                name
+              )
+            )
+          `,
+    { count: "exact" }
+  );
+
+  //Filter
+  if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
+  //Sort
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+  //Pagination
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not be loaded.");
+  }
+  // Transform the data
+  const transformedData = data.map((booking) => ({
+    id: booking.id,
+    created_at: booking.created_at,
+    startDate: booking.startDate,
+    endDate: booking.endDate,
+    numNights: booking.numNights,
+    numGuests: booking.numGuests,
+    totalPrice: booking.totalPrice,
+    status: booking.status,
+    guests: {
+      fullName: booking.guests?.fullName || "",
+      email: booking.guests?.email || "",
+    },
+    accommodation: {
+      name: getAccommodationName(booking),
+    },
+  }));
+
+  return { transformedData, count };
+}
 
 export async function getBooking(id) {
   const { data, error } = await supabase
     .from("bookings")
-    .select("*, cabins(*), guests(*)")
-    .eq("id", id)
-    .single();
+    .select(
+      `
+        id,
+        created_at,
+        startDate,
+        endDate,
+        numNights,
+        numGuests,
+        totalPrice,
+        status,
+        hasBreakfast,
+        isPaid,
+        observations,
+        extrasPrice,
+        accommodationPrice,
+        guests:guestId (
+          fullName,
+          email,
+          country,
+          countryFlag,
+          nationalID
+        ),
+        booking_cabins (
+          cabins (
+            name,
+            regularPrice
+          )
+        ),
+        booking_rooms (
+          rooms (
+            name,
+            regularPrice
+          )
+        )
+      `
+    )
+    .eq("id", id);
 
   if (error) {
     console.error(error);
     throw new Error("Booking not found");
   }
 
-  return data;
+  const booking = data[0];
+
+  const transformedBooking = {
+    id: booking.id,
+    created_at: booking.created_at,
+    startDate: booking.startDate,
+    endDate: booking.endDate,
+    numNights: booking.numNights,
+    numGuests: booking.numGuests,
+    totalPrice: booking.totalPrice,
+    status: booking.status,
+    hasBreakfast: booking.hasBreakfast || false,
+    isPaid: booking.isPaid || false,
+    observations: booking.observations || "",
+    extrasPrice: booking.extrasPrice || 0,
+    accommodationPrice: booking.accommodationPrice || 0,
+    guests: {
+      fullName: booking.guests?.fullName || "",
+      email: booking.guests?.email || "",
+      country: booking.guests?.country || "",
+      countryFlag: booking.guests?.countryFlag || "",
+      nationalID: booking.guests?.nationalID || "",
+    },
+    accommodation: {
+      name: getAccommodationName(booking),
+    },
+    booking_cabins: booking.booking_cabins || [],
+    booking_rooms: booking.booking_rooms || [],
+  };
+
+  return transformedBooking;
 }
 
 // Returns all BOOKINGS that are were created after the given date. Useful to get bookings created in the last 30 days, for example.

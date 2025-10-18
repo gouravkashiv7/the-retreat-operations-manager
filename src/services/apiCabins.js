@@ -18,7 +18,7 @@ export async function deleteCabin(id) {
   return data;
 }
 
-export async function createEditCabin(newCabin, id) {
+export async function createUpdateCabin(newCabin, id) {
   // 1. First, check if image is a File object or string
   const isImageFile = newCabin.image instanceof File;
 

@@ -1,13 +1,22 @@
+import { useEffect, useState } from "react";
+
 import styled from "styled-components";
 import BookingDataBox from "../../features/bookings/BookingDataBox";
-
 import Row from "../../ui/Row";
 import Heading from "../../ui/Heading";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Spinner from "../../ui/Spinner";
+import Checkbox from "../../ui/Checkbox";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "../../features/bookings/useBooking";
+import { useCheckin } from "./useCheckin";
+import toast from "react-hot-toast";
+import { format } from "date-fns";
+import { formatCurrency } from "../../utils/helpers";
+import { useSettings } from "../settings/useSettings";
 
 const Box = styled.div`
   /* Box */
@@ -18,9 +27,17 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
-  const moveBack = useMoveBack();
+  const { isLoading, booking } = useBooking();
+  const { isLoading: isSettingLoading, settings } = useSettings();
+  const [confirmPaid, setConfirmPaid] = useState(false);
+  const [addBreakfast, setAddBreakFast] = useState(false);
 
-  const booking = {};
+  useEffect(() => setConfirmPaid(booking?.isPaid || false), [booking]);
+
+  const moveBack = useMoveBack();
+  const { checkin, isCheckingIn } = useCheckin();
+
+  if (isLoading || isSettingLoading) return <Spinner />;
 
   const {
     id: bookingId,
@@ -29,9 +46,47 @@ function CheckinBooking() {
     numGuests,
     hasBreakfast,
     numNights,
+    startDate,
+    endDate,
   } = booking;
 
-  function handleCheckin() {}
+  const optionalBreakfastPrice =
+    numGuests * numNights * settings.breakfastPrice;
+
+  function handleCheckin() {
+    const today = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Check if today is between startDate and endDate
+    if (today < start) {
+      toast.error(
+        `Cannot check in before ${format(new Date(startDate), "MMM dd, yyyy")}`
+      );
+      return;
+    }
+
+    if (today > end) {
+      toast.error(
+        `Cannot check in after ${format(new Date(endDate), "MMM dd, yyyy")}`
+      );
+      return;
+    }
+
+    if (!confirmPaid) return;
+    if (addBreakfast) {
+      checkin({
+        bookingId,
+        breakfast: {
+          hasBreakfast: true,
+          extrasPrice: optionalBreakfastPrice,
+          totalPrice: totalPrice + optionalBreakfastPrice,
+        },
+      });
+    } else {
+      checkin({ bookingId, breakfast: {} });
+    }
+  }
 
   return (
     <>
@@ -42,9 +97,42 @@ function CheckinBooking() {
 
       <BookingDataBox booking={booking} />
 
+      {!hasBreakfast && (
+        <Box>
+          <Checkbox
+            checked={addBreakfast}
+            onChange={() => {
+              setAddBreakFast((add) => !add);
+              setConfirmPaid(false);
+            }}
+            id="breakfast"
+          >
+            {`Want to add breakfast for ${formatCurrency(
+              optionalBreakfastPrice
+            )}`}
+          </Checkbox>
+        </Box>
+      )}
+      <Box>
+        <Checkbox
+          checked={confirmPaid}
+          id="confirm"
+          onChange={() => setConfirmPaid((confirm) => !confirm)}
+          disabled={confirmPaid || isCheckingIn}
+        >
+          I confirm that ${guests.fullName} has paid the full amount of{" "}
+          {!addBreakfast
+            ? formatCurrency(totalPrice)
+            : `${formatCurrency(totalPrice + optionalBreakfastPrice)} (
+                ${formatCurrency(totalPrice)} +
+                  ${formatCurrency(optionalBreakfastPrice)})`}
+        </Checkbox>
+      </Box>
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
-        <Button variation="secondary" onClick={moveBack}>
+        <Button onClick={handleCheckin} disabled={!confirmPaid || isCheckingIn}>
+          Check in booking #{bookingId}
+        </Button>
+        <Button $variation="secondary" onClick={moveBack}>
           Back
         </Button>
       </ButtonGroup>

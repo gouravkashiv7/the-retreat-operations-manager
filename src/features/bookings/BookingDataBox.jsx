@@ -5,6 +5,8 @@ import {
   HiOutlineCheckCircle,
   HiOutlineCurrencyDollar,
   HiOutlineHomeModern,
+  HiOutlineBuildingOffice,
+  HiOutlineBuildingStorefront,
 } from "react-icons/hi2";
 
 import DataItem from "../../ui/DataItem";
@@ -77,9 +79,9 @@ const Price = styled.div`
   margin-top: 2.4rem;
 
   background-color: ${(props) =>
-    props.isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
+    props.$isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
   color: ${(props) =>
-    props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
+    props.$isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
 
   & p:last-child {
     text-transform: uppercase;
@@ -109,23 +111,43 @@ function BookingDataBox({ booking }) {
     endDate,
     numNights,
     numGuests,
-    cabinPrice,
+    accommodationPrice,
     extrasPrice,
     totalPrice,
     hasBreakfast,
     observations,
     isPaid,
     guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    accommodation: { name: accommodationName },
+    booking_cabins,
+    booking_rooms,
   } = booking;
 
   return (
     <StyledBookingDataBox>
       <Header>
         <div>
-          <HiOutlineHomeModern />
+          {/* Dynamic icon */}
+          {booking_cabins?.length > 0 && booking_rooms?.length > 0 ? (
+            <HiOutlineBuildingStorefront />
+          ) : booking_cabins?.length > 0 ? (
+            <HiOutlineHomeModern />
+          ) : (
+            <HiOutlineBuildingOffice />
+          )}
+
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {numNights} nights in{" "}
+            {booking_cabins?.length > 0 && booking_rooms?.length > 0
+              ? "Rooms & Cabins"
+              : booking_cabins?.length > 0
+              ? booking_cabins?.length > 1
+                ? "Cabins"
+                : "Cabin"
+              : booking_rooms?.length > 1
+              ? "Rooms"
+              : "Room"}{" "}
+            <span>({accommodationName})</span>
           </p>
         </div>
 
@@ -163,14 +185,14 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price $isPaid={isPaid}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
-                extrasPrice
-              )} breakfast)`}
+              ` (${formatCurrency(
+                accommodationPrice * numNights
+              )} accommodation + ${formatCurrency(extrasPrice)} breakfast)`}
           </DataItem>
 
           <p>{isPaid ? "Paid" : "Will pay at property"}</p>

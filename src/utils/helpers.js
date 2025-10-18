@@ -25,13 +25,18 @@ export const getToday = function (options = {}) {
 };
 
 export const formatCurrency = (value) => {
-  const formattedString = new Intl.NumberFormat("en", {
+  const formattedString = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value);
-  // return formattedString.replace("₹", "₹ ");
+
   return formattedString;
 };
+
+// return formattedString.replace("₹", "₹ ");
+
 export function calculateDiscount(regularPrice, discountPercentage) {
   // 1. Convert inputs to numbers
   const price = Number(regularPrice);
@@ -48,4 +53,14 @@ export function calculateDiscount(regularPrice, discountPercentage) {
 
   // 4. Round to the nearest integer
   return Math.round(rawDiscountAmount);
+}
+
+export function getAccommodationName(booking) {
+  const cabinNames =
+    booking.booking_cabins?.map((bc) => bc.cabins?.name).filter(Boolean) || [];
+  const roomNames =
+    booking.booking_rooms?.map((br) => br.rooms?.name).filter(Boolean) || [];
+
+  const allNames = [...cabinNames, ...roomNames];
+  return allNames.join(" ") || "No accommodation";
 }
