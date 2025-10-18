@@ -9,6 +9,7 @@ const StyledFilter = styled.div`
   padding: 0.4rem;
   display: flex;
   gap: 0.4rem;
+  justify-content: space-around;
 
   @media (max-width: 768px) {
     gap: 0.3rem;
