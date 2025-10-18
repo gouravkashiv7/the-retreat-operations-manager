@@ -1,7 +1,7 @@
 import { HiOutlineBriefcase, HiOutlineChartBar } from "react-icons/hi";
 import Stat from "./Stat";
 import { HiOutlineBanknotes, HiOutlineCalendarDays } from "react-icons/hi2";
-import { formatCurrency } from "../../utils/helpers";
+import { formatCurrencyNoDecimals } from "../../utils/helpers";
 
 function Stats({ bookings, confirmedStays, numDays, totalAccommodation }) {
   const numBookings = bookings.length;
@@ -23,7 +23,7 @@ function Stats({ bookings, confirmedStays, numDays, totalAccommodation }) {
         title="Sales"
         color="green"
         icon={<HiOutlineBanknotes />}
-        value={formatCurrency(sales)}
+        value={formatCurrencyNoDecimals(sales)}
       />
       <Stat
         title="Check-ins"

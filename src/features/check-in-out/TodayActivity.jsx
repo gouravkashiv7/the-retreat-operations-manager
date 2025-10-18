@@ -16,7 +16,6 @@ const StyledToday = styled.div`
   gap: 2.4rem;
   grid-column: 1 / span 2;
   padding-top: 2.4rem;
-  height: fit-content;
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -25,42 +24,36 @@ const StyledToday = styled.div`
     gap: 1.8rem;
   }
 
-  /* Mobile - Better space utilization */
+  /* Mobile - Fix overflow issues */
   @media (max-width: 768px) {
     padding: 1.6rem;
     gap: 1.2rem;
     border-radius: var(--border-radius-sm);
-    height: auto;
-    min-height: 30rem;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent content overflow */
   }
 
-  /* Small Mobile - Optimized for small screens */
+  /* Small Mobile */
   @media (max-width: 480px) {
     padding: 1.2rem;
     gap: 1rem;
-    margin: 0;
     border: 1px solid var(--color-grey-100);
     border-radius: var(--border-radius-sm);
-    min-height: 28rem;
   }
 
   /* Very Small Mobile */
   @media (max-width: 360px) {
     padding: 1rem;
     gap: 0.8rem;
-    min-height: 26rem;
   }
 `;
 
 const TodayList = styled.ul`
   overflow: auto;
   overflow-x: hidden;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+  width: 100%;
 
   /* Removing scrollbars for webkit, firefox, and ms, respectively */
   &::-webkit-scrollbar {
@@ -69,22 +62,26 @@ const TodayList = styled.ul`
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  /* Mobile - Use available height */
+  /* Mobile - Ensure full width and proper item display */
   @media (max-width: 768px) {
-    max-height: none;
-    min-height: 20rem;
+    max-height: 25rem;
+
+    /* Ensure TodayItem components take full width */
+    & li {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
-    min-height: 18rem;
-    gap: 0.6rem;
+    max-height: 22rem;
   }
 
   /* Very Small Mobile */
   @media (max-width: 360px) {
-    min-height: 16rem;
-    gap: 0.5rem;
+    max-height: 20rem;
   }
 `;
 
@@ -93,45 +90,41 @@ const NoActivity = styled.p`
   font-size: 1.8rem;
   font-weight: 500;
   margin-top: 0.8rem;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 20rem;
+  width: 100%;
 
   /* Mobile */
   @media (max-width: 768px) {
     font-size: 1.5rem;
-    margin-top: 0;
-    min-height: 18rem;
+    margin-top: 0.4rem;
+    padding: 0 1rem;
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
     font-size: 1.3rem;
-    min-height: 16rem;
+    margin-top: 0.2rem;
   }
 
   /* Very Small Mobile */
   @media (max-width: 360px) {
     font-size: 1.2rem;
-    min-height: 14rem;
+    margin-top: 0;
   }
 `;
 
 const CompactHeading = styled(Heading)`
-  margin-bottom: 0;
+  width: 100%;
 
   /* Mobile - Smaller heading */
   @media (max-width: 768px) {
     font-size: 1.6rem;
+    text-align: center;
     margin-bottom: 0.5rem;
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
     font-size: 1.4rem;
-    margin-bottom: 0.3rem;
   }
 
   /* Very Small Mobile */
@@ -141,23 +134,28 @@ const CompactHeading = styled(Heading)`
 `;
 
 const ContentWrapper = styled.div`
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
-  /* Mobile - Ensure content fills available space */
+  /* Mobile - Center content and prevent overflow */
   @media (max-width: 768px) {
-    min-height: 24rem;
+    & > * {
+      width: 100%;
+      max-width: 100%;
+    }
   }
+`;
 
-  /* Small Mobile */
-  @media (max-width: 480px) {
-    min-height: 22rem;
-  }
+// Mobile-optimized Row component
+const MobileRow = styled(Row)`
+  @media (max-width: 768px) {
+    justify-content: center;
+    width: 100%;
 
-  /* Very Small Mobile */
-  @media (max-width: 360px) {
-    min-height: 20rem;
+    /* Remove any gaps that might cause spacing issues */
+    gap: 0;
   }
 `;
 
@@ -166,29 +164,34 @@ function TodayActivity() {
 
   return (
     <StyledToday>
-      <Row type="horizontal">
-        <CompactHeading as="h2">Today's Activity</CompactHeading>
-      </Row>
+      <MobileRow type="horizontal">
+        <CompactHeading as="h2">Today</CompactHeading>
+      </MobileRow>
 
       <ContentWrapper>
         {!isLoading ? (
           activeBookings?.length ? (
             <TodayList>
               {activeBookings.map((activity) => (
-                <TodayItem activity={activity} key={activity.id} />
+                <TodayItem
+                  activity={activity}
+                  key={activity.id}
+                  // Ensure TodayItem knows it's in mobile context
+                  $isMobile={true}
+                />
               ))}
             </TodayList>
           ) : (
-            <NoActivity>No check-ins or check-outs today</NoActivity>
+            <NoActivity>No activity today...</NoActivity>
           )
         ) : (
           <div
             style={{
-              flex: 1,
+              width: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: "20rem",
+              padding: "2rem 0",
             }}
           >
             <Spinner />

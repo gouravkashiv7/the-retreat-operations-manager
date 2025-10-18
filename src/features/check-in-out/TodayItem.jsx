@@ -19,6 +19,17 @@ const StyledTodayItem = styled.li`
   &:first-child {
     border-top: 1px solid var(--color-grey-100);
   }
+  /* Mobile - remove grid and use flexbox */
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem;
+
+    border: 1px solid var(--color-grey-200);
+    border-radius: var(--border-radius-sm);
+    margin: 0.8rem;
+    background-color: var(--color-grey-50);
+  }
 `;
 
 const Guest = styled.div`

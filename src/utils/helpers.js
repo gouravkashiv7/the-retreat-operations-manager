@@ -34,6 +34,14 @@ export const formatCurrency = (value) => {
 
   return formattedString;
 };
+export const formatCurrencyNoDecimals = (value) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
 
 // return formattedString.replace("₹", "₹ ");
 
