@@ -49,7 +49,7 @@ function LoginForm() {
         />
       </FormRowVertical>
       <FormRowVertical>
-        <Button size="large" disabled={isLoading}>
+        <Button size="large" disabled={isLoading} style={{ margin: "1rem" }}>
           {!isLoading ? "Login" : <SpinnerMini />}
         </Button>
       </FormRowVertical>

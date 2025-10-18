@@ -9,7 +9,7 @@ import { getCabins } from "../services/apiCabins";
 function Cabins() {
   return (
     <>
-      <Row type="horizontal">
+      <Row type="horizontal" $stackOnMobile>
         <Heading as="h1">All Cabins!! </Heading>
         <ItemTableOperations />
       </Row>

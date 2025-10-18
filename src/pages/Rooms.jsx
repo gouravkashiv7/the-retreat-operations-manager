@@ -9,7 +9,7 @@ import ItemTableOperations from "../features/common/ItemTableOperations";
 function Rooms() {
   return (
     <>
-      <Row type="horizontal">
+      <Row type="horizontal" $stackOnMobile>
         <Heading as="h1">All Cabins!! </Heading>
         <ItemTableOperations />
       </Row>
