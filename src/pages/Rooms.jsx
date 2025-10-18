@@ -1,6 +1,7 @@
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import ItemTable from "../features/common/ItemTable";
+import ItemHeader from "../ui/ItemHeader";
 
 import { getRooms } from "../services/apiRooms";
 import AddItem from "../features/common/AddItem";
@@ -10,7 +11,7 @@ function Rooms() {
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
-        <Heading as="h1">All Cabins!! </Heading>
+        <ItemHeader title="All Rooms!!" />
         <ItemTableOperations />
       </Row>
       <Row>
