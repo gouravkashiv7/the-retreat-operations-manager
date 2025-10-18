@@ -13,8 +13,17 @@ const StyledFilter = styled.div`
   @media (max-width: 768px) {
     gap: 0.3rem;
     padding: 0.3rem;
-    flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
-    justify-content: center; /* Center buttons when wrapped */
+    overflow-x: auto; /* Horizontal scroll if needed */
+    flex-wrap: nowrap; /* Prevent wrapping */
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar for cleaner look */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   @media (max-width: 480px) {
@@ -40,6 +49,7 @@ const FilterButton = styled.button`
   padding: 0.44rem 0.8rem;
   transition: all 0.3s;
   white-space: nowrap; /* Prevent text wrapping */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 
   &:hover:not(:disabled) {
     background-color: var(--color-brand-600);
@@ -49,22 +59,21 @@ const FilterButton = styled.button`
   /* Mobile styles */
   @media (max-width: 768px) {
     font-size: 1.3rem;
-    padding: 0.5rem 0.7rem; /* Slightly larger for touch */
-    min-height: 3.6rem; /* Better touch target */
+    padding: 0.5rem 0.8rem;
+    min-height: 3.6rem;
+    flex-shrink: 0; /* Critical: Prevent button shrinking */
   }
 
   @media (max-width: 480px) {
     font-size: 1.2rem;
     padding: 0.6rem 0.8rem;
     min-height: 3.8rem;
-    flex: 1; /* Allow buttons to grow and fill space */
-    min-width: 0; /* Allow flex shrinking */
   }
 
   /* Very small screens */
   @media (max-width: 360px) {
     font-size: 1.1rem;
-    padding: 0.5rem 0.6rem;
+    padding: 0.5rem 0.7rem;
     min-height: 3.6rem;
   }
 `;
