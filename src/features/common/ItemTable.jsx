@@ -11,6 +11,7 @@ function ItemTable({ queryKey, queryFn, itemName }) {
   const [searchParams] = useSearchParams();
 
   if (isLoading) return <Spinner />;
+
   if (!items || items.length === 0) {
     return (
       <Empty
