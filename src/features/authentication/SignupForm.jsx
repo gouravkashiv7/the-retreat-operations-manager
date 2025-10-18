@@ -83,7 +83,9 @@ function SignupForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isLoading}>Create new user</Button>
+        <Button disabled={isLoading} style={{ margin: "1rem" }}>
+          Create new user
+        </Button>
       </FormRow>
     </Form>
   );
