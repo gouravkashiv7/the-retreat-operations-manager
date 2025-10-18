@@ -147,17 +147,45 @@ function DurationChart({ confirmedStays }) {
   const { isDarkMode } = useDarkMode();
   const startData = isDarkMode ? startDataDark : startDataLight;
   const data = prepareData(startData, confirmedStays);
+  // Function to get responsive values based on viewport
+  const getResponsiveValues = () => {
+    if (typeof window === "undefined")
+      return {
+        innerRadius: 85,
+        outerRadius: 110,
+        width: "30%",
+        height: 240,
+      };
+
+    const viewportWidth = window.innerWidth;
+    if (viewportWidth <= 768) {
+      return {
+        innerRadius: 42,
+        outerRadius: 55,
+        width: "50%",
+        height: 180,
+      };
+    }
+    return {
+      innerRadius: 85,
+      outerRadius: 110,
+      width: "30%",
+      height: 240,
+    };
+  };
+
+  const { innerRadius, outerRadius, width, height } = getResponsiveValues();
   return (
     <ChartBox>
       <Heading as="h2"> Stay Duration Summary</Heading>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={height}>
         <PieChart>
           <Pie
             data={data}
             nameKey="duration"
             datakey="value"
-            innerRadius={85}
-            outerRadius={110}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
             cx="40%"
             CY="50%"
             paddingAngle={3}
@@ -174,7 +202,7 @@ function DurationChart({ confirmedStays }) {
           <Legend
             verticalAlign="middle"
             align="right"
-            width="30%"
+            width={width}
             layout="vertical"
             iconSize={15}
             iconType="circle"
