@@ -9,6 +9,18 @@ const StyledFilter = styled.div`
   padding: 0.4rem;
   display: flex;
   gap: 0.4rem;
+
+  @media (max-width: 768px) {
+    gap: 0.3rem;
+    padding: 0.3rem;
+    flex-wrap: wrap; /* Allow buttons to wrap on very small screens */
+    justify-content: center; /* Center buttons when wrapped */
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.2rem;
+    padding: 0.2rem;
+  }
 `;
 
 const FilterButton = styled.button`
@@ -25,24 +37,48 @@ const FilterButton = styled.button`
   border-radius: var(--border-radius-sm);
   font-weight: 500;
   font-size: 1.4rem;
-  /* To give the same height as select */
   padding: 0.44rem 0.8rem;
   transition: all 0.3s;
+  white-space: nowrap; /* Prevent text wrapping */
 
   &:hover:not(:disabled) {
     background-color: var(--color-brand-600);
     color: var(--color-brand-50);
+  }
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    padding: 0.5rem 0.7rem; /* Slightly larger for touch */
+    min-height: 3.6rem; /* Better touch target */
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+    padding: 0.6rem 0.8rem;
+    min-height: 3.8rem;
+    flex: 1; /* Allow buttons to grow and fill space */
+    min-width: 0; /* Allow flex shrinking */
+  }
+
+  /* Very small screens */
+  @media (max-width: 360px) {
+    font-size: 1.1rem;
+    padding: 0.5rem 0.6rem;
+    min-height: 3.6rem;
   }
 `;
 
 function Filter({ filterField, options }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentFilter = searchParams.get(filterField) || options.at(0).value;
+
   function handleClick(value) {
     searchParams.set(filterField, value);
     if (searchParams.get("page")) searchParams.set("page", 1);
     setSearchParams(searchParams);
   }
+
   return (
     <StyledFilter>
       {options.map((option) => (
