@@ -15,7 +15,7 @@ function Rooms() {
       </Row>
       <Row>
         <ItemTable queryKey="rooms" queryFn={getRooms} itemName="room" />
-        <AddItem itemName="room" />
+        {/* <AddItem itemName="room" /> */}
       </Row>
     </>
   );

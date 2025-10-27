@@ -15,7 +15,7 @@ function Cabins() {
       </Row>
       <Row>
         <ItemTable queryKey="cabins" queryFn={getCabins} itemName="cabin" />
-        <AddItem itemName="cabin" />
+        {/* <AddItem itemName="cabin" /> */}
       </Row>
     </>
   );

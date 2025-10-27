@@ -97,7 +97,7 @@ export async function getBooking(id) {
           email,
           country,
           countryFlag,
-          nationalID
+          nationalId
         ),
         booking_cabins (
           cabins (
@@ -141,7 +141,7 @@ export async function getBooking(id) {
       email: booking.guests?.email || "",
       country: booking.guests?.country || "",
       countryFlag: booking.guests?.countryFlag || "",
-      nationalID: booking.guests?.nationalID || "",
+      nationalId: booking.guests?.nationalId || "",
     },
     accommodation: {
       name: getAccommodationName(booking),
@@ -230,12 +230,34 @@ export async function updateBooking(id, obj) {
 }
 
 export async function deleteBooking(id) {
-  // REMEMBER RLS POLICIES
+  // First, delete all related records from booking_cabins and booking_rooms
+  const { error: cabinsError } = await supabase
+    .from("booking_cabins")
+    .delete()
+    .eq("bookingId", id);
+
+  if (cabinsError) {
+    console.error("Error deleting booking cabins:", cabinsError);
+    throw new Error("Booking cabins could not be deleted");
+  }
+
+  const { error: roomsError } = await supabase
+    .from("booking_rooms")
+    .delete()
+    .eq("bookingId", id);
+
+  if (roomsError) {
+    console.error("Error deleting booking rooms:", roomsError);
+    throw new Error("Booking rooms could not be deleted");
+  }
+
+  // Now delete the main booking record
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
 
   if (error) {
-    console.error(error);
+    console.error("Error deleting booking:", error);
     throw new Error("Booking could not be deleted");
   }
+
   return data;
 }

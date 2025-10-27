@@ -13,7 +13,7 @@ function AddItem({ itemName }) {
           }`}</Button>
         </Modal.Open>
         <Modal.Window name="item-form">
-          <CreateItemForm itemName={itemName} queryKey={`${itemName}s`} />
+          {/* <CreateItemForm itemName={itemName} queryKey={`${itemName}s`} /> */}
         </Modal.Window>
       </Modal>
     </div>

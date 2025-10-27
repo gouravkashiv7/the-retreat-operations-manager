@@ -4,9 +4,9 @@ import Modal from "../../ui/Modal.jsx";
 import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
 
 import { calculateDiscount, formatCurrency } from "../../utils/helpers";
-import { useDeleteItem } from "./useDeleteItem.js";
+// import { useDeleteItem } from "./useDeleteItem.js";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
-import { useCreateItem } from "./useCreateItem.js";
+// import { useCreateItem } from "./useCreateItem.js";
 import Table from "../../ui/Table.jsx";
 import Menus from "../../ui/Menus.jsx";
 
@@ -45,23 +45,22 @@ function ItemRow({ item, queryKey, itemName }) {
     regularPrice,
     discount: discountPercentage,
     image,
-    description,
   } = item;
 
   const discount = calculateDiscount(regularPrice, discountPercentage);
-  const { isDeleting, deleteItem } = useDeleteItem(itemName, queryKey);
-  const { isCreating, createItem } = useCreateItem(itemName, queryKey);
+  // const { isDeleting, deleteItem } = useDeleteItem(itemName, queryKey);
+  // const { isCreating, createItem } = useCreateItem(itemName, queryKey);
 
-  function handleDuplicate() {
-    createItem({
-      name: `Copy of ${name}`,
-      maxCapacity,
-      regularPrice,
-      discount: discountPercentage,
-      image,
-      description,
-    });
-  }
+  // function handleDuplicate() {
+  //   createItem({
+  //     name: `Copy of ${name}`,
+  //     maxCapacity,
+  //     regularPrice,
+  //     discount: discountPercentage,
+  //     image,
+  //     description,
+  //   });
+  // }
 
   return (
     <>
@@ -80,19 +79,19 @@ function ItemRow({ item, queryKey, itemName }) {
             <Menus.Menu>
               <Menus.Toggle id={itemId} />
               <Menus.List id={itemId}>
-                <Menus.Button
+                {/* <Menus.Butt on
                   icon={<HiSquare2Stack />}
                   onClick={handleDuplicate}
                   disabled={isCreating}
                 >
                   Duplicate
-                </Menus.Button>
+                </Menus.Butt> */}
                 <Modal.Open opens="edit-form">
                   <Menus.Button icon={<HiPencil />}> Edit</Menus.Button>
                 </Modal.Open>
-                <Modal.Open opens="delete-item">
+                {/* <Modal.Open opens="delete-item">
                   <Menus.Button icon={<HiTrash />}> Delete</Menus.Button>
-                </Modal.Open>
+                </Modal.Open> */}
               </Menus.List>
 
               <Modal.Window name="edit-form">
@@ -103,13 +102,13 @@ function ItemRow({ item, queryKey, itemName }) {
                 />
               </Modal.Window>
 
-              <Modal.Window name="delete-item">
+              {/* <Modal.Window name="delete-item">
                 <ConfirmDelete
                   resourceName={itemName}
                   onConfirm={() => deleteItem(itemId)}
                   disabled={isDeleting}
                 />
-              </Modal.Window>
+              </Modal.Window> */}
             </Menus.Menu>
           </Modal>
         </div>

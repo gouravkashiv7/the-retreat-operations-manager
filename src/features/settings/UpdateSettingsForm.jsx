@@ -15,6 +15,7 @@ function UpdateSettingsForm() {
       maxBookingLength,
       maxGuestsPerBooking,
       breakfastPrice,
+      extraGuestPrice,
     } = {},
   } = useItems("settings", getSettings);
 
@@ -59,10 +60,19 @@ function UpdateSettingsForm() {
       <FormRow label="Breakfast price">
         <Input
           type="number"
-          id="breakfast-price"
+          id="breakfastPrice"
           disabled={isUpdating}
           defaultValue={breakfastPrice}
           onBlur={(e) => handleSubmit(e, "breakfastPrice")}
+        />
+      </FormRow>
+      <FormRow label="Extra Guest price">
+        <Input
+          type="number"
+          id="extraGuestPrice"
+          disabled={isUpdating}
+          defaultValue={extraGuestPrice}
+          onBlur={(e) => handleSubmit(e, "extraGuestPrice")}
         />
       </FormRow>
     </Form>
