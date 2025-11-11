@@ -94,6 +94,11 @@ const GlobalStyles = createGlobalStyle`
   --color-brand-800: #3730a3;
   --color-brand-900: #312e81;
 
+  /*more colors*/
+  --color-red-500: #ef4444;
+  --color-yellow-500: #eab308;
+  --color-green-500: #22c55e;
+
   --border-radius-tiny: 3px;
   --border-radius-sm: 5px;
   --border-radius-md: 7px;

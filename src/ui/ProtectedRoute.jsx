@@ -17,7 +17,7 @@ function ProtectedRoute({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Added a small delay to avoid race conditions
+    // Added a small delay to avoid race conditions not required anymore . was bugging due to a typo in react query
     // const timer = setTimeout(() => {
     if (!isAuthenticated && !isLoading) {
       navigate("/login", { replace: true });

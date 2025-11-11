@@ -13,45 +13,81 @@ const StyledModal = styled.div`
   background-color: var(--color-grey-0);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
-  padding: 3.2rem 4rem;
-  transition: all 0.5s;
-  max-width: 80rem;
+  padding: 2.5rem 3rem;
+  transition: all 0.3s ease;
+  max-width: 90rem;
   width: auto;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* Desktop */
+  @media (max-width: 1200px) {
+    max-width: 85rem;
+    padding: 2.2rem 2.8rem;
+  }
+
+  /* Small Desktop / Large Tablet */
+  @media (max-width: 1024px) {
+    max-width: 80rem;
+    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius-md);
+  }
 
   /* Tablet */
-  @media (max-width: 1024px) {
-    padding: 2.8rem 3.2rem;
-    max-width: 90vw;
+  @media (max-width: 900px) {
+    max-width: 85vw;
+    width: 85vw;
+    padding: 1.8rem 2.2rem;
+    max-height: 88vh;
   }
 
-  /* Mobile - Major size reduction */
+  /* Large Mobile */
   @media (max-width: 768px) {
-    padding: 2rem 2.4rem;
-    border-radius: var(--border-radius-md);
+    max-width: 90vw;
+    width: 90vw;
+    padding: 1.6rem 2rem;
+    max-height: 90vh;
+    border-radius: var(--border-radius-sm);
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
     max-width: 95vw;
     width: 95vw;
-    max-height: 85vh;
-    overflow-y: auto;
+    padding: 1.4rem 1.8rem;
+    max-height: 92vh;
   }
 
-  /* Small Mobile - Even smaller */
+  /* Small Mobile */
   @media (max-width: 480px) {
-    padding: 1.6rem 2rem;
-    border-radius: var(--border-radius-sm);
     max-width: 98vw;
     width: 98vw;
-    max-height: 90vh;
-    margin: 0;
+    padding: 1.2rem 1.6rem;
+    max-height: 95vh;
+    border-radius: var(--border-radius-sm);
   }
 
-  /* Very Small Mobile - Minimal size */
+  /* Very Small Mobile */
   @media (max-width: 360px) {
-    padding: 1.2rem 1.6rem;
     max-width: 100vw;
     width: 100vw;
     max-height: 100vh;
+    padding: 1rem 1.2rem;
     border-radius: 0;
-    margin: 0;
+  }
+
+  /* Landscape Orientation */
+  @media (max-height: 600px) and (orientation: landscape) {
+    max-height: 95vh;
+    padding: 1rem 1.5rem;
+  }
+
+  /* Very Short Screens */
+  @media (max-height: 400px) {
+    max-height: 98vh;
+    padding: 0.8rem 1rem;
   }
 `;
 

@@ -8,7 +8,8 @@ import GlobalStyles from "./styles/GlobalStyles";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { MobileProvider } from "./context/MobileContext";
-import Spinner from "./ui/Spinner"; // Make sure you have a Spinner component
+import Spinner from "./ui/Spinner";
+import Guests from "./pages/Guests";
 
 // Lazy load all page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -23,11 +24,12 @@ const AppLayout = lazy(() => import("./ui/AppLayout"));
 const Rooms = lazy(() => import("./pages/Rooms"));
 const Cabins = lazy(() => import("./pages/Cabins"));
 const Checkin = lazy(() => import("./pages/Checkin"));
+const Menu = lazy(() => import("./pages/Menu"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000, // 1 minute - consider increasing this
+      staleTime: 60 * 1000,
     },
   },
 });
@@ -67,11 +69,13 @@ function App() {
                 >
                   <Route index element={<Navigate replace to="dashboard" />} />
                   <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="guests" element={<Guests />} />
                   <Route path="bookings" element={<Bookings />} />
                   <Route path="bookings/:bookingId" element={<Booking />} />
                   <Route path="checkin/:bookingId" element={<Checkin />} />
                   <Route path="rooms" element={<Rooms />} />
                   <Route path="cabins" element={<Cabins />} />
+                  <Route path="menu" element={<Menu />} />
                   <Route path="users" element={<Users />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="account" element={<Account />} />
