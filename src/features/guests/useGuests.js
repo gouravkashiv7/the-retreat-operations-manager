@@ -23,7 +23,7 @@ export function useAllBookings() {
   });
 }
 
-export function useGuest(id) {
+export function useGuestById(id) {
   return useQuery({
     queryKey: ["guests", id],
     queryFn: () => apiGuests.getGuestById(id),

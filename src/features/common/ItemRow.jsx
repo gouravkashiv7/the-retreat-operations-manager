@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CreateItemForm from "./CreateItemForm";
 import Modal from "../../ui/Modal.jsx";
-import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
+// import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
 
 import { calculateDiscount, formatCurrency } from "../../utils/helpers";
 // import { useDeleteItem } from "./useDeleteItem.js";

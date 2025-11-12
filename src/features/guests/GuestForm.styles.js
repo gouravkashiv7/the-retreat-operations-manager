@@ -66,6 +66,14 @@ export const Label = styled.label`
   color: var(--color-grey-800);
   font-size: 1.4rem;
   line-height: 1.3;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-200);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -89,8 +97,9 @@ export const Input = styled.input`
   border-radius: var(--border-radius-md);
   font-size: 1.5rem;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--color-grey-0);
   min-height: 5rem;
+  color: var(--color-grey-900);
 
   &:focus {
     outline: none;
@@ -108,6 +117,30 @@ export const Input = styled.input`
     color: var(--color-grey-500);
     font-size: 1.4rem;
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-600);
+    border-color: var(--color-dark-400);
+    color: var(--color-grey-100);
+
+    &:focus {
+      border-color: var(--color-brand-400);
+      box-shadow: 0 0 0 4px var(--color-brand-900);
+      background: var(--color-dark-500);
+    }
+
+    &.error {
+      border-color: var(--color-red-500);
+      box-shadow: 0 0 0 4px var(--color-red-900);
+    }
+
+    &::placeholder {
+      color: var(--color-grey-500);
+    }
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -144,10 +177,11 @@ export const Select = styled.select`
   border: 2px solid var(--color-grey-300);
   border-radius: var(--border-radius-md);
   font-size: 1.5rem;
-  background-color: white;
+  background-color: var(--color-grey-0);
   transition: all 0.3s ease;
   min-height: 5rem;
   cursor: pointer;
+  color: var(--color-grey-900);
 
   &:focus {
     outline: none;
@@ -160,6 +194,26 @@ export const Select = styled.select`
     border-color: var(--color-red-600);
     box-shadow: 0 0 0 4px var(--color-red-100);
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-600);
+    border-color: var(--color-dark-400);
+    color: var(--color-grey-100);
+
+    &:focus {
+      border-color: var(--color-brand-400);
+      box-shadow: 0 0 0 4px var(--color-brand-900);
+      background: var(--color-dark-500);
+    }
+
+    &.error {
+      border-color: var(--color-red-500);
+      box-shadow: 0 0 0 4px var(--color-red-900);
+    }
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -199,8 +253,9 @@ export const TextArea = styled.textarea`
   min-height: 100px;
   resize: vertical;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--color-grey-0);
   line-height: 1.5;
+  color: var(--color-grey-900);
 
   &:focus {
     outline: none;
@@ -218,6 +273,30 @@ export const TextArea = styled.textarea`
     color: var(--color-grey-500);
     font-size: 1.4rem;
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-600);
+    border-color: var(--color-dark-400);
+    color: var(--color-grey-100);
+
+    &:focus {
+      border-color: var(--color-brand-400);
+      box-shadow: 0 0 0 4px var(--color-brand-900);
+      background: var(--color-dark-500);
+    }
+
+    &.error {
+      border-color: var(--color-red-500);
+      box-shadow: 0 0 0 4px var(--color-red-900);
+    }
+
+    &::placeholder {
+      color: var(--color-grey-500);
+    }
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -257,6 +336,14 @@ export const ErrorMessage = styled.span`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-red-400);
+  `}
 
   /* Mobile */
   @media (max-width: 768px) {
@@ -276,6 +363,14 @@ export const ButtonGroup = styled.div`
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--color-grey-200);
+  transition: border-color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    border-top-color: var(--color-dark-400);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -315,6 +410,14 @@ export const FormHeader = styled.h2`
   color: var(--color-grey-900);
   margin-bottom: 1rem;
   text-align: center;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-100);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -337,4 +440,40 @@ export const FormHeader = styled.h2`
 export const RequiredIndicator = styled.span`
   color: var(--color-red-600);
   margin-left: 0.3rem;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-red-400);
+  `}
+`;
+
+export const FormDescription = styled.p`
+  color: var(--color-grey-600);
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-400);
+  `}
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Small Mobile */
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
 `;

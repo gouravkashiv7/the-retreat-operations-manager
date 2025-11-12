@@ -1,13 +1,14 @@
-// components/guests/GuestTable.styles.js
 import styled from "styled-components";
 
 export const Table = styled.div`
-  background: white;
+  background: var(--color-grey-0);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   width: 100%;
   min-width: 1000px;
+  border: 1px solid var(--color-grey-100);
+  transition: all 0.2s ease;
 
   /* Desktop - allow horizontal scroll on smaller screens */
   @media (max-width: 1200px) {
@@ -27,6 +28,8 @@ export const Table = styled.div`
     overflow-x: visible;
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-xs);
+    border: 1px solid var(--color-grey-200);
+    background: transparent;
   }
 
   /* Mobile */
@@ -46,6 +49,16 @@ export const TableHeader = styled.div`
   font-weight: 600;
   color: var(--color-grey-700);
   align-items: center;
+  transition: all 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background-color: var(--color-dark-500);
+    border-bottom-color: var(--color-dark-300);
+    color: var(--color-grey-300);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -66,6 +79,8 @@ export const TableRow = styled.div`
   padding: 1.5rem 2rem;
   border-bottom: 1px solid var(--color-grey-100);
   align-items: start;
+  background: var(--color-grey-0);
+  transition: all 0.2s ease;
 
   &:last-child {
     border-bottom: none;
@@ -74,6 +89,18 @@ export const TableRow = styled.div`
   &:hover {
     background-color: var(--color-grey-50);
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-600);
+    border-bottom-color: var(--color-dark-400);
+    
+    &:hover {
+      background-color: var(--color-dark-500);
+    }
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -95,6 +122,7 @@ export const TableRow = styled.div`
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-xs);
     align-items: baseline;
+
     &:last-child {
       border-bottom: 1px solid var(--color-grey-200);
     }
@@ -103,13 +131,19 @@ export const TableRow = styled.div`
       background-color: var(--color-grey-0);
       box-shadow: var(--shadow-sm);
     }
-    &::before {
-      content: "";
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
+
+    /* Dark mode mobile */
+    ${(props) =>
+      props.theme === "dark" &&
+      `
+      background: var(--color-dark-600);
+      border-bottom-color: var(--color-dark-400);
+      
+      &:hover {
+        background: var(--color-dark-600);
+        box-shadow: var(--shadow-sm-dark);
+      }
+    `}
   }
 
   /* Small Mobile */
@@ -134,6 +168,7 @@ export const Cell = styled.div`
   min-height: 40px;
   justify-content: center;
   border-right: 1px solid var(--color-grey-100);
+  transition: all 0.2s ease;
 
   &:last-child {
     border-right: none;
@@ -142,6 +177,13 @@ export const Cell = styled.div`
   & > * {
     width: 100%;
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    border-right-color: var(--color-dark-400);
+  `}
 
   /* Mobile - card layout */
   @media (max-width: 768px) {
@@ -177,6 +219,7 @@ export const Cell = styled.div`
       display: flex;
       flex-direction: row;
     }
+
     /* Contact info - full width */
     &.email {
       order: 3;
@@ -187,6 +230,15 @@ export const Cell = styled.div`
       margin: 0 -1.5rem;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
+
+      /* Dark mode */
+      ${(props) =>
+        props.theme === "dark" &&
+        `
+        border-top-color: var(--color-dark-400);
+        border-bottom-color: var(--color-dark-400);
+        background: var(--color-dark-500);
+      `}
     }
 
     /* National ID and Bookings side by side */
@@ -265,6 +317,14 @@ export const MobileLabel = styled.span`
   color: var(--color-grey-700);
   font-size: 1.3rem;
   min-width: 85px;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-400);
+  `}
 
   @media (max-width: 768px) {
     display: block;
@@ -288,6 +348,14 @@ export const Name = styled.div`
   color: var(--color-grey-800);
   font-size: 1.4rem;
   line-height: 1.3;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-100);
+  `}
 
   @media (max-width: 768px) {
     font-size: 1.5rem;
@@ -303,6 +371,14 @@ export const Email = styled.div`
   font-size: 1.4rem;
   line-height: 1.3;
   word-break: break-word;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-400);
+  `}
 
   @media (max-width: 768px) {
     font-size: 1.3rem;
@@ -313,6 +389,14 @@ export const Detail = styled.div`
   color: var(--color-grey-700);
   font-size: 1.4rem;
   line-height: 1.3;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-300);
+  `}
 
   @media (max-width: 768px) {
     font-size: 1.3rem;
@@ -327,6 +411,17 @@ export const GuestId = styled.div`
   padding: 0.4rem 0.8rem;
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--color-grey-200);
+  color: var(--color-grey-700);
+  transition: all 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-500);
+    border-color: var(--color-dark-400);
+    color: var(--color-grey-300);
+  `}
 
   @media (max-width: 768px) {
     font-size: 1.3rem;
@@ -339,6 +434,14 @@ export const BookingId = styled.div`
   font-weight: 500;
   font-size: 1.3rem;
   line-height: 1.4;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-brand-400);
+  `}
 
   &:not(:last-child) {
     margin-bottom: 0.3rem;
@@ -372,11 +475,20 @@ export const ActionsContainer = styled.div`
 // Additional mobile-specific components
 export const MobileCard = styled.div`
   @media (max-width: 768px) {
-    background: white;
+    background: var(--color-grey-0);
     border-radius: var(--border-radius-sm);
     padding: 1rem;
     margin-bottom: 0.5rem;
     box-shadow: var(--shadow-xs);
+    transition: all 0.2s ease;
+
+    /* Dark mode */
+    ${(props) =>
+      props.theme === "dark" &&
+      `
+      background: var(--color-dark-600);
+      box-shadow: var(--shadow-xs-dark);
+    `}
   }
 `;
 
@@ -387,10 +499,20 @@ export const InfoRow = styled.div`
     align-items: flex-start;
     gap: 1rem;
     padding: 0.5rem 0;
+    transition: border-color 0.2s ease;
 
     &:not(:last-child) {
       border-bottom: 1px solid var(--color-grey-100);
     }
+
+    /* Dark mode */
+    ${(props) =>
+      props.theme === "dark" &&
+      `
+      &:not(:last-child) {
+        border-bottom-color: var(--color-dark-400);
+      }
+    `}
   }
 
   @media (max-width: 480px) {

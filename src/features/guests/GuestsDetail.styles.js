@@ -5,6 +5,15 @@ export const PageLayout = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
+  background: var(--color-grey-0);
+  transition: background-color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-900);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -63,6 +72,21 @@ export const Title = styled.h1`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: all 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: linear-gradient(
+      135deg,
+      var(--color-brand-400),
+      var(--color-brand-300)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -144,7 +168,11 @@ export const Stats = styled.div`
 `;
 
 export const StatCard = styled.div`
-  background: linear-gradient(135deg, white, var(--color-grey-50));
+  background: linear-gradient(
+    135deg,
+    var(--color-grey-0),
+    var(--color-grey-50)
+  );
   padding: 2rem 1.5rem;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
@@ -152,6 +180,7 @@ export const StatCard = styled.div`
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--color-grey-100);
 
   &:hover {
     transform: translateY(-4px);
@@ -177,6 +206,28 @@ export const StatCard = styled.div`
   &:hover::before {
     opacity: 1;
   }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: linear-gradient(135deg, var(--color-dark-600), var(--color-dark-500));
+    border-left-color: var(--color-brand-400);
+    border-color: var(--color-dark-400);
+    box-shadow: var(--shadow-md-dark);
+    
+    &:hover {
+      box-shadow: var(--shadow-lg-dark);
+    }
+
+    &::before {
+      background: linear-gradient(
+        90deg,
+        var(--color-brand-400),
+        var(--color-brand-200)
+      );
+    }
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -208,6 +259,14 @@ export const StatNumber = styled.div`
   color: var(--color-grey-900);
   line-height: 1.1;
   margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-100);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -235,6 +294,14 @@ export const StatLabel = styled.div`
   font-weight: 600;
   color: var(--color-grey-600);
   line-height: 1.3;
+  transition: color 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    color: var(--color-grey-400);
+  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -273,11 +340,21 @@ export const Section = styled.section`
 `;
 
 export const Card = styled.div`
-  background: white;
+  background: var(--color-grey-0);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   padding: 2rem;
   border: 1px solid var(--color-grey-200);
+  transition: all 0.2s ease;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme === "dark" &&
+    `
+    background: var(--color-dark-600);
+    border-color: var(--color-dark-400);
+    box-shadow: var(--shadow-sm-dark);
+  `}
 
   /* Mobile */
   @media (max-width: 768px) {
