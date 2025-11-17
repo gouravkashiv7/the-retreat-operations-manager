@@ -299,9 +299,8 @@ function AccommodationSelector({ allAccommodations, onAccommodationsChange }) {
                     <option value="">Choose an accommodation...</option>
                     {getAvailableAccommodations(slotIndex).map((acc) => (
                       <option key={acc.id} value={acc.id}>
-                        {acc.name} ({acc.type}) - Max: {acc.maxCapacity} guests
-                        - ₹{acc.regularPrice}/night
-                        {acc.discount > 0 && ` (${acc.discount}% off)`}
+                        {acc.name} ({acc.type}) - Capacity : {acc.maxCapacity}{" "}
+                        guests
                       </option>
                     ))}
                   </StyledSelect>

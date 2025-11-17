@@ -56,7 +56,7 @@ const StyledModal = styled.div`
   @media (max-width: 600px) {
     max-width: 95vw;
     width: 95vw;
-    padding: 1.4rem 1.8rem;
+
     max-height: 92vh;
   }
 
@@ -64,7 +64,7 @@ const StyledModal = styled.div`
   @media (max-width: 480px) {
     max-width: 98vw;
     width: 98vw;
-    padding: 1.2rem 1.6rem;
+
     max-height: 95vh;
     border-radius: var(--border-radius-sm);
   }
