@@ -24,6 +24,7 @@ import {
   StepIndicator,
   Step,
   StepNumber,
+  CheckboxLabel,
 } from "./CreateBookingForm.styles";
 import { getRooms } from "../../services/apiRooms";
 import { getCabins } from "../../services/apiCabins";
@@ -110,13 +111,13 @@ function CreateBookingForm({ onCloseModal }) {
     }));
   };
 
-  const handleAccommodationTypeChange = (type) => {
-    setBookingData((prev) => ({
-      ...prev,
-      accommodationType: type,
-      selectedAccommodation: "", // Reset selection when type changes
-    }));
-  };
+  // const handleAccommodationTypeChange = (type) => {
+  //   setBookingData((prev) => ({
+  //     ...prev,
+  //     accommodationType: type,
+  //     selectedAccommodation: "", // Reset selection when type changes
+  //   }));
+  // };
 
   const calculateNumNights = (start, end) => {
     if (!start || !end) return 0;
@@ -157,16 +158,16 @@ function CreateBookingForm({ onCloseModal }) {
     }
   };
 
-  // Empty function stubs for API calls
-  const createBooking = async (bookingData) => {
-    // TODO: Implement booking creation API call
-    console.log("Creating booking:", bookingData);
-  };
+  // // Empty function stubs for API calls
+  // const createBooking = async (bookingData) => {
+  //   // TODO: Implement booking creation API call
+  //   console.log("Creating booking:", bookingData);
+  // };
 
-  const calculateBookingPrice = async (bookingData) => {
-    // TODO: Implement price calculation
-    return 0;
-  };
+  // const calculateBookingPrice = async (bookingData) => {
+  //   // TODO: Implement price calculation
+  //   return 0;
+  // };
 
   const [accommodationData, setAccommodationData] = useState({
     numRetreats: 1,
@@ -311,6 +312,7 @@ function CreateBookingForm({ onCloseModal }) {
                   type="number"
                   min="1"
                   max="20"
+                  disabled="true"
                   value={bookingData.numGuests}
                   onChange={(e) =>
                     handleBookingDataChange(
@@ -335,7 +337,7 @@ function CreateBookingForm({ onCloseModal }) {
             {/* Additional Options */}
             <FormRow>
               <FormGroup>
-                <Label htmlFor="hasBreakfast">
+                <CheckboxLabel htmlFor="hasBreakfast">
                   <input
                     id="hasBreakfast"
                     type="checkbox"
@@ -344,11 +346,11 @@ function CreateBookingForm({ onCloseModal }) {
                       handleBookingDataChange("hasBreakfast", e.target.checked)
                     }
                   />
-                  Include Breakfast
-                </Label>
+                  Include Breakfast (250 / guest)
+                </CheckboxLabel>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="isPaid">
+                <CheckboxLabel htmlFor="isPaid">
                   <input
                     id="isPaid"
                     type="checkbox"
@@ -358,7 +360,7 @@ function CreateBookingForm({ onCloseModal }) {
                     }
                   />
                   Mark as Paid
-                </Label>
+                </CheckboxLabel>
               </FormGroup>
             </FormRow>
 
