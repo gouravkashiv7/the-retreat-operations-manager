@@ -16,17 +16,31 @@ const SearchInput = styled.input`
   border-radius: var(--border-radius-sm);
   font-size: 1.4rem;
   background-color: var(--color-grey-0);
+  color: var(--color-grey-700);
   transition: all 0.3s;
 
   &:focus {
     outline: none;
     border-color: var(--color-brand-600);
     box-shadow: 0 0 0 3px var(--color-brand-100);
-    background-color: white;
+    background-color: var(--color-grey-0);
   }
 
   &::placeholder {
     color: var(--color-grey-500);
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-grey-0);
+    color: var(--color-grey-700);
+    border-color: var(--color-grey-300);
+
+    &:focus {
+      background-color: var(--color-grey-0);
+      border-color: var(--color-brand-600);
+      box-shadow: 0 0 0 3px var(--color-brand-800);
+    }
   }
 `;
 
