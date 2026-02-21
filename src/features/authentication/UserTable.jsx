@@ -5,6 +5,29 @@ import { useUsers } from "./useUsers";
 import UserRow from "./UserRow";
 import Empty from "../../ui/Empty";
 import { useSearchParams } from "react-router-dom";
+import styled from "styled-components";
+
+const MobileTableContainer = styled.div`
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem;
+  }
+`;
 
 function UserTable() {
   const { isLoading, users } = useUsers();
@@ -28,21 +51,23 @@ function UserTable() {
 
   return (
     <Menus>
-      <Table columns="0.6fr 1.5fr 2fr 1fr 1fr 0.5fr">
-        <Table.Header>
-          <div></div>
-          <div>Full Name</div>
-          <div>Email</div>
-          <div>Role</div>
-          <div>Created At</div>
-          <div></div>
-        </Table.Header>
+      <MobileTableContainer>
+        <Table columns="0.6fr 1.5fr 2fr 1fr 1fr 0.5fr">
+          <Table.Header>
+            <div></div>
+            <div>Full Name</div>
+            <div>Email</div>
+            <div>Role</div>
+            <div>Created At</div>
+            <div></div>
+          </Table.Header>
 
-        <Table.Body
-          data={filteredUsers}
-          render={(user) => <UserRow user={user} key={user.id} />}
-        />
-      </Table>
+          <Table.Body
+            data={filteredUsers}
+            render={(user) => <UserRow user={user} key={user.id} />}
+          />
+        </Table>
+      </MobileTableContainer>
     </Menus>
   );
 }

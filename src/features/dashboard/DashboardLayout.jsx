@@ -11,20 +11,20 @@ import TodayActivity from "../check-in-out/TodayActivity";
 const StyledDashboardLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 34rem auto;
+  grid-template-rows: auto auto auto;
   gap: 2.4rem;
 
   /* Large Tablet */
   @media (max-width: 1200px) {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto 30rem auto;
+    grid-template-rows: auto auto auto;
     gap: 2.2rem;
   }
 
   /* Tablet */
   @media (max-width: 1024px) {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 30rem auto;
+    grid-template-rows: auto auto auto auto;
     gap: 2rem;
   }
 

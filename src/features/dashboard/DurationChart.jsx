@@ -21,6 +21,15 @@ const ChartBox = styled.div`
   padding: 2.4rem 3.2rem;
   grid-column: 3 / span 2;
 
+  @media (max-width: 1024px) {
+    grid-column: 1 / -1;
+    padding: 2.4rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.6rem;
+  }
+
   & > *:first-child {
     margin-bottom: 1.6rem;
   }
@@ -121,7 +130,7 @@ function prepareData(startData, stays) {
 
   function incArrayValue(arr, field) {
     return arr.map((obj) =>
-      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
+      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj,
     );
   }
 
@@ -171,10 +180,11 @@ function DurationChart({ confirmedStays }) {
       outerRadius: 110,
       width: "30%",
       height: 240,
+      cx: "40%",
     };
   };
 
-  const { innerRadius, outerRadius, width, height } = getResponsiveValues();
+  const { innerRadius, outerRadius, width, height, cx } = getResponsiveValues();
   return (
     <ChartBox>
       <Heading as="h2"> Stay Duration Summary</Heading>
@@ -186,8 +196,8 @@ function DurationChart({ confirmedStays }) {
             datakey="value"
             innerRadius={innerRadius}
             outerRadius={outerRadius}
-            cx="40%"
-            CY="50%"
+            cx={cx || "40%"}
+            cy="50%"
             paddingAngle={3}
           >
             {data.map((entry) => (
@@ -206,6 +216,7 @@ function DurationChart({ confirmedStays }) {
             layout="vertical"
             iconSize={15}
             iconType="circle"
+            wrapperStyle={{ paddingLeft: "10px" }}
           />
         </PieChart>
       </ResponsiveContainer>

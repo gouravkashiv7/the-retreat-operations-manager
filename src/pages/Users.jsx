@@ -9,7 +9,7 @@ import UserTableOperations from "../features/authentication/UserTableOperations"
 function Users() {
   return (
     <>
-      <Row type="horizontal">
+      <Row type="responsive" $stackOnMobile>
         <Heading as="h1">All Users</Heading>
 
         <UserTableOperations />

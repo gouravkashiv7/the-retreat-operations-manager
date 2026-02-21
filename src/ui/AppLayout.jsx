@@ -55,14 +55,6 @@ const StyledAppLayout = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-
-    /* Hide sidebar by default on mobile */
-    ${(props) =>
-      props.$showSidebar
-        ? `
-      grid-template-columns: 26rem 1fr;
-    `
-        : ""}
   }
 `;
 

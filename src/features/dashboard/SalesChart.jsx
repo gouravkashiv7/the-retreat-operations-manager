@@ -44,9 +44,8 @@ const StyledSalesChart = styled(DashboardBox)`
       height: 220px !important;
     }
 
-    /* Adjust text sizes for mobile */
-    & .recharts-text {
-      font-size: 0.8rem;
+    & .recharts-cartesian-axis-tick-value {
+      font-size: 1rem;
     }
   }
 
@@ -87,16 +86,16 @@ function SalesChart({ bookings, numDays }) {
 
   const data = allDates.map((date) => {
     const dayBookings = bookings.filter((booking) =>
-      isSameDay(date, new Date(booking.created_at))
+      isSameDay(date, new Date(booking.created_at)),
     );
 
     const totalSales = dayBookings.reduce(
       (acc, cur) => acc + (cur.totalPrice || 0),
-      0
+      0,
     );
     const extrasSales = dayBookings.reduce(
       (acc, cur) => acc + (cur.extrasPrice || 0),
-      0
+      0,
     );
 
     return {
