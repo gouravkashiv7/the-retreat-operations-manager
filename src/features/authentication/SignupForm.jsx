@@ -3,21 +3,35 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
+import Select from "../../ui/Select";
 import { useSignup } from "./useSignup";
 
 // Email regex: /\S+@\S+\.\S+/
 
-function SignupForm() {
-  const { register, formState, getValues, handleSubmit, reset } = useForm();
+// Email regex: /\S+@\S+\.\S+/
+
+function SignupForm({ onCloseModal }) {
+  const { register, formState, getValues, handleSubmit, reset } = useForm({
+    defaultValues: { role: "guest" },
+  });
   const { errors } = formState;
   const { isLoading, signup } = useSignup();
 
-  function onSubmit({ fullName, email, password }) {
-    signup({ fullName, email, password }, { onSettled: () => reset });
+  function onSubmit({ fullName, email, password, role }) {
+    signup(
+      { fullName, email, password, role },
+      {
+        onSettled: () => reset(),
+        onSuccess: () => onCloseModal?.(),
+      },
+    );
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Full name" error={errors?.fullname?.message}>
         <Input
           type="text"
@@ -70,6 +84,20 @@ function SignupForm() {
             validate: (value) =>
               value === getValues().password || "Passwords do not match.",
           })}
+        />
+      </FormRow>
+
+      <FormRow label="Role" error={errors?.role?.message}>
+        <Select
+          id="role"
+          disabled={isLoading}
+          {...register("role", { required: "This is a required field." })}
+          options={[
+            { value: "guest", label: "Guest" },
+            { value: "cook", label: "Cook" },
+            { value: "staff", label: "Staff" },
+            { value: "admin", label: "Admin" },
+          ]}
         />
       </FormRow>
 

@@ -6,6 +6,7 @@ import Spinner from "../../ui/Spinner";
 import { getSettings } from "../../services/apiSettings";
 import { useItems } from "../common/useItems";
 import { useUpdateSetting } from "./useUpdateSetting";
+import { useAuthorization } from "../../features/authentication/useAuthorization";
 
 function UpdateSettingsForm() {
   const {
@@ -20,6 +21,7 @@ function UpdateSettingsForm() {
   } = useItems("settings", getSettings);
 
   const { isUpdating, updateSetting } = useUpdateSetting();
+  const { isGuest } = useAuthorization();
 
   function handleSubmit(e, field) {
     const { value } = e.target;
@@ -34,7 +36,7 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="min-nights"
-          disabled={isUpdating}
+          disabled={isUpdating || isGuest}
           defaultValue={minBookingLength}
           onBlur={(e) => handleSubmit(e, "minBookingLength")}
         />
@@ -43,7 +45,7 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="max-nights"
-          disabled={isUpdating}
+          disabled={isUpdating || isGuest}
           defaultValue={maxBookingLength}
           onBlur={(e) => handleSubmit(e, "maxBookingLength")}
         />
@@ -52,7 +54,7 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="max-guests"
-          disabled={isUpdating}
+          disabled={isUpdating || isGuest}
           defaultValue={maxGuestsPerBooking}
           onBlur={(e) => handleSubmit(e, "maxGuestsPerBooking")}
         />
@@ -61,7 +63,7 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="breakfastPrice"
-          disabled={isUpdating}
+          disabled={isUpdating || isGuest}
           defaultValue={breakfastPrice}
           onBlur={(e) => handleSubmit(e, "breakfastPrice")}
         />
@@ -70,7 +72,7 @@ function UpdateSettingsForm() {
         <Input
           type="number"
           id="extraGuestPrice"
-          disabled={isUpdating}
+          disabled={isUpdating || isGuest}
           defaultValue={extraGuestPrice}
           onBlur={(e) => handleSubmit(e, "extraGuestPrice")}
         />

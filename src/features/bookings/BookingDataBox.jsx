@@ -307,12 +307,12 @@ function BookingDataBox({ booking }) {
             {booking_cabins?.length > 0 && booking_rooms?.length > 0
               ? "Rooms & Cabins"
               : booking_cabins?.length > 0
-              ? booking_cabins?.length > 1
-                ? "Cabins"
-                : "Cabin"
-              : booking_rooms?.length > 1
-              ? "Rooms"
-              : "Room"}{" "}
+                ? booking_cabins?.length > 1
+                  ? "Cabins"
+                  : "Cabin"
+                : booking_rooms?.length > 1
+                  ? "Rooms"
+                  : "Room"}{" "}
             <span>({accommodationName})</span>
           </p>
         </div>
@@ -357,7 +357,7 @@ function BookingDataBox({ booking }) {
 
             {hasBreakfast &&
               ` (${formatCurrency(
-                accommodationPrice * numNights
+                accommodationPrice * numNights,
               )} accommodation + ${formatCurrency(extrasPrice)} breakfast)`}
           </DataItem>
 

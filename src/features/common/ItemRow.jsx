@@ -7,8 +7,10 @@ import { calculateDiscount, formatCurrency } from "../../utils/helpers";
 // import { useDeleteItem } from "./useDeleteItem.js";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 // import { useCreateItem } from "./useCreateItem.js";
+// import { useCreateItem } from "./useCreateItem.js";
 import Table from "../../ui/Table.jsx";
 import Menus from "../../ui/Menus.jsx";
+import { useAuthorization } from "../../features/authentication/useAuthorization";
 
 const Img = styled.img`
   display: block;
@@ -62,6 +64,8 @@ function ItemRow({ item, queryKey, itemName }) {
   //   });
   // }
 
+  const { isGuest } = useAuthorization();
+
   return (
     <>
       <Table.Row>
@@ -74,44 +78,47 @@ function ItemRow({ item, queryKey, itemName }) {
         ) : (
           <span> &mdash;</span>
         )}
-        <div>
-          <Modal>
-            <Menus.Menu>
-              <Menus.Toggle id={itemId} />
-              <Menus.List id={itemId}>
-                {/* <Menus.Butt on
+
+        {!isGuest && (
+          <div>
+            <Modal>
+              <Menus.Menu>
+                <Menus.Toggle id={itemId} />
+                <Menus.List id={itemId}>
+                  {/* <Menus.Butt on
                   icon={<HiSquare2Stack />}
                   onClick={handleDuplicate}
                   disabled={isCreating}
                 >
                   Duplicate
                 </Menus.Butt> */}
-                <Modal.Open opens="edit-form">
-                  <Menus.Button icon={<HiPencil />}> Edit</Menus.Button>
-                </Modal.Open>
-                {/* <Modal.Open opens="delete-item">
+                  <Modal.Open opens="edit-form">
+                    <Menus.Button icon={<HiPencil />}> Edit</Menus.Button>
+                  </Modal.Open>
+                  {/* <Modal.Open opens="delete-item">
                   <Menus.Button icon={<HiTrash />}> Delete</Menus.Button>
                 </Modal.Open> */}
-              </Menus.List>
+                </Menus.List>
 
-              <Modal.Window name="edit-form">
-                <CreateItemForm
-                  itemToUpdate={item}
-                  itemName={itemName}
-                  queryKey={queryKey}
-                />
-              </Modal.Window>
+                <Modal.Window name="edit-form">
+                  <CreateItemForm
+                    itemToUpdate={item}
+                    itemName={itemName}
+                    queryKey={queryKey}
+                  />
+                </Modal.Window>
 
-              {/* <Modal.Window name="delete-item">
+                {/* <Modal.Window name="delete-item">
                 <ConfirmDelete
                   resourceName={itemName}
                   onConfirm={() => deleteItem(itemId)}
                   disabled={isDeleting}
                 />
               </Modal.Window> */}
-            </Menus.Menu>
-          </Modal>
-        </div>
+              </Menus.Menu>
+            </Modal>
+          </div>
+        )}
       </Table.Row>
     </>
   );

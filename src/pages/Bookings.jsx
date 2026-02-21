@@ -4,6 +4,7 @@ import ItemHeader from "../ui/ItemHeader";
 import BookingTableOperations from "../features/bookings/BookingTableOperations";
 import AddBooking from "../features/bookings/AddBooking";
 import styled from "styled-components";
+import { useAuthorization } from "../features/authentication/useAuthorization";
 
 const HeaderActions = styled.div`
   display: flex;
@@ -18,6 +19,8 @@ const HeaderActions = styled.div`
 `;
 
 function Bookings() {
+  const { isGuest } = useAuthorization();
+
   return (
     <>
       <Row type="horizontal" $stackOnMobile>
@@ -27,7 +30,7 @@ function Bookings() {
         </HeaderActions>
       </Row>
       <BookingTable />
-      <AddBooking />
+      {!isGuest && <AddBooking />}
     </>
   );
 }

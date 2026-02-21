@@ -11,6 +11,8 @@ import {
   HiOutlineIdentification,
 } from "react-icons/hi2";
 import { MdOutlineCottage } from "react-icons/md";
+import { useUser } from "../features/authentication/useUser";
+import { useAuthorization } from "../features/authentication/useAuthorization";
 
 const NavList = styled.ul`
   display: flex;
@@ -72,6 +74,7 @@ const StyledNavLink = styled(NavLink)`
 
 function MainNav({ onItemClick }) {
   const location = useLocation();
+  const { isAdmin, isStaff, isCook, isGuest } = useAuthorization();
 
   return (
     <nav>
@@ -86,78 +89,96 @@ function MainNav({ onItemClick }) {
             <span>Home</span>
           </StyledNavLink>
         </li>
-        <li>
-          <StyledNavLink
-            to="/guests"
-            onClick={onItemClick}
-            className={location.pathname === "/guests" ? "active" : ""}
-          >
-            <HiOutlineUserGroup />
-            <span>Guests</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/bookings"
-            onClick={onItemClick}
-            className={location.pathname === "/bookings" ? "active" : ""}
-          >
-            <HiOutlineCalendarDateRange />
-            <span>Bookings</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/rooms"
-            onClick={onItemClick}
-            className={location.pathname.startsWith("/rooms") ? "active" : ""}
-          >
-            <HiOutlineHomeModern />
-            <span>Rooms</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/cabins"
-            onClick={onItemClick}
-            className={location.pathname.startsWith("/cabins") ? "active" : ""}
-          >
-            <MdOutlineCottage />
-            <span>Cabins</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/menu"
-            onClick={onItemClick}
-            className={location.pathname.startsWith("/menu") ? "active" : ""}
-          >
-            <HiOutlineClipboardDocumentList />
-            <span>Menu</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/users"
-            onClick={onItemClick}
-            className={location.pathname.startsWith("/users") ? "active" : ""}
-          >
-            <HiOutlineIdentification />
-            <span>Users</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink
-            to="/settings"
-            onClick={onItemClick}
-            className={
-              location.pathname.startsWith("/settings") ? "active" : ""
-            }
-          >
-            <HiOutlineCog8Tooth />
-            <span>Settings</span>
-          </StyledNavLink>
-        </li>
+        {(isAdmin || isStaff || isGuest) && (
+          <>
+            <li>
+              <StyledNavLink
+                to="/guests"
+                onClick={onItemClick}
+                className={location.pathname === "/guests" ? "active" : ""}
+              >
+                <HiOutlineUserGroup />
+                <span>Guests</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink
+                to="/bookings"
+                onClick={onItemClick}
+                className={location.pathname === "/bookings" ? "active" : ""}
+              >
+                <HiOutlineCalendarDateRange />
+                <span>Bookings</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink
+                to="/rooms"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/rooms") ? "active" : ""
+                }
+              >
+                <HiOutlineHomeModern />
+                <span>Rooms</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink
+                to="/cabins"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/cabins") ? "active" : ""
+                }
+              >
+                <MdOutlineCottage />
+                <span>Cabins</span>
+              </StyledNavLink>
+            </li>
+          </>
+        )}
+
+        {(isAdmin || isStaff || isCook || isGuest) && (
+          <li>
+            <StyledNavLink
+              to="/menu"
+              onClick={onItemClick}
+              className={location.pathname.startsWith("/menu") ? "active" : ""}
+            >
+              <HiOutlineClipboardDocumentList />
+              <span>Menu</span>
+            </StyledNavLink>
+          </li>
+        )}
+
+        {isAdmin && (
+          <>
+            <li>
+              <StyledNavLink
+                to="/users"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/users") ? "active" : ""
+                }
+              >
+                <HiOutlineIdentification />
+                <span>Users</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink
+                to="/settings"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/settings") ? "active" : ""
+                }
+              >
+                <HiOutlineCog8Tooth />
+                <span>Settings</span>
+              </StyledNavLink>
+            </li>
+          </>
+        )}
       </NavList>
     </nav>
   );

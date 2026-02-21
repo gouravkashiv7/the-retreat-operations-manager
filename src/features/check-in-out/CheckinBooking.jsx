@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { formatCurrency } from "../../utils/helpers";
 import { useSettings } from "../settings/useSettings";
+import { useAuthorization } from "../../features/authentication/useAuthorization";
 
 const Box = styled.div`
   /* Box */
@@ -36,6 +37,7 @@ function CheckinBooking() {
 
   const moveBack = useMoveBack();
   const { checkin, isCheckingIn } = useCheckin();
+  const { isGuest } = useAuthorization();
 
   if (isLoading || isSettingLoading) return <Spinner />;
 
@@ -61,14 +63,14 @@ function CheckinBooking() {
     // Check if today is between startDate and endDate
     if (today < start) {
       toast.error(
-        `Cannot check in before ${format(new Date(startDate), "MMM dd, yyyy")}`
+        `Cannot check in before ${format(new Date(startDate), "MMM dd, yyyy")}`,
       );
       return;
     }
 
     if (today > end) {
       toast.error(
-        `Cannot check in after ${format(new Date(endDate), "MMM dd, yyyy")}`
+        `Cannot check in after ${format(new Date(endDate), "MMM dd, yyyy")}`,
       );
       return;
     }
@@ -108,7 +110,7 @@ function CheckinBooking() {
             id="breakfast"
           >
             {`Want to add breakfast for ${formatCurrency(
-              optionalBreakfastPrice
+              optionalBreakfastPrice,
             )}`}
           </Checkbox>
         </Box>
@@ -118,7 +120,7 @@ function CheckinBooking() {
           checked={confirmPaid}
           id="confirm"
           onChange={() => setConfirmPaid((confirm) => !confirm)}
-          disabled={confirmPaid || isCheckingIn}
+          disabled={confirmPaid || isCheckingIn || isGuest}
         >
           I confirm that ${guests.fullName} has paid the full amount of{" "}
           {!addBreakfast
@@ -129,9 +131,14 @@ function CheckinBooking() {
         </Checkbox>
       </Box>
       <ButtonGroup>
-        <Button onClick={handleCheckin} disabled={!confirmPaid || isCheckingIn}>
-          Check in booking #{bookingId}
-        </Button>
+        {!isGuest && (
+          <Button
+            onClick={handleCheckin}
+            disabled={!confirmPaid || isCheckingIn}
+          >
+            Check in booking #{bookingId}
+          </Button>
+        )}
         <Button $variation="secondary" onClick={moveBack}>
           Back
         </Button>

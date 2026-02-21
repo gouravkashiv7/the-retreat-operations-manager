@@ -1,18 +1,34 @@
 import Heading from "../ui/Heading";
-import UserHeader from "../ui/UserHeader";
 import SignupForm from "../features/authentication/SignupForm";
+import UserTable from "../features/authentication/UserTable";
+import Button from "../ui/Button";
+import Modal from "../ui/Modal";
+import Row from "../ui/Row";
+import UserTableOperations from "../features/authentication/UserTableOperations";
 
-function NewUsers() {
+function Users() {
   return (
-    <Heading as="h1">
-      <UserHeader
-        title="Create New User"
-        as="h1"
-        subtitle="Add a new user account to the system with email and password"
-      />
-      <SignupForm />
-    </Heading>
+    <>
+      <Row type="horizontal">
+        <Heading as="h1">All Users</Heading>
+
+        <UserTableOperations />
+
+        <Modal>
+          <Modal.Open opens="user-form">
+            <Button>Add new user</Button>
+          </Modal.Open>
+          <Modal.Window name="user-form">
+            <SignupForm />
+          </Modal.Window>
+        </Modal>
+      </Row>
+
+      <Row>
+        <UserTable />
+      </Row>
+    </>
   );
 }
 
-export default NewUsers;
+export default Users;

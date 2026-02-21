@@ -1,4 +1,16 @@
+import { createClient } from "@supabase/supabase-js";
 import supabase, { supabaseUrl } from "./supabase";
+
+// For user creation by an admin, we don't want to replace the current session.
+// So we create a separate client that does not persist the session.
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const adminAuthClient = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
 
 export async function login({ email, password }) {
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -24,14 +36,15 @@ export async function logout() {
   if (error) throw new Error(error.message);
 }
 
-export async function signup({ fullName, email, password }) {
-  const { data, error } = await supabase.auth.signUp({
+export async function signup({ fullName, email, password, role = "guest" }) {
+  const { data, error } = await adminAuthClient.auth.signUp({
     email,
     password,
     options: {
       data: {
         fullName,
         avatar: "",
+        role,
       },
     },
   });

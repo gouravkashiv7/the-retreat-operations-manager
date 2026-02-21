@@ -8,8 +8,8 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import { useLogin } from "./useLogin";
 
 function LoginForm() {
-  const [email, setEmail] = useState("gouravkashiv@zohomail.in");
-  const [password, setPassword] = useState("pass123456");
+  const [email, setEmail] = useState("guest@retreatcottage.in");
+  const [password, setPassword] = useState("12341234");
   const { isLoading, login } = useLogin();
 
   function handleSubmit(e) {
@@ -21,7 +21,7 @@ function LoginForm() {
         onSettled: () => {
           setPassword("");
         },
-      }
+      },
     );
   }
 

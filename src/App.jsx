@@ -1,4 +1,10 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  Outlet,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
@@ -69,16 +75,50 @@ function App() {
                 >
                   <Route index element={<Navigate replace to="dashboard" />} />
                   <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="guests" element={<Guests />} />
-                  <Route path="bookings" element={<Bookings />} />
-                  <Route path="bookings/:bookingId" element={<Booking />} />
-                  <Route path="checkin/:bookingId" element={<Checkin />} />
-                  <Route path="rooms" element={<Rooms />} />
-                  <Route path="cabins" element={<Cabins />} />
-                  <Route path="menu" element={<Menu />} />
-                  <Route path="users" element={<Users />} />
-                  <Route path="settings" element={<Settings />} />
                   <Route path="account" element={<Account />} />
+
+                  {/* Admin, Staff, and Guests can access most things */}
+                  <Route
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["admin", "staff", "guest"]}
+                      >
+                        <Outlet />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="guests" element={<Guests />} />
+                    <Route path="bookings" element={<Bookings />} />
+                    <Route path="bookings/:bookingId" element={<Booking />} />
+                    <Route path="checkin/:bookingId" element={<Checkin />} />
+                    <Route path="rooms" element={<Rooms />} />
+                    <Route path="cabins" element={<Cabins />} />
+                  </Route>
+
+                  {/* Cook has access to the Menu/Orders, guests can look at it too */}
+                  <Route
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["admin", "staff", "cook", "guest"]}
+                      >
+                        <Outlet />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="menu" element={<Menu />} />
+                  </Route>
+
+                  {/* Only Admin can manage users and settings */}
+                  <Route
+                    element={
+                      <ProtectedRoute allowedRoles={["admin"]}>
+                        <Outlet />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="users" element={<Users />} />
+                    <Route path="settings" element={<Settings />} />
+                  </Route>
                 </Route>
                 <Route path="login" element={<Login />} />
                 <Route path="*" element={<PageNotFound />} />

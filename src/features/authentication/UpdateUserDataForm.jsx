@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styled from "styled-components";
 
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
@@ -8,13 +9,24 @@ import Input from "../../ui/Input";
 
 import { useUser } from "./useUser";
 import { useUpdateUser } from "./useUpdateUser";
+import Avatar from "../../ui/Avatar";
+
+const AvatarContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+`;
 
 function UpdateUserDataForm() {
   // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
   const {
     user: {
       email,
-      user_metadata: { fullName: currentFullName },
+      user_metadata: {
+        fullName: currentFullName,
+        role: currentRole,
+        avatar: currentAvatar,
+      },
     },
   } = useUser();
 
@@ -32,7 +44,7 @@ function UpdateUserDataForm() {
           setAvatar(null);
           e.target.reset();
         },
-      }
+      },
     );
   }
 
@@ -46,6 +58,13 @@ function UpdateUserDataForm() {
       <FormRow label="Email address">
         <Input value={email} disabled />
       </FormRow>
+      <FormRow label="Role">
+        <Input
+          value={currentRole || "guest"}
+          disabled
+          style={{ textTransform: "capitalize" }}
+        />
+      </FormRow>
       <FormRow label="Full name">
         <Input
           type="text"
@@ -56,12 +75,15 @@ function UpdateUserDataForm() {
         />
       </FormRow>
       <FormRow label="Avatar image">
-        <FileInput
-          id="avatar"
-          disabled={isLoading}
-          accept="image/*"
-          onChange={(e) => setAvatar(e.target.files[0])}
-        />
+        <AvatarContainer>
+          <Avatar src={currentAvatar} fullName={currentFullName} />
+          <FileInput
+            id="avatar"
+            disabled={isLoading}
+            accept="image/*"
+            onChange={(e) => setAvatar(e.target.files[0])}
+          />
+        </AvatarContainer>
       </FormRow>
       <FormRow>
         <Button

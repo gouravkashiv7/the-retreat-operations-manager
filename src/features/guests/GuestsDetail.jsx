@@ -36,16 +36,18 @@ function GuestsDetail() {
     searchQuery.trim() && searchGuestsMutation.data
       ? searchGuestsMutation.data
       : searchQuery.trim()
-      ? guests?.filter(
-          (guest) =>
-            guest.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            guest.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            guest.nationalId
-              ?.toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            guest.id?.toString().includes(searchQuery)
-        ) || []
-      : guests;
+        ? guests?.filter(
+            (guest) =>
+              guest.fullName
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              guest.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              guest.nationalId
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              guest.id?.toString().includes(searchQuery),
+          ) || []
+        : guests;
 
   if (isLoading) return <Spinner />;
   if (error) return <div>Error: {error.message}</div>;

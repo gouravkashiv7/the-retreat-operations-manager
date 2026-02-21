@@ -1,16 +1,48 @@
-# React + Vite
+# The Retreat Operations Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An internal web application designed to manage the day-to-day operations of "The Retreat" cottage. The application provides tools for staff to handle bookings, check guests in and out, manage accommodation availability (cabins and rooms), and view operational statistics through a central dashboard.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend Framework:** React 19 + Vite
+- **Routing:** React Router v7
+- **Styling:** Styled Components
+- **Data Fetching & State Management:** React Query (TanStack Query) v5
+- **Backend/Database As A Service:** Supabase (\`@supabase/supabase-js\`)
+- **Form Management:** React Hook Form
+- **Data Visualization (Charts):** Recharts
+- **Notifications/Toast:** React Hot Toast
+- **Date Manipulation:** date-fns
 
-## React Compiler
+## Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard:** A central overview of recent activities, occupancy rates, and revenue statistics.
+- **Bookings Management:** Comprehensive tools to create, view, filter, and manage guest bookings.
+- **Check-in / Check-out:** Streamlined workflows to process guest arrivals and departures, including payment status updates.
+- **Accommodation Inventory:** Manage "Cabins" and "Rooms" availability and details.
+- **Guests Database:** A repository of guest profiles and their histories.
+- **System Settings:** Configure application-wide operational properties.
+- **Authentication & Authorization:** Secure staff login using Supabase authentication, alongside protected routes.
 
-## Expanding the ESLint configuration
+## Available Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+In the project directory, you can run:
+
+### \`pnpm dev\`
+
+Runs the app in the development mode.\
+Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+The page will reload when you make changes.
+
+### \`pnpm build\`
+
+Builds the app for production to the \`dist\` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### \`pnpm preview\`
+
+Locally preview the production build after running \`pnpm build\`.
+
+### \`pnpm lint\`
+
+Runs ESLint to check for code quality and style issues.
