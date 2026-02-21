@@ -7,7 +7,11 @@ import MenuTable from "../features/menu/MenuTable";
 import AddMenuItem from "../features/menu/AddMenuItem";
 import MenuTableOperations from "../features/menu/MenuTableOperations";
 
+import { useAuthorization } from "../features/authentication/useAuthorization";
+
 function Menu() {
+  const { isGuest } = useAuthorization();
+
   return (
     <>
       <Row type="horizontal">
@@ -18,7 +22,7 @@ function Menu() {
               View Guest Menu
             </Button>
           </Link>
-          <AddMenuItem />
+          {!isGuest && <AddMenuItem />}
         </div>
       </Row>
 

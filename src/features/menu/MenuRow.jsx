@@ -61,7 +61,10 @@ const Category = styled.div`
   }
 `;
 
+import { useAuthorization } from "../authentication/useAuthorization";
+
 function MenuRow({ menuItem }) {
+  const { isGuest } = useAuthorization();
   const { isDeleting, deleteItem } = useDeleteItem("menu_item", "menu");
   const {
     id: menuItemId,
@@ -84,35 +87,37 @@ function MenuRow({ menuItem }) {
       <Item>{name}</Item>
       <Category>{category}</Category>
       <Price>{formatCurrency(price)}</Price>
-      <div>
-        <Modal>
-          <Menus.Menu>
-            <Menus.Toggle id={menuItemId} />
+      {!isGuest && (
+        <div>
+          <Modal>
+            <Menus.Menu>
+              <Menus.Toggle id={menuItemId} />
 
-            <Menus.List id={menuItemId}>
-              <Modal.Open opens="edit">
-                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
-              </Modal.Open>
+              <Menus.List id={menuItemId}>
+                <Modal.Open opens="edit">
+                  <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                </Modal.Open>
 
-              <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
-              </Modal.Open>
-            </Menus.List>
+                <Modal.Open opens="delete">
+                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
 
-            <Modal.Window name="edit">
-              <CreateMenuItemForm itemToEdit={menuItem} />
-            </Modal.Window>
+              <Modal.Window name="edit">
+                <CreateMenuItemForm itemToEdit={menuItem} />
+              </Modal.Window>
 
-            <Modal.Window name="delete">
-              <ConfirmDelete
-                resourceName="menu item"
-                disabled={isDeleting}
-                onConfirm={() => deleteItem(menuItemId)}
-              />
-            </Modal.Window>
-          </Menus.Menu>
-        </Modal>
-      </div>
+              <Modal.Window name="delete">
+                <ConfirmDelete
+                  resourceName="menu item"
+                  disabled={isDeleting}
+                  onConfirm={() => deleteItem(menuItemId)}
+                />
+              </Modal.Window>
+            </Menus.Menu>
+          </Modal>
+        </div>
+      )}
     </Table.Row>
   );
 }

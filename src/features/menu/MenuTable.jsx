@@ -14,7 +14,10 @@ const CategoryHeader = styled.div`
   }
 `;
 
+import { useAuthorization } from "../authentication/useAuthorization";
+
 function MenuTable() {
+  const { isGuest } = useAuthorization();
   const { isLoading, items: menuItems } = useItems("menu", getMenuItems);
   const [searchParams] = useSearchParams();
 
@@ -46,13 +49,17 @@ function MenuTable() {
 
   return (
     <Menus>
-      <Table columns="0.6fr 1.8fr 1.2fr 1fr 0.5fr">
+      <Table
+        columns={
+          isGuest ? "0.6fr 1.8fr 1.2fr 1fr" : "0.6fr 1.8fr 1.2fr 1fr 0.5fr"
+        }
+      >
         <Table.Header>
           <div>Image</div>
           <div>Item</div>
           <CategoryHeader>Category</CategoryHeader>
           <div>Price</div>
-          <div></div>
+          {!isGuest && <div></div>}
         </Table.Header>
 
         <Table.Body

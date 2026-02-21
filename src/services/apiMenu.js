@@ -15,11 +15,16 @@ export async function deleteMenuItem(id) {
   const { data, error } = await supabase
     .from("menu_items")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .select();
 
   if (error) {
     console.error(error);
     throw new Error("Menu item could not be deleted");
+  }
+
+  if (data?.length === 0) {
+    throw new Error("You do not have permission to delete this item");
   }
 
   return data;
