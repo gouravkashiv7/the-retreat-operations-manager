@@ -2,7 +2,7 @@ import Spinner from "./Spinner";
 import { useUser } from "../features/authentication/useUser";
 import styled from "styled-components";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const FullPage = styled.div`

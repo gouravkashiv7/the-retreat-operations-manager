@@ -7,6 +7,8 @@ import Spinner from "../../ui/Spinner";
 import Empty from "../../ui/Empty";
 import Modal from "../../ui/Modal";
 import GuestForm from "./GuestForm";
+import { useAuthorization } from "../authentication/useAuthorization";
+import NoPermission from "../../ui/NoPermission";
 import {
   PageLayout,
   Header,
@@ -22,6 +24,7 @@ function GuestsDetail() {
   const { data: guests, isLoading, error } = useGuests();
   const { data: allBookings } = useAllBookings();
   const searchGuestsMutation = useSearchGuests();
+  const { isGuest } = useAuthorization();
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -51,6 +54,8 @@ function GuestsDetail() {
 
   if (isLoading) return <Spinner />;
   if (error) return <div>Error: {error.message}</div>;
+
+  if (isGuest) return <NoPermission resourceName="Guests" />;
 
   return (
     <PageLayout>
