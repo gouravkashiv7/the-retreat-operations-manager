@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { deleteCabin } from "../../services/apiCabins.js";
 import { deleteRoom } from "../../services/apiRooms.js";
+import { deleteMenuItem } from "../../services/apiMenu.js";
 
 export function useDeleteItem(itemName, queryKey) {
   const queryClient = useQueryClient();
@@ -14,6 +15,8 @@ export function useDeleteItem(itemName, queryKey) {
         return deleteCabin;
       case "room":
         return deleteRoom;
+      case "menu_item":
+        return deleteMenuItem;
       default:
         throw new Error(`Unknown item type: ${itemName}`);
     }
@@ -25,7 +28,7 @@ export function useDeleteItem(itemName, queryKey) {
       toast.success(
         `${
           itemName.charAt(0).toUpperCase() + itemName.slice(1)
-        } Successfully Deleted!!`
+        } Successfully Deleted!!`,
       );
       queryClient.invalidateQueries({
         queryKey: [queryKey],

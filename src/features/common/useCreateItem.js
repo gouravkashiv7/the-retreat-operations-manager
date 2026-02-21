@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { createUpdateCabin } from "../../services/apiCabins.js";
 import { createUpdateRoom } from "../../services/apiRooms.js";
+import { createUpdateMenuItem } from "../../services/apiMenu.js";
 
 export function useCreateItem(itemName, queryKey) {
   const queryClient = useQueryClient();
@@ -14,6 +15,8 @@ export function useCreateItem(itemName, queryKey) {
         return (itemData) => createUpdateCabin(itemData);
       case "room":
         return (itemData) => createUpdateRoom(itemData);
+      case "menu_item":
+        return (itemData) => createUpdateMenuItem(itemData);
       default:
         throw new Error(`Unknown item type: ${itemName}`);
     }
@@ -25,7 +28,7 @@ export function useCreateItem(itemName, queryKey) {
       toast.success(
         `${
           itemName.charAt(0).toUpperCase() + itemName.slice(1)
-        } Successfully Created!!`
+        } Successfully Created!!`,
       );
       queryClient.invalidateQueries({
         queryKey: [queryKey],

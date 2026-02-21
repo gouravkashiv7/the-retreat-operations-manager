@@ -1,39 +1,32 @@
-import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { HiArrowTopRightOnSquare } from "react-icons/hi2";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
-
-const MenuContainer = styled.div`
-  padding: 2.4rem 4.8rem;
-
-  @media (max-width: 768px) {
-    padding: 1.6rem 2.4rem;
-  }
-`;
-
-const StyledMenu = styled.div`
-  background-color: var(--color-grey-0);
-  border: 1px solid var(--color-grey-100);
-  border-radius: var(--border-radius-md);
-  padding: 3.2rem;
-  margin-top: 2.4rem;
-`;
+import Button from "../ui/Button";
+import MenuTable from "../features/menu/MenuTable";
+import AddMenuItem from "../features/menu/AddMenuItem";
+import MenuTableOperations from "../features/menu/MenuTableOperations";
 
 function Menu() {
   return (
-    <MenuContainer>
+    <>
       <Row type="horizontal">
         <Heading as="h1">Menu Management</Heading>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <Link to="/guest-menu">
+            <Button variation="secondary" icon={<HiArrowTopRightOnSquare />}>
+              View Guest Menu
+            </Button>
+          </Link>
+          <AddMenuItem />
+        </div>
       </Row>
 
-      <StyledMenu>
-        <Heading as="h2">Food & Beverage Menu</Heading>
-        <p style={{ marginTop: "1.6rem", color: "var(--color-grey-600)" }}>
-          Manage your retreat's food and beverage offerings, pricing, and
-          categories.
-        </p>
-        {/* Add your menu management components here */}
-      </StyledMenu>
-    </MenuContainer>
+      <Row type="vertical">
+        <MenuTableOperations />
+        <MenuTable />
+      </Row>
+    </>
   );
 }
 

@@ -9,22 +9,12 @@ const StyledFilter = styled.div`
   padding: 0.4rem;
   display: flex;
   gap: 0.4rem;
-  justify-content: space-around;
 
   @media (max-width: 768px) {
-    gap: 0.3rem;
-    padding: 0.3rem;
-    overflow-x: auto; /* Horizontal scroll if needed */
-    flex-wrap: nowrap; /* Prevent wrapping */
-    -webkit-overflow-scrolling: touch;
-
-    /* Hide scrollbar for cleaner look */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    gap: 0.6rem;
+    padding: 0.4rem;
+    flex-wrap: wrap; /* Allow wrapping instead of scrolling */
+    justify-content: center;
   }
 
   @media (max-width: 480px) {
@@ -46,8 +36,8 @@ const FilterButton = styled.button`
 
   border-radius: var(--border-radius-sm);
   font-weight: 500;
-  font-size: 1.4rem;
-  padding: 0.44rem 0.8rem;
+  font-size: 1.3rem; /* Slightly smaller from 1.4rem */
+  padding: 0.4rem 0.8rem;
   transition: all 0.3s;
   white-space: nowrap; /* Prevent text wrapping */
   flex-shrink: 0; /* Prevent buttons from shrinking */

@@ -31,6 +31,7 @@ const Rooms = lazy(() => import("./pages/Rooms"));
 const Cabins = lazy(() => import("./pages/Cabins"));
 const Checkin = lazy(() => import("./pages/Checkin"));
 const Menu = lazy(() => import("./pages/Menu"));
+const GuestMenu = lazy(() => import("./pages/GuestMenu"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -121,6 +122,7 @@ function App() {
                   </Route>
                 </Route>
                 <Route path="login" element={<Login />} />
+                <Route path="guest-menu" element={<GuestMenu />} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
             </Suspense>

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const StyledSelect = styled.select`
-  font-size: 1.4rem;
-  padding: 0.8rem 1.2rem;
+  font-size: 1.3rem; /* Slightly smaller from 1.4rem */
+  padding: 0.6rem 1.2rem;
   border: 1px solid
     ${(props) =>
       props.type === "white"
@@ -12,6 +12,12 @@ const StyledSelect = styled.select`
   background-color: var(--color-grey-0);
   font-weight: 500;
   box-shadow: var(--shadow-sm);
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    padding: 0.6rem 1rem;
+    width: 100%; /* Make select full-width if it wraps in TableOperations */
+  }
 `;
 
 function Select({ options, value, onChange, ...props }) {
