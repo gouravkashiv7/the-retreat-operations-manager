@@ -28,21 +28,18 @@ const Form = styled.form.attrs((props) => ({
   ${(props) =>
     props.type === "modal" &&
     css`
-      width: 80rem;
+      width: 100%;
+      max-width: 80rem;
 
       @media (max-width: 768px) {
-        width: 90vw;
         max-width: 60rem;
         margin: 0 auto;
       }
 
       @media (max-width: 480px) {
-        width: 95vw;
         max-width: none;
         margin: 0;
         border-radius: 0;
-        height: 100vh;
-        overflow-y: auto;
       }
     `}
     

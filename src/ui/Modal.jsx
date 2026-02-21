@@ -20,7 +20,17 @@ const StyledModal = styled.div`
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto; /* Enable scrolling for tall contents */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-grey-300) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-grey-300);
+    border-radius: 10px;
+  }
 
   /* Desktop */
   @media (max-width: 1200px) {
@@ -48,7 +58,7 @@ const StyledModal = styled.div`
     max-width: 90vw;
     width: 90vw;
     padding: 1.6rem 2rem;
-    max-height: 90vh;
+    max-height: 92vh;
     border-radius: var(--border-radius-sm);
   }
 
@@ -56,20 +66,20 @@ const StyledModal = styled.div`
   @media (max-width: 600px) {
     max-width: 95vw;
     width: 95vw;
-
-    max-height: 92vh;
+    padding: 1.4rem 1.6rem;
+    max-height: 94vh;
   }
 
   /* Small Mobile */
   @media (max-width: 480px) {
-    max-width: 98vw;
-    width: 98vw;
-
-    max-height: 95vh;
+    max-width: 100vw;
+    width: 100vw;
+    max-height: 98vh;
     border-radius: var(--border-radius-sm);
+    padding: 1.2rem;
   }
 
-  /* Very Small Mobile */
+  /* Very Small Mobile - Full screen modal */
   @media (max-width: 360px) {
     max-width: 100vw;
     width: 100vw;
@@ -82,12 +92,6 @@ const StyledModal = styled.div`
   @media (max-height: 600px) and (orientation: landscape) {
     max-height: 95vh;
     padding: 1rem 1.5rem;
-  }
-
-  /* Very Short Screens */
-  @media (max-height: 400px) {
-    max-height: 98vh;
-    padding: 0.8rem 1rem;
   }
 `;
 
@@ -247,7 +251,7 @@ function Window({ children, name }) {
         </ModalContent>
       </StyledModal>
     </Overlay>,
-    document.body
+    document.body,
   );
 }
 

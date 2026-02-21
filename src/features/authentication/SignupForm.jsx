@@ -32,7 +32,7 @@ function SignupForm({ onCloseModal }) {
       onSubmit={handleSubmit(onSubmit)}
       type={onCloseModal ? "modal" : "regular"}
     >
-      <FormRow label="Full name" error={errors?.fullname?.message}>
+      <FormRow label="Full name" error={errors?.fullName?.message}>
         <Input
           type="text"
           id="fullName"
@@ -102,16 +102,7 @@ function SignupForm({ onCloseModal }) {
       </FormRow>
 
       <FormRow>
-        {/* type is an HTML attribute! */}
-        <Button
-          $variation="secondary"
-          type="reset"
-          onClick={reset}
-          disabled={isLoading}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isLoading} style={{ margin: "1rem" }}>
+        <Button disabled={isLoading} size="large">
           Create new user
         </Button>
       </FormRow>

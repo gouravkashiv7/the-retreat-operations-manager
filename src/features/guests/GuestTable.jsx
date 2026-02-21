@@ -22,7 +22,6 @@ import {
 
 function GuestTable({ guests, allBookings: bookingsData }) {
   const deleteGuestMutation = useDeleteGuest();
-  console.log(bookingsData);
   const getGuestBookings = (guestId) => {
     return bookingsData?.filter((booking) => booking.guestId === guestId) || [];
   };

@@ -104,11 +104,7 @@ const variations = {
   `,
 };
 
-const Button = styled.button.attrs((props) => ({
-  // Use transient props with $ prefix
-  $variation: props.$variation || "primary",
-  $size: props.$size || "medium",
-}))`
+const StyledButton = styled.button`
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
@@ -129,8 +125,8 @@ const Button = styled.button.attrs((props) => ({
   touch-action: manipulation;
 
   /* Use transient props in styles */
-  ${(props) => sizes[props.$size]}
-  ${(props) => variations[props.$variation]}
+  ${(props) => sizes[props.$size || "medium"]}
+  ${(props) => variations[props.$variation || "primary"]}
 
   /* Mobile-specific enhancements */
   @media (max-width: 480px) {
@@ -147,7 +143,9 @@ const Button = styled.button.attrs((props) => ({
     -ms-user-select: none;
 
     /* Smooth transform for active state */
-    transition: transform 0.1s ease, background-color 0.2s ease;
+    transition:
+      transform 0.1s ease,
+      background-color 0.2s ease;
   }
 
   /* Disabled state */
@@ -190,6 +188,39 @@ const Button = styled.button.attrs((props) => ({
       transform: rotate(360deg);
     }
   }
+
+  & svg {
+    width: 2rem;
+    height: 2rem;
+
+    @media (max-width: 768px) {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
 `;
+
+function Button({
+  children,
+  variation = "primary",
+  size = "medium",
+  icon,
+  fullWidth,
+  isLoading,
+  ...props
+}) {
+  return (
+    <StyledButton
+      $variation={variation}
+      $size={size}
+      $fullWidth={fullWidth}
+      $isLoading={isLoading}
+      {...props}
+    >
+      {icon && icon}
+      {children && <span>{children}</span>}
+    </StyledButton>
+  );
+}
 
 export default Button;

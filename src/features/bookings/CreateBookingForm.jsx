@@ -54,11 +54,11 @@ function CreateBookingForm({ onCloseModal }) {
 
   const { items: cabins, isLoading: isCabinsLoading } = useItems(
     "cabins",
-    getCabins
+    getCabins,
   );
   const { items: rooms, isLoading: isRoomsLoading } = useItems(
     "rooms",
-    getRooms
+    getRooms,
   );
 
   const isLoading = isCabinsLoading || isRoomsLoading;
@@ -147,8 +147,7 @@ function CreateBookingForm({ onCloseModal }) {
       ...accommodationData,
     };
 
-    console.log("Creating booking:", finalBookingData);
-
+    // For now, since createBooking is commented out below, let's just close the modal
     if (onCloseModal) onCloseModal();
   };
 
@@ -317,7 +316,7 @@ function CreateBookingForm({ onCloseModal }) {
                   onChange={(e) =>
                     handleBookingDataChange(
                       "numGuests",
-                      parseInt(e.target.value)
+                      parseInt(e.target.value),
                     )
                   }
                   required

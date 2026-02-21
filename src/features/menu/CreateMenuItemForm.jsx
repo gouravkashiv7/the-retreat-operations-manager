@@ -26,13 +26,16 @@ function CreateMenuItemForm({ itemToEdit = {}, onCloseModal }) {
   const isWorking = isCreating || isUpdating;
 
   function onSubmit(data) {
-    const image = typeof data.image === "string" ? data.image : data.image[0];
+    const image =
+      typeof data.image === "string" || !data.image
+        ? data.image
+        : data.image[0];
 
     if (isEditSession)
       updateItem(
         { newItemData: { ...data, image }, id: editId },
         {
-          onSuccess: (data) => {
+          onSuccess: () => {
             reset();
             onCloseModal?.();
           },
@@ -42,7 +45,7 @@ function CreateMenuItemForm({ itemToEdit = {}, onCloseModal }) {
       createItem(
         { ...data, image: image },
         {
-          onSuccess: (data) => {
+          onSuccess: () => {
             reset();
             onCloseModal?.();
           },
@@ -125,15 +128,8 @@ function CreateMenuItemForm({ itemToEdit = {}, onCloseModal }) {
       </FormRow>
 
       <FormRow>
-        <Button
-          variation="secondary"
-          type="reset"
-          onClick={() => onCloseModal?.()}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isWorking}>
-          {isEditSession ? "Edit item" : "Create new item"}
+        <Button disabled={isWorking} size="large">
+          {isEditSession ? "Update item" : "Create new item"}
         </Button>
       </FormRow>
     </Form>
