@@ -114,8 +114,11 @@ function CalendarLayout() {
     (selectedItem?.name?.includes("104") ||
       selectedItem?.name === "Deluxe Room Premium A");
 
-  const { isLoading: isLoadingExternal, externalBookings } =
-    useExternalAvailability(isRoom104);
+  const {
+    isLoading: isLoadingExternal,
+    externalBookings,
+    error: externalError,
+  } = useExternalAvailability(isRoom104);
 
   function nextMonth() {
     handleMonthChange(addMonths(currentMonth, 1));
@@ -129,12 +132,7 @@ function CalendarLayout() {
     handleMonthChange(new Date());
   }
 
-  if (
-    isLoadingRooms ||
-    isLoadingCabins ||
-    isLoadingBookings ||
-    (isRoom104 && isLoadingExternal)
-  )
+  if (isLoadingRooms || isLoadingCabins || isLoadingBookings)
     return <Spinner />;
 
   return (
@@ -158,6 +156,7 @@ function CalendarLayout() {
             bookings={bookings}
             externalBookings={isRoom104 ? externalBookings : []}
             isExternalLoading={isRoom104 && isLoadingExternal}
+            externalError={isRoom104 ? externalError : null}
           />
         </SingleCalendarContainer>
       )}

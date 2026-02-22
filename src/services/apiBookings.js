@@ -265,7 +265,7 @@ export async function deleteBooking(id) {
 export async function createBooking(newBooking) {
   const { data, error } = await supabase
     .from("bookings")
-    .insert([newBooking])
+    .insert([{ ...newBooking, status: newBooking.status || "unconfirmed" }])
     .select()
     .single();
 
@@ -275,6 +275,56 @@ export async function createBooking(newBooking) {
   }
 
   return data;
+}
+
+export async function createBlock({
+  startDate,
+  endDate,
+  accommodationId,
+  type,
+}) {
+  // 1. Create the booking with status 'blocked'
+  const { data: booking, error: bookingError } = await supabase
+    .from("bookings")
+    .insert([
+      {
+        startDate: startDate,
+        endDate: endDate,
+        status: "blocked",
+        numNights: 1,
+        numGuests: 1,
+        totalPrice: 0,
+        extrasPrice: 0,
+        accommodationPrice: 0,
+        hasBreakfast: false,
+        isPaid: false,
+        observations: "Manually blocked by admin",
+      },
+    ])
+    .select()
+    .single();
+
+  if (bookingError) {
+    console.error(bookingError);
+    throw new Error("Block could not be created");
+  }
+
+  // 2. Link to room or cabin
+  const junctionTable = type === "room" ? "booking_rooms" : "booking_cabins";
+  const foreignKey = type === "room" ? "roomId" : "cabinId";
+
+  const { error: junctionError } = await supabase
+    .from(junctionTable)
+    .insert([{ bookingId: booking.id, [foreignKey]: accommodationId }]);
+
+  if (junctionError) {
+    console.error(junctionError);
+    // Cleanup if junction fails
+    await supabase.from("bookings").delete().eq("id", booking.id);
+    throw new Error("Block linkage could not be created");
+  }
+
+  return booking;
 }
 
 export async function getBookingsInDateRange(startDate, endDate) {

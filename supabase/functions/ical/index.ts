@@ -1,3 +1,5 @@
+/// <reference lib="deno.ns" />
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -7,7 +9,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -26,30 +28,33 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // Fetch bookings
-    let query = supabase
+    // Fetch bookings (confirmed or blocked)
+    const { data: bookings, error } = await supabase
       .from("bookings")
       .select(
         "id, startDate, endDate, status, guests(fullName), booking_rooms(roomId), booking_cabins(cabinId)",
-      );
-
-    const { data: bookings, error } = await query;
+      )
+      .in("status", ["confirmed", "unconfirmed", "blocked"]);
 
     if (error) throw error;
 
     // Filter by specific room/cabin
-    const filteredBookings = bookings.filter((b) => {
+    const filteredBookings = (bookings || []).filter((b: any) => {
       if (roomId)
-        return b.booking_rooms?.some((br) => br.roomId === parseInt(roomId));
+        return b.booking_rooms?.some(
+          (br: any) => br.roomId === parseInt(roomId),
+        );
       if (cabinId)
-        return b.booking_cabins?.some((bc) => bc.cabinId === parseInt(cabinId));
+        return b.booking_cabins?.some(
+          (bc: any) => bc.cabinId === parseInt(cabinId),
+        );
       return false;
     });
 
     // Generate iCal format
     const now =
       new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    let ical = [
+    const ical = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "PRODID:-//The Retreat Operations Manager//EN",
@@ -57,21 +62,26 @@ serve(async (req) => {
       "METHOD:PUBLISH",
     ];
 
-    filteredBookings.forEach((b) => {
+    filteredBookings.forEach((b: any) => {
       const start = b.startDate.replace(/-/g, "").split("T")[0];
       const end = b.endDate.replace(/-/g, "").split("T")[0];
+      const summary =
+        b.status === "blocked"
+          ? "Blocked by Admin"
+          : `Booking: ${b.guests?.fullName || "Confirmed"}`;
+
       ical.push("BEGIN:VEVENT");
       ical.push(`UID:${b.id}@the-retreat.com`);
       ical.push(`DTSTAMP:${now}`);
       ical.push(`DTSTART;VALUE=DATE:${start}`);
       ical.push(`DTEND;VALUE=DATE:${end}`);
-      ical.push(`SUMMARY:Booking: ${b.guests?.fullName || "Confirmed"}`);
+      ical.push(`SUMMARY:${summary}`);
       ical.push("END:VEVENT");
     });
 
     // Add a dummy future event for verification if no future bookings exist
     const futureBookings = filteredBookings.filter(
-      (b) => new Date(b.startDate) > new Date(),
+      (b: any) => new Date(b.startDate) > new Date(),
     );
     if (futureBookings.length === 0) {
       const futureDate = new Date();
@@ -95,8 +105,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "text/calendar" },
       status: 200,
     });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
