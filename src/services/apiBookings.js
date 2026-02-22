@@ -29,7 +29,7 @@ export async function getBookings({ filter, sortBy, page }) {
               )
             )
           `,
-    { count: "exact" }
+    { count: "exact" },
   );
 
   //Filter
@@ -111,7 +111,7 @@ export async function getBooking(id) {
             regularPrice
           )
         )
-      `
+      `,
     )
     .eq("id", id);
 
@@ -272,6 +272,31 @@ export async function createBooking(newBooking) {
   if (error) {
     console.error(error);
     throw new Error("Booking could not be created");
+  }
+
+  return data;
+}
+
+export async function getBookingsInDateRange(startDate, endDate) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(
+      `
+      id,
+      startDate,
+      endDate,
+      status,
+      guests (fullName),
+      booking_cabins (cabinId),
+      booking_rooms (roomId)
+    `,
+    )
+    .lte("startDate", endDate)
+    .gte("endDate", startDate);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not be loaded");
   }
 
   return data;

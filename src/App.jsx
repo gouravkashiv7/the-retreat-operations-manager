@@ -32,6 +32,7 @@ const Cabins = lazy(() => import("./pages/Cabins"));
 const Checkin = lazy(() => import("./pages/Checkin"));
 const Menu = lazy(() => import("./pages/Menu"));
 const GuestMenu = lazy(() => import("./pages/GuestMenu"));
+const Calendar = lazy(() => import("./pages/Calendar"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -119,6 +120,7 @@ function App() {
                   >
                     <Route path="users" element={<Users />} />
                     <Route path="settings" element={<Settings />} />
+                    <Route path="calendar" element={<Calendar />} />
                   </Route>
                 </Route>
                 <Route path="login" element={<Login />} />

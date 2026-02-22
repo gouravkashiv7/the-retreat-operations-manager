@@ -167,6 +167,18 @@ function MainNav({ onItemClick }) {
             </li>
             <li>
               <StyledNavLink
+                to="/calendar"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/calendar") ? "active" : ""
+                }
+              >
+                <HiOutlineCalendarDateRange />
+                <span>Calendar</span>
+              </StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink
                 to="/settings"
                 onClick={onItemClick}
                 className={
