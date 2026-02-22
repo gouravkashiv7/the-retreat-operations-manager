@@ -14,15 +14,26 @@ function Menu() {
 
   return (
     <>
-      <Row type="horizontal">
+      <Row type="horizontal" $stackOnMobile $wrapOnTablet>
         <Heading as="h1">Menu Management</Heading>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/guest-menu">
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          <Link to="/guest-menu" style={{ flexShrink: 0 }}>
             <Button variation="secondary" icon={<HiArrowTopRightOnSquare />}>
               View Guest Menu
             </Button>
           </Link>
-          {!isGuest && <AddMenuItem />}
+          {!isGuest && (
+            <div style={{ flexShrink: 0 }}>
+              <AddMenuItem />
+            </div>
+          )}
         </div>
       </Row>
 

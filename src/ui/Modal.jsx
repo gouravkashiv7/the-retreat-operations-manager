@@ -72,26 +72,28 @@ const StyledModal = styled.div`
 
   /* Small Mobile */
   @media (max-width: 480px) {
-    max-width: 100vw;
-    width: 100vw;
-    max-height: 98vh;
-    border-radius: var(--border-radius-sm);
-    padding: 1.2rem;
+    max-width: 90vw;
+    width: auto;
+    min-width: 32rem;
+    max-height: 85vh;
+    border-radius: var(--border-radius-md);
+    padding: 1.6rem 2rem;
   }
 
-  /* Very Small Mobile - Full screen modal */
+  /* Very Small Mobile - Balanced Padding */
   @media (max-width: 360px) {
-    max-width: 100vw;
-    width: 100vw;
-    max-height: 100vh;
-    padding: 1rem 1.2rem;
-    border-radius: 0;
+    max-width: 92vw;
+    min-width: 30rem;
+    max-height: 88vh;
+    padding: 1.2rem 1.6rem;
+    border-radius: var(--border-radius-sm);
   }
 
   /* Landscape Orientation */
   @media (max-height: 600px) and (orientation: landscape) {
-    max-height: 95vh;
-    padding: 1rem 1.5rem;
+    max-height: 90vh;
+    max-width: 90vw;
+    padding: 0.8rem 1.2rem;
   }
 `;
 
@@ -111,10 +113,10 @@ const Overlay = styled.div`
     backdrop-filter: blur(2px);
   }
 
-  /* Very Small Mobile - Full screen modal */
+  /* Very Small Mobile - Keep backdrop for context */
   @media (max-width: 360px) {
-    background-color: var(--color-grey-0);
-    backdrop-filter: none;
+    backdrop-filter: blur(1px);
+    background-color: rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -189,28 +191,21 @@ const ModalContent = styled.div`
     & > * {
       max-width: 100%;
     }
-
-    /* Scale down any large content */
-    & table,
-    & .large-content {
-      transform: scale(0.95);
-      transform-origin: top left;
-    }
   }
 
-  /* Very Small Mobile - more aggressive scaling */
+  /* Very Small Mobile - adjust form elements */
   @media (max-width: 480px) {
-    & table,
-    & .large-content {
-      transform: scale(0.9);
-    }
-
-    /* Ensure form elements are mobile-friendly */
+    /* Ensure form elements are mobile-friendly but compact */
     & input,
     & select,
     & textarea {
       font-size: 16px; /* Prevent zoom on iOS */
-      min-height: 4.4rem;
+      min-height: 4rem;
+      padding: 0.6rem 1rem;
+    }
+
+    & button {
+      padding: 0.8rem 1.6rem;
     }
   }
 `;

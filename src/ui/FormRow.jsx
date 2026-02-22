@@ -55,15 +55,16 @@ const StyledFormRow = styled.div`
 
   /* Mobile */
   @media (max-width: 480px) {
-    gap: 1rem;
-    padding: 1.4rem 0;
+    gap: 0.6rem;
+    padding: 1rem 0;
 
     &:not(:last-child) {
-      padding-bottom: 1.4rem;
+      padding-bottom: 1rem;
     }
 
     &:has(button) {
       gap: 0.8rem;
+      margin-top: 0.6rem;
     }
   }
 
@@ -127,8 +128,8 @@ const ChildrenWrapper = styled.div`
     }
 
     @media (max-width: 480px) {
-      min-height: 4.4rem; /* Better touch targets */
-      padding: 1rem 1.2rem;
+      min-height: 3.6rem; /* Slimmer touch targets */
+      padding: 0.6rem 0.8rem;
     }
   }
 
@@ -138,15 +139,15 @@ const ChildrenWrapper = styled.div`
     input[type="email"],
     input[type="password"],
     input[type="number"] {
-      height: 4.4rem;
+      height: 3.6rem;
     }
 
     select {
-      height: 4.4rem;
+      height: 3.6rem;
     }
 
     textarea {
-      min-height: 10rem;
+      min-height: 8rem;
     }
   }
 `;

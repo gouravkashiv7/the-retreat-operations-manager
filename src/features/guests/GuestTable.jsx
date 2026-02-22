@@ -1,10 +1,9 @@
-// components/guests/GuestTable.jsx
-import { HiPencil, HiTrash } from "react-icons/hi2";
+import { Link } from "react-router-dom";
+import { HiPencil } from "react-icons/hi2";
 import Modal from "../../ui/Modal";
 import Menus from "../../ui/Menus";
 import GuestForm from "./GuestForm";
-import ConfirmDelete from "../../ui/ConfirmDelete";
-import { useDeleteGuest } from "./useGuests";
+
 import {
   Table,
   TableHeader,
@@ -21,7 +20,6 @@ import {
 } from "./GuestTable.styles";
 
 function GuestTable({ guests, allBookings: bookingsData }) {
-  const deleteGuestMutation = useDeleteGuest();
   const getGuestBookings = (guestId) => {
     return bookingsData?.filter((booking) => booking.guestId === guestId) || [];
   };
@@ -78,7 +76,9 @@ function GuestTable({ guests, allBookings: bookingsData }) {
               <BookingContainer>
                 {guestBookings.length > 0 ? (
                   guestBookings.map((booking) => (
-                    <BookingId key={booking.id}>BK{booking.id}</BookingId>
+                    <Link key={booking.id} to={`/bookings/${booking.id}`}>
+                      <BookingId>BK{booking.id}</BookingId>
+                    </Link>
                   ))
                 ) : (
                   <Detail
@@ -104,21 +104,10 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                         <Modal.Open opens={`edit-guest-${guest.id}`}>
                           <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
                         </Modal.Open>
-                        <Modal.Open opens={`delete-guest-${guest.id}`}>
-                          <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
-                        </Modal.Open>
                       </Menus.List>
 
                       <Modal.Window name={`edit-guest-${guest.id}`}>
                         <GuestForm guest={guest} />
-                      </Modal.Window>
-
-                      <Modal.Window name={`delete-guest-${guest.id}`}>
-                        <ConfirmDelete
-                          resourceName={guest.fullName}
-                          onConfirm={() => deleteGuestMutation.mutate(guest.id)}
-                          disabled={deleteGuestMutation.isLoading}
-                        />
                       </Modal.Window>
                     </Menus.Menu>
                   </Modal>

@@ -19,7 +19,7 @@ const Form = styled.form.attrs((props) => ({
       }
 
       @media (max-width: 480px) {
-        padding: 1.6rem 2rem;
+        padding: 0.8rem 1.2rem;
         border: none;
         background-color: transparent;
       }
@@ -40,6 +40,7 @@ const Form = styled.form.attrs((props) => ({
         max-width: none;
         margin: 0;
         border-radius: 0;
+        padding: 0;
       }
     `}
     
@@ -52,6 +53,7 @@ const Form = styled.form.attrs((props) => ({
 
   @media (max-width: 480px) {
     font-size: 1.2rem;
+    line-height: 1.4;
   }
 `;
 
