@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import {
   format,
@@ -49,10 +49,13 @@ function CalendarLayout() {
   const { isLoading: isLoadingRooms, rooms } = useRooms();
   const { isLoading: isLoadingCabins, cabins } = useCabins();
 
-  const allAccommodations = [
-    ...(cabins?.map((c) => ({ ...c, type: "cabin" })) || []),
-    ...(rooms?.map((r) => ({ ...r, type: "room" })) || []),
-  ];
+  const allAccommodations = useMemo(
+    () => [
+      ...(cabins?.map((c) => ({ ...c, type: "cabin" })) || []),
+      ...(rooms?.map((r) => ({ ...r, type: "room" })) || []),
+    ],
+    [cabins, rooms],
+  );
 
   // Get selected ID from URL or default to first
   const selectedItemId = searchParams.get("id") || "";

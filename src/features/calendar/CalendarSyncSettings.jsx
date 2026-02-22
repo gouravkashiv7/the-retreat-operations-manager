@@ -15,6 +15,9 @@ import Heading from "../../ui/Heading";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 
+const SUPABASE_FUNCTIONS_URL =
+  "https://kckngulhvwryekywvutn.supabase.co/functions/v1";
+
 const StyledSyncSettings = styled.div`
   background-color: var(--color-grey-50);
   border: 1px solid var(--color-grey-100);
@@ -78,7 +81,7 @@ function CalendarSyncSettings({ item, type }) {
   const queryClient = useQueryClient();
 
   // Outbound URL (Generated)
-  const outboundUrl = `https://kckngulhvwryekywvutn.supabase.co/functions/v1/ical?${type === "room" ? "roomId" : "cabinId"}=${item.id}`;
+  const outboundUrl = `${SUPABASE_FUNCTIONS_URL}/ical?${type === "room" ? "roomId" : "cabinId"}=${item.id}`;
 
   const { mutate, isLoading } = useMutation({
     mutationFn: (newUrl) => {
@@ -105,7 +108,11 @@ function CalendarSyncSettings({ item, type }) {
 
   function handleSave(e) {
     e.preventDefault();
-    mutate(inboundUrl);
+    if (inboundUrl && !inboundUrl.startsWith("http")) {
+      toast.error("Please enter a valid URL starting with http");
+      return;
+    }
+    mutate(inboundUrl || null);
   }
 
   return (
@@ -167,7 +174,7 @@ function CalendarSyncSettings({ item, type }) {
                       "Are you sure you want to clear this sync URL?",
                     )
                   ) {
-                    mutate("");
+                    mutate(null);
                     setInboundUrl("");
                   }
                 }}

@@ -31,12 +31,8 @@ export function useExternalAvailability(url, enabled = false) {
           typeof icalData === "string" &&
           icalData.startsWith("data:text/calendar;base64,")
         ) {
-          console.log("Decoding base64 ICAL data...");
-          const base64Part = icalData.split(",")[1];
           icalData = atob(base64Part);
         }
-
-        console.log("--- RAW GOIBIBO ICAL DATA ---", icalData);
 
         const events = [];
         const veventRegex = /BEGIN:VEVENT[\s\S]*?END:VEVENT/g;
@@ -84,11 +80,11 @@ export function useExternalAvailability(url, enabled = false) {
           }
         }
 
-        console.log("--- PARSED EXTERNAL EVENTS ---", events);
         return events;
       } catch (err) {
-        console.error("External Calendar Error:", err);
-        throw err;
+        // Return empty array on proxy/fetch failure — don't break the calendar
+        console.warn("External Calendar could not be loaded:", err.message);
+        return [];
       }
     },
     enabled: enabled && !!url,
