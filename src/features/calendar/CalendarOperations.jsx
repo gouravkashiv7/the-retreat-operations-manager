@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
+import {
+  HiOutlineChevronLeft,
+  HiOutlineChevronRight,
+  HiOutlineCog8Tooth,
+} from "react-icons/hi2";
 import { format } from "date-fns";
 import ButtonIcon from "../../ui/ButtonIcon";
 import Heading from "../../ui/Heading";
@@ -95,6 +99,8 @@ function CalendarOperations({
   accommodations = [],
   selectedItemId,
   onItemChange,
+  showSync,
+  onToggleSync,
 }) {
   return (
     <StyledCalendarOperations>
@@ -144,6 +150,26 @@ function CalendarOperations({
               ))}
           </optgroup>
         </StyledSelect>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button
+            onClick={onToggleSync}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              fontSize: "1.2rem",
+              color: showSync
+                ? "var(--color-brand-700)"
+                : "var(--color-grey-500)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <HiOutlineCog8Tooth />
+            {showSync ? "Hide Sync Settings" : "Sync Management"}
+          </button>
+        </div>
       </SelectContainer>
     </StyledCalendarOperations>
   );

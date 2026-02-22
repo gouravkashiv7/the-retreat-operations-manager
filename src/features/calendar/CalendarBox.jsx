@@ -143,10 +143,8 @@ const Day = styled.div`
 
   background: ${(props) => {
     if (props.$isExternal) {
-      let color = "var(--color-grey-400)";
-      if (props.$platform === "goibibo") color = "#f36f21";
-      if (props.$platform === "airbnb") color = "#FF5A5F";
-      if (props.$platform === "booking") color = "#003580";
+      const color =
+        props.$platform === "goibibo" ? "#f36f21" : "var(--color-grey-500)";
 
       return `repeating-linear-gradient(
         45deg,
@@ -437,15 +435,7 @@ function CalendarBox({
         </LegendItem>
         <LegendItem>
           <LegendColor $background="repeating-linear-gradient(45deg, #f36f21, #f36f21 4px, #f36f21dd 4px, #f36f21dd 6px)" />
-          <span>Goibibo</span>
-        </LegendItem>
-        <LegendItem>
-          <LegendColor $background="repeating-linear-gradient(45deg, #FF5A5F, #FF5A5F 4px, #FF5A5Fdd 4px, #FF5A5Fdd 6px)" />
-          <span>Airbnb</span>
-        </LegendItem>
-        <LegendItem>
-          <LegendColor $background="repeating-linear-gradient(45deg, #003580, #003580 4px, #003580dd 4px, #003580dd 6px)" />
-          <span>Booking.com</span>
+          <span>MMT / Goibibo</span>
         </LegendItem>
         <LegendItem>
           <LegendColor

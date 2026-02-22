@@ -36,10 +36,18 @@ export async function createUpdateCabin(newCabin, id) {
 
   //3
   let query = supabase.from("cabins");
+  const { type, ...cabinData } = newCabin;
+
   //ADD
-  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
+  if (!id)
+    query = query.insert([
+      { ...cabinData, image: imagePath, icalUrl: newCabin.icalUrl },
+    ]);
   //EDIT
-  if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+  if (id)
+    query = query
+      .update({ ...cabinData, image: imagePath, icalUrl: newCabin.icalUrl })
+      .eq("id", id);
   const { data, error } = await query.select().single();
 
   if (error) {
@@ -58,8 +66,19 @@ export async function createUpdateCabin(newCabin, id) {
     await supabase.from("cabins").delete().eq("id", data.id);
     console.error(storageError);
     throw new Error(
-      "Cabin image could not be uploaded and the cabin was not created"
+      "Cabin image could not be uploaded and the cabin was not created",
     );
   }
+  return data;
+}
+
+export async function updateCabinIcalUrl(id, icalUrl) {
+  const { data, error } = await supabase
+    .from("cabins")
+    .update({ icalUrl })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
   return data;
 }

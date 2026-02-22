@@ -16,6 +16,7 @@ import { useCalendarBookings } from "./useCalendarBookings";
 import { useExternalAvailability } from "./useExternalAvailability";
 import CalendarOperations from "./CalendarOperations";
 import CalendarBox from "./CalendarBox";
+import CalendarSyncSettings from "./CalendarSyncSettings";
 import Spinner from "../../ui/Spinner";
 
 const StyledCalendarLayout = styled.div`
@@ -26,13 +27,15 @@ const StyledCalendarLayout = styled.div`
 
 const SingleCalendarContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  gap: 2.4rem;
 `;
 
 function CalendarLayout() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showSync, setShowSync] = useState(false);
 
   // Get month from URL or default to today
   const monthParam = searchParams.get("date");
@@ -108,17 +111,11 @@ function CalendarLayout() {
     (item) => `${item.type}-${item.id}` === selectedItemId,
   );
 
-  // Check if target is room 104
-  const isRoom104 =
-    selectedItem?.type === "room" &&
-    (selectedItem?.name?.includes("104") ||
-      selectedItem?.name === "Deluxe Room Premium A");
-
   const {
     isLoading: isLoadingExternal,
     externalBookings,
     error: externalError,
-  } = useExternalAvailability(isRoom104);
+  } = useExternalAvailability(selectedItem?.icalUrl, !!selectedItem?.icalUrl);
 
   function nextMonth() {
     handleMonthChange(addMonths(currentMonth, 1));
@@ -145,18 +142,27 @@ function CalendarLayout() {
         accommodations={allAccommodations}
         selectedItemId={selectedItemId}
         onItemChange={handleItemChange}
+        showSync={showSync}
+        onToggleSync={() => setShowSync((s) => !s)}
       />
 
       {selectedItem && (
         <SingleCalendarContainer>
+          {showSync && (
+            <CalendarSyncSettings
+              item={selectedItem}
+              type={selectedItem.type}
+            />
+          )}
+
           <CalendarBox
             item={selectedItem}
             type={selectedItem.type}
             month={currentMonth}
             bookings={bookings}
-            externalBookings={isRoom104 ? externalBookings : []}
-            isExternalLoading={isRoom104 && isLoadingExternal}
-            externalError={isRoom104 ? externalError : null}
+            externalBookings={externalBookings || []}
+            isExternalLoading={!!selectedItem?.icalUrl && isLoadingExternal}
+            externalError={selectedItem?.icalUrl ? externalError : null}
           />
         </SingleCalendarContainer>
       )}

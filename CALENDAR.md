@@ -11,26 +11,26 @@ The system implements a **Two-Way Sync** between the internal database and exter
 
 ---
 
-## 2. Inbound Sync (Exporting from OTAs to Site)
+## 2. Inbound Sync (OTA → Site)
 
 We pull external calendar feeds to ensure the admin sees "Real-Time" availability across all platforms.
 
 - **Hook**: `src/features/calendar/useExternalAvailability.js`
+- **Data Storage**: Inbound iCal URLs are stored in the `icalUrl` column of the `rooms` and `cabins` tables.
 - **Mechanism**:
-  1. **CORS Proxy**: Because browsers block direct fetches to OTA domains, we use `allorigins.win` to proxy the request.
+  1. **CORS Proxy**: Because browsers block direct fetches to OTA domains, we use `api.allorigins.win` to proxy the request.
   2. **ICal Parsing**: We use regex to parse the `.ics` data for `VEVENT` blocks.
-  3. **Platform Detection**: We detect the platform based on the `SUMMARY` or UID (e.g., "InGoibibo", "Airbnb").
-  4. **Date Alignment**: All start/end dates are normalized to `startOfDay` (midnight) to ensure they overlap correctly with our grid days.
-- **UI Element**: `CalendarBox.jsx` renders these as striped boxes with platform-specific colors (e.g., Orange for Goibibo, Red for Airbnb).
+  3. **Date Alignment**: All start/end dates are normalized to `startOfDay` (midnight) to ensure they overlap correctly with our grid days.
+- **UI Management**: Use the **"Sync Management"** button in the Calendar view to save/update these URLs for each room.
 
 ---
 
-## 3. Outbound Sync (Exporting from Site to OTAs)
+## 3. Outbound Sync (Site → OTA)
 
 OTAs subscribe to our iCal feed to know when to close dates on their websites.
 
 - **Endpoint**: Supabase Edge Function (`supabase/functions/ical/index.ts`)
-- **Public URL**: `https://kckngulhvwryekywvutn.supabase.co/functions/v1/ical?roomId=[ID]`
+- **Public URL**: `https://kckngulhvwryekywvutn.supabase.co/functions/v1/ical?roomId=[ID]` (or `cabinId=[ID]`)
 - **Logic**:
   1. The function queries the `bookings` table for `confirmed`, `unconfirmed`, and `blocked` statuses.
   2. It filters bookings for the specific `roomId` or `cabinId`.
@@ -44,37 +44,23 @@ OTAs subscribe to our iCal feed to know when to close dates on their websites.
 
 Admins can manually toggle availability without creating a full guest booking.
 
-- **API**: `createBlock` in `apiBookings.js`. This creates a booking entry with:
-  - `status`: 'blocked'
-  - `totalPrice`: 0
+- **API**: `createBlock` in `apiBookings.js`. This creates a booking entry with `status: 'blocked'`.
 - **UI Interaction**: In `CalendarBox.jsx`, clicking an empty date triggers `handleDayClick`, which prompts to create a block.
 - **Visuals**: Blocked dates are solid grey (`--color-grey-400`).
 
 ---
 
-## 5. Deployment & Configuration
+## 5. UI Components
 
-### Deploying the Edge Function
-
-To update the iCal feed logic:
-
-```bash
-npx supabase functions deploy ical --no-verify-jwt
-```
-
-### Adding a new room to Sync
-
-1. Find the `roomId` in the Supabase `rooms` table.
-2. Get the iCal Export URL from your OTA dashboard.
-3. Update `useExternalAvailability.js` or `.env` with the new URL mapping.
-4. Provide the Supabase function URL (with the new `roomId`) back to the OTA.
+- **`CalendarSyncSettings.jsx`**: The management panel where admins copy outbound links and save inbound links.
+- **`CalendarLayout.jsx`**: Orchestrates state between the accommodation selector, bookings data, and external sync.
 
 ---
 
 ## 6. Key Files
 
 - `src/features/calendar/CalendarBox.jsx`: Main UI component.
+- `src/features/calendar/CalendarSyncSettings.jsx`: Sync configuration UI.
 - `src/features/calendar/useExternalAvailability.js`: Inbound sync hook.
-- `src/features/calendar/useCalendarBookings.js`: Internal data hooks.
 - `supabase/functions/ical/index.ts`: Outbound feed generator.
-- `src/services/apiBookings.js`: Backend logic for blocks.
+- `src/services/apiRooms.js` & `apiCabins.js`: Services updated to persist `icalUrl`.

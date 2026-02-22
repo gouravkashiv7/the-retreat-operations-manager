@@ -28,8 +28,17 @@ export async function createUpdateRoom(newRoom, id) {
   }
 
   let query = supabase.from("rooms");
-  if (!id) query = query.insert([{ ...newRoom, image: imagePath }]);
-  if (id) query = query.update({ ...newRoom, image: imagePath }).eq("id", id);
+  // Remove UI-specific 'type' property
+  const { type, ...roomData } = newRoom;
+
+  if (!id)
+    query = query.insert([
+      { ...roomData, image: imagePath, icalUrl: newRoom.icalUrl },
+    ]);
+  if (id)
+    query = query
+      .update({ ...roomData, image: imagePath, icalUrl: newRoom.icalUrl })
+      .eq("id", id);
 
   const { data, error } = await query.select().single();
   if (error) throw new Error("Room could not be created");
@@ -46,5 +55,16 @@ export async function createUpdateRoom(newRoom, id) {
     throw new Error("Room image could not be uploaded");
   }
 
+  return data;
+}
+
+export async function updateRoomIcalUrl(id, icalUrl) {
+  const { data, error } = await supabase
+    .from("rooms")
+    .update({ icalUrl })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
   return data;
 }
