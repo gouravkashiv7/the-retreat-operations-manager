@@ -12,5 +12,12 @@ export function useRecentBookings() {
     queryFn: () => getBookingsAfterDate(queryDate),
     queryKey: ["bookings", `last-${numDays}`],
   });
-  return { isLoading, bookings, numDays };
+
+  const filteredBookings =
+    bookings?.filter(
+      (booking) =>
+        booking.status !== "blocked" && booking.observations !== "ADMIN_BLOCK",
+    ) || [];
+
+  return { isLoading, bookings: filteredBookings, numDays };
 }

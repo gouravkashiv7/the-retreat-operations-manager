@@ -138,7 +138,7 @@ function MainNav({ onItemClick }) {
             className={location.pathname === "/dashboard" ? "active" : ""}
           >
             <HiOutlineHome />
-            <span>Home</span>
+            <span>Dashboard</span>
           </StyledNavLink>
         </li>
         {(isAdmin || isStaff || isCook || isGuest) && (
