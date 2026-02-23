@@ -31,8 +31,11 @@ const Rooms = lazy(() => import("./pages/Rooms"));
 const Cabins = lazy(() => import("./pages/Cabins"));
 const Checkin = lazy(() => import("./pages/Checkin"));
 const Menu = lazy(() => import("./pages/Menu"));
+const Orders = lazy(() => import("./pages/Orders"));
 const GuestMenu = lazy(() => import("./pages/GuestMenu"));
 const Calendar = lazy(() => import("./pages/Calendar"));
+const Receipts = lazy(() => import("./pages/Receipts"));
+const Receipt = lazy(() => import("./pages/Receipt"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -95,6 +98,8 @@ function App() {
                     <Route path="checkin/:bookingId" element={<Checkin />} />
                     <Route path="rooms" element={<Rooms />} />
                     <Route path="cabins" element={<Cabins />} />
+                    <Route path="receipts" element={<Receipts />} />
+                    <Route path="receipts/:bookingId" element={<Receipt />} />
                   </Route>
 
                   {/* Cook has access to the Menu/Orders, guests can look at it too */}
@@ -108,6 +113,7 @@ function App() {
                     }
                   >
                     <Route path="menu" element={<Menu />} />
+                    <Route path="orders" element={<Orders />} />
                   </Route>
 
                   {/* Only Admin can manage users and settings */}

@@ -86,7 +86,7 @@ serve(async (req: Request) => {
     );
     if (futureBookings.length === 0) {
       const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + 30); // 1 month from now
+      futureDate.setDate(futureDate.getDate() + 365); // 1 year from now
       const start = futureDate.toISOString().replace(/-/g, "").split("T")[0];
       futureDate.setDate(futureDate.getDate() + 1);
       const end = futureDate.toISOString().replace(/-/g, "").split("T")[0];

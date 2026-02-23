@@ -9,6 +9,8 @@ import {
   HiOutlineClipboardDocumentList,
   HiOutlineUserGroup,
   HiOutlineIdentification,
+  HiOutlineShoppingCart,
+  HiOutlineDocumentText,
 } from "react-icons/hi2";
 import { MdOutlineCottage } from "react-icons/md";
 import { useUser } from "../features/authentication/useUser";
@@ -119,6 +121,16 @@ function MainNav({ onItemClick }) {
             </StyledNavLink>
           </li>
         )}
+        <li>
+          <StyledNavLink
+            to="/dashboard"
+            onClick={onItemClick}
+            className={location.pathname === "/dashboard" ? "active" : ""}
+          >
+            <HiOutlineHome />
+            <span>Dashboard</span>
+          </StyledNavLink>
+        </li>
         {(isAdmin || isStaff || isGuest) && (
           <li>
             <StyledNavLink
@@ -131,16 +143,6 @@ function MainNav({ onItemClick }) {
             </StyledNavLink>
           </li>
         )}
-        <li>
-          <StyledNavLink
-            to="/dashboard"
-            onClick={onItemClick}
-            className={location.pathname === "/dashboard" ? "active" : ""}
-          >
-            <HiOutlineHome />
-            <span>Dashboard</span>
-          </StyledNavLink>
-        </li>
         {(isAdmin || isStaff || isCook || isGuest) && (
           <li>
             <StyledNavLink
@@ -152,6 +154,49 @@ function MainNav({ onItemClick }) {
               <span>Menu</span>
             </StyledNavLink>
           </li>
+        )}
+        {(isAdmin || isStaff || isCook) && (
+          <li>
+            <StyledNavLink
+              to="/orders"
+              onClick={onItemClick}
+              className={
+                location.pathname.startsWith("/orders") ? "active" : ""
+              }
+            >
+              <HiOutlineShoppingCart />
+              <span>Orders</span>
+            </StyledNavLink>
+          </li>
+        )}
+        {(isAdmin || isStaff) && (
+          <>
+            <li
+              style={{
+                marginTop: "1.2rem",
+                padding: "0 2.4rem",
+                fontSize: "1.1rem",
+                fontWeight: 600,
+                color: "var(--color-grey-400)",
+                textTransform: "uppercase",
+                letterSpacing: "0.1rem",
+              }}
+            >
+              Finance
+            </li>
+            <li>
+              <StyledNavLink
+                to="/receipts"
+                onClick={onItemClick}
+                className={
+                  location.pathname.startsWith("/receipts") ? "active" : ""
+                }
+              >
+                <HiOutlineDocumentText />
+                <span>Receipts</span>
+              </StyledNavLink>
+            </li>
+          </>
         )}
         {(isAdmin || isStaff || isGuest) && (
           <li>

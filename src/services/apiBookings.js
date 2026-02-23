@@ -14,6 +14,7 @@ export async function getBookings({ filter, sortBy, page }) {
             numGuests,
             totalPrice,
             status,
+            guestId,
             guests:guestId  (
               fullName,
               email
@@ -62,6 +63,7 @@ export async function getBookings({ filter, sortBy, page }) {
     numGuests: booking.numGuests,
     totalPrice: booking.totalPrice,
     status: booking.status,
+    guestId: booking.guestId,
     guests: {
       fullName: booking.guests?.fullName || "",
       email: booking.guests?.email || "",

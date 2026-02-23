@@ -11,6 +11,7 @@ import {
   HiArrowUpOnSquare,
   HiEye,
   HiTrash,
+  HiDocumentText,
 } from "react-icons/hi2";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
@@ -128,6 +129,12 @@ function BookingRow({
                     Check-Out
                   </Menus.Button>
                 )}
+                <Menus.Button
+                  icon={<HiDocumentText />}
+                  onClick={() => navigate(`/receipts/${bookingId}`)}
+                >
+                  View Receipt
+                </Menus.Button>
                 <Modal.Open opens="delete-booking">
                   <Menus.Button icon={<HiTrash />} disabled={isDeleting}>
                     Delete Booking

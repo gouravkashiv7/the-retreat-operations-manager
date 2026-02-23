@@ -110,6 +110,9 @@ function BookingDetail() {
             </Modal.Window>
           </Modal>
         )}
+        <Button onClick={() => navigate(`/receipts/${bookingId}`)}>
+          Order Receipt
+        </Button>
         <Button $variation="secondary" onClick={moveBack}>
           Back
         </Button>

@@ -116,8 +116,10 @@ function CalendarLayout() {
 
   const {
     isLoading: isLoadingExternal,
+    isFetching: isFetchingExternal,
     externalBookings,
     error: externalError,
+    refetch: refetchExternal,
   } = useExternalAvailability(
     selectedItemId,
     selectedItem?.icalUrl,
@@ -168,8 +170,12 @@ function CalendarLayout() {
             month={currentMonth}
             bookings={bookings}
             externalBookings={externalBookings || []}
-            isExternalLoading={!!selectedItem?.icalUrl && isLoadingExternal}
+            isExternalLoading={
+              !!selectedItem?.icalUrl &&
+              (isLoadingExternal || isFetchingExternal)
+            }
             externalError={selectedItem?.icalUrl ? externalError : null}
+            refetch={refetchExternal}
           />
         </SingleCalendarContainer>
       )}

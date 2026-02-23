@@ -1,42 +1,25 @@
 import Spinner from "../../ui/Spinner";
 import ItemRow from "./ItemRow";
+import ItemMobileCard from "./ItemMobileCard";
 import { useItems } from "./useItems";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 
-const MobileTableContainer = styled.div`
-  @media (max-width: 768px) {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -1rem;
-    padding: 0 1rem;
-
-    /* Hide scrollbar */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  @media (max-width: 480px) {
-    margin: 0 -0.5rem;
-    padding: 0 0.5rem;
+const DesktopTable = styled.div`
+  @media (max-width: 600px) {
+    display: none;
   }
 `;
 
-const MobileHeader = styled.div`
+const MobileCardList = styled.div`
   display: none;
+  flex-direction: column;
+  gap: 1.6rem;
 
-  @media (max-width: 768px) {
-    display: block;
-    font-size: 1.4rem;
-    color: var(--color-grey-600);
-    margin-bottom: 1rem;
-    text-align: center;
+  @media (max-width: 600px) {
+    display: flex;
   }
 `;
 
@@ -61,12 +44,12 @@ function ItemTable({ queryKey, queryFn, itemName }) {
 
   return (
     <Menus>
-      <MobileHeader>Scroll horizontally to view all columns</MobileHeader>
-      <MobileTableContainer>
+      {/* Desktop Table */}
+      <DesktopTable>
         <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
           <Table.Header>
             <div></div>
-            <div>Cabin</div>
+            <div>Name</div>
             <div>Capacity</div>
             <div>Price</div>
             <div>Discount</div>
@@ -85,7 +68,19 @@ function ItemTable({ queryKey, queryFn, itemName }) {
             )}
           />
         </Table>
-      </MobileTableContainer>
+      </DesktopTable>
+
+      {/* Mobile Cards */}
+      <MobileCardList>
+        {sortedItems.map((item) => (
+          <ItemMobileCard
+            key={item.id}
+            item={item}
+            queryKey={queryKey}
+            itemName={itemName}
+          />
+        ))}
+      </MobileCardList>
     </Menus>
   );
 }

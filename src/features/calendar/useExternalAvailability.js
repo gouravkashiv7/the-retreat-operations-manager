@@ -7,8 +7,10 @@ const FALLBACK_PROXY_URL = "https://api.codetabs.com/v1/proxy?quest=";
 export function useExternalAvailability(id, url, enabled = false) {
   const {
     isLoading,
+    isFetching,
     data: externalBookings,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["external-availability", id, url],
     queryFn: async () => {
@@ -114,5 +116,5 @@ export function useExternalAvailability(id, url, enabled = false) {
     retry: 2,
   });
 
-  return { isLoading, externalBookings, error };
+  return { isLoading, isFetching, externalBookings, error, refetch };
 }

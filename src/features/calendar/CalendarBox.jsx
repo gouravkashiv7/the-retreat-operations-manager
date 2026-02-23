@@ -82,6 +82,29 @@ const SyncStatus = styled.div`
   }
 `;
 
+const RefreshButton = styled.button`
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  margin-left: 0.8rem;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  & svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+`;
+
 const BoxHeader = styled.div`
   display: flex;
   flex-direction: column;
@@ -217,6 +240,8 @@ const Day = styled.div`
     }
     if (props.$status === "confirmed") return "var(--color-brand-600)";
     if (props.$status === "unconfirmed") return "var(--color-brand-200)";
+    if (props.$status === "checked-in") return "var(--color-green-500)";
+    if (props.$status === "checked-out") return "var(--color-grey-300)";
     if (props.$status === "blocked") return "var(--color-grey-400)";
     if (props.$isToday) return "var(--color-grey-100)";
     return "transparent";
@@ -226,6 +251,8 @@ const Day = styled.div`
     if (props.$isExternal) return "#fff";
     if (props.$status === "confirmed" || props.$status === "blocked")
       return "var(--color-brand-50)";
+    if (props.$status === "checked-in") return "var(--color-brand-50)";
+    if (props.$status === "checked-out") return "var(--color-grey-700)";
     if (props.$status === "unconfirmed") return "var(--color-brand-800)";
     if (props.$isToday) return "var(--color-brand-600)";
     if (props.$isDimmed) return "var(--color-grey-300)";
@@ -267,9 +294,14 @@ const DayPrice = styled.span`
 
   ${(props) => props.$isExternal && "display: none;"}
   ${(props) =>
-    props.$status === "confirmed" && "color: var(--color-brand-100);"}
+    (props.$status === "confirmed" || props.$status === "checked-in") &&
+    "color: var(--color-brand-100);"}
   ${(props) =>
-    props.$status === "unconfirmed" && "color: var(--color-brand-700);"}
+    (props.$status === "unconfirmed" || props.$status === "checked-out") &&
+    "color: var(--color-brand-700);"}
+    /* For checked-out we might want a different grey but brand-700 is usually dark enough */
+  ${(props) =>
+    props.$status === "checked-out" && "color: var(--color-grey-600);"}
 `;
 
 const Tooltip = styled.div`
@@ -437,6 +469,18 @@ const StatusBadge = styled.span`
         background-color: var(--color-blue-100);
       `;
     }
+    if (props.$status === "checked-in") {
+      return `
+        color: var(--color-green-700);
+        background-color: var(--color-green-100);
+      `;
+    }
+    if (props.$status === "checked-out") {
+      return `
+        color: var(--color-grey-700);
+        background-color: var(--color-grey-200);
+      `;
+    }
     if (props.$status === "blocked") {
       return `
         color: var(--color-grey-700);
@@ -454,6 +498,7 @@ function CalendarBox({
   externalBookings = [],
   isExternalLoading = false,
   externalError = null,
+  refetch,
 }) {
   const { blockRoom, isBlocking } = useCreateBlock();
   const { unblockRoom, isUnblocking } = useUnblock();
@@ -555,12 +600,23 @@ function CalendarBox({
               : {}
           }
         >
-          <HiOutlineRefresh className={isExternalLoading ? "spin" : ""} />
-          {isExternalLoading
-            ? "Syncing Goibibo..."
-            : externalError
-              ? "Sync failed"
-              : "Synced with Goibibo"}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+            <HiOutlineRefresh className={isExternalLoading ? "spin" : ""} />
+            {isExternalLoading
+              ? "Syncing Goibibo..."
+              : externalError
+                ? "Sync failed"
+                : "Synced with Goibibo"}
+          </div>
+          {refetch && (
+            <RefreshButton
+              onClick={() => refetch()}
+              disabled={isExternalLoading}
+              title="Refresh sync data"
+            >
+              <HiOutlineRefresh className={isExternalLoading ? "spin" : ""} />
+            </RefreshButton>
+          )}
         </SyncStatus>
       ) : null}
 
@@ -661,6 +717,14 @@ function CalendarBox({
         <LegendItem>
           <LegendColor $color="var(--color-brand-200)" />
           <span>Unconfirmed</span>
+        </LegendItem>
+        <LegendItem>
+          <LegendColor $color="var(--color-green-500)" />
+          <span>Checked-in</span>
+        </LegendItem>
+        <LegendItem>
+          <LegendColor $color="var(--color-grey-300)" />
+          <span>Checked-out</span>
         </LegendItem>
         <LegendItem>
           <LegendColor $color="var(--color-grey-400)" />
