@@ -2,27 +2,56 @@ import { useQuery } from "@tanstack/react-query";
 import { parse } from "date-fns";
 
 const PROXY_URL = "https://api.allorigins.win/get?url=";
+const FALLBACK_PROXY_URL = "https://api.codetabs.com/v1/proxy?quest=";
 
-export function useExternalAvailability(url, enabled = false) {
+export function useExternalAvailability(id, url, enabled = false) {
   const {
     isLoading,
     data: externalBookings,
     error,
   } = useQuery({
-    queryKey: ["external-availability", url],
+    queryKey: ["external-availability", id, url],
     queryFn: async () => {
       if (!url) return [];
       try {
-        const targetUrl = encodeURIComponent(
-          `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`,
-        );
-        const response = await fetch(`${PROXY_URL}${targetUrl}`);
+        const timestampedUrl = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+        const targetUrl = encodeURIComponent(timestampedUrl);
+        let icalData;
 
-        if (!response.ok)
-          throw new Error("Failed to fetch external availability via proxy");
+        // Use /raw instead of /get for allorigins to bypass JSON wrapping and avoid some 500 errors
+        const targetUrlRaw = encodeURIComponent(timestampedUrl);
+        const proxy1 = `https://api.allorigins.win/raw?url=${targetUrlRaw}`;
+        const proxy2 = `https://api.allorigins.hexartogo.com/raw?url=${targetUrlRaw}`;
+        const proxy3 = `https://corsproxy.io/?${targetUrlRaw}`;
 
-        const proxyData = await response.json();
-        let icalData = proxyData.contents;
+        try {
+          const response = await fetch(proxy1);
+          if (!response.ok) throw new Error("Primary proxy failed");
+          icalData = await response.text();
+        } catch (err) {
+          console.warn("Primary proxy failed, trying fallback 1:", err.message);
+          try {
+            const response = await fetch(proxy2);
+            if (!response.ok) throw new Error("Fallback 1 failed");
+            icalData = await response.text();
+          } catch (err2) {
+            console.warn(
+              "Fallback 1 failed, trying fallback 2 (corsproxy):",
+              err2.message,
+            );
+            const response = await fetch(proxy3);
+            if (!response.ok) throw new Error("All proxies failed");
+            icalData = await response.text();
+
+            // corsproxy.io might return the raw string or wrapping JSON depending on headers
+            try {
+              const json = JSON.parse(icalData);
+              if (json.contents) icalData = json.contents;
+            } catch (e) {
+              // Ignore JSON parse error, it's raw text
+            }
+          }
+        }
 
         if (!icalData) throw new Error("No data received from proxy");
 
@@ -31,6 +60,7 @@ export function useExternalAvailability(url, enabled = false) {
           typeof icalData === "string" &&
           icalData.startsWith("data:text/calendar;base64,")
         ) {
+          const base64Part = icalData.split(",")[1];
           icalData = atob(base64Part);
         }
 
@@ -82,9 +112,9 @@ export function useExternalAvailability(url, enabled = false) {
 
         return events;
       } catch (err) {
-        // Return empty array on proxy/fetch failure — don't break the calendar
-        console.warn("External Calendar could not be loaded:", err.message);
-        return [];
+        // Log and throw the error so React Query captures it and passes to the UI!
+        console.error("External Calendar could not be loaded:", err.message);
+        throw err;
       }
     },
     enabled: enabled && !!url,

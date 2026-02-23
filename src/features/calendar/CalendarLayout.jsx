@@ -118,7 +118,11 @@ function CalendarLayout() {
     isLoading: isLoadingExternal,
     externalBookings,
     error: externalError,
-  } = useExternalAvailability(selectedItem?.icalUrl, !!selectedItem?.icalUrl);
+  } = useExternalAvailability(
+    selectedItemId,
+    selectedItem?.icalUrl,
+    !!selectedItem?.icalUrl,
+  );
 
   function nextMonth() {
     handleMonthChange(addMonths(currentMonth, 1));

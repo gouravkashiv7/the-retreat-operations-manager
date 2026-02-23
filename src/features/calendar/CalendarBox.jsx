@@ -19,6 +19,7 @@ import {
 import { subDays } from "date-fns";
 import { useCreateBlock, useUnblock } from "./useCalendarBookings";
 import { formatCurrencyNoDecimals } from "../../utils/helpers";
+import Spinner from "../../ui/Spinner";
 
 const StyledCalendarBox = styled.div`
   background-color: var(--color-grey-0);
@@ -366,59 +367,67 @@ function CalendarBox({
         )}
       </BoxHeader>
 
-      <CalendarGrid>
-        {dayNames.map((name) => (
-          <DayName key={name}>{name.charAt(0)}</DayName>
-        ))}
+      {isExternalLoading ? (
+        <div
+          style={{ display: "flex", justifyContent: "center", padding: "4rem" }}
+        >
+          <Spinner />
+        </div>
+      ) : (
+        <CalendarGrid>
+          {dayNames.map((name) => (
+            <DayName key={name}>{name.charAt(0)}</DayName>
+          ))}
 
-        {paddingDays.map((i) => (
-          <Day key={`pad-${i}`} $isDimmed />
-        ))}
+          {paddingDays.map((i) => (
+            <Day key={`pad-${i}`} $isDimmed />
+          ))}
 
-        {days.map((day) => {
-          const booking = getBookingForDay(day);
-          const status = booking?.status;
-          const isExternal = booking?.isExternal;
-          const platform = booking?.platform;
+          {days.map((day) => {
+            const booking = getBookingForDay(day);
+            const status = booking?.status;
+            const isExternal = booking?.isExternal;
+            const platform = booking?.platform;
 
-          return (
-            <Day
-              key={day.toString()}
-              $isToday={isToday(day)}
-              $status={status}
-              $isExternal={isExternal}
-              $platform={platform}
-              onClick={() => handleDayClick(day, booking)}
-              style={{ cursor: isExternal ? "default" : "pointer" }}
-            >
-              <DayNumber>{format(day, "d")}</DayNumber>
-              <DayPrice $status={status} $isExternal={isExternal}>
-                {formatCurrencyNoDecimals(dailyRate)}
-              </DayPrice>
+            return (
+              <Day
+                key={day.toString()}
+                $isToday={isToday(day)}
+                $status={status}
+                $isExternal={isExternal}
+                $platform={platform}
+                onClick={() => handleDayClick(day, booking)}
+                style={{ cursor: isExternal ? "default" : "pointer" }}
+              >
+                <DayNumber>{format(day, "d")}</DayNumber>
+                <DayPrice $status={status} $isExternal={isExternal}>
+                  {formatCurrencyNoDecimals(dailyRate)}
+                </DayPrice>
 
-              {booking && (
-                <Tooltip>
-                  {isExternal ? (
-                    <>
-                      <strong style={{ textTransform: "capitalize" }}>
-                        {platform} Blocked
-                      </strong>
-                      <br />
-                      External sync
-                    </>
-                  ) : (
-                    <>
-                      <strong>{booking.guests?.fullName || "Guest"}</strong>
-                      <br />
-                      Status: {status}
-                    </>
-                  )}
-                </Tooltip>
-              )}
-            </Day>
-          );
-        })}
-      </CalendarGrid>
+                {booking && (
+                  <Tooltip>
+                    {isExternal ? (
+                      <>
+                        <strong style={{ textTransform: "capitalize" }}>
+                          {platform} Blocked
+                        </strong>
+                        <br />
+                        External sync
+                      </>
+                    ) : (
+                      <>
+                        <strong>{booking.guests?.fullName || "Guest"}</strong>
+                        <br />
+                        Status: {status}
+                      </>
+                    )}
+                  </Tooltip>
+                )}
+              </Day>
+            );
+          })}
+        </CalendarGrid>
+      )}
 
       <StyledLegend>
         <LegendItem>
