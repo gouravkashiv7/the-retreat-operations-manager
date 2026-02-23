@@ -15,45 +15,28 @@ export function useExternalAvailability(id, url, enabled = false) {
       if (!url) return [];
       try {
         const timestampedUrl = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
-        const targetUrl = encodeURIComponent(timestampedUrl);
         let icalData;
 
-        // Use /raw instead of /get for allorigins to bypass JSON wrapping and avoid some 500 errors
-        const targetUrlRaw = encodeURIComponent(timestampedUrl);
-        const proxy1 = `https://api.allorigins.win/raw?url=${targetUrlRaw}`;
-        const proxy2 = `https://api.allorigins.hexartogo.com/raw?url=${targetUrlRaw}`;
-        const proxy3 = `https://corsproxy.io/?${targetUrlRaw}`;
-
         try {
-          const response = await fetch(proxy1);
-          if (!response.ok) throw new Error("Primary proxy failed");
+          const response = await fetch(timestampedUrl, {
+            headers: {
+              Accept:
+                "text/calendar, text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+              "Cache-Control": "no-cache",
+              Pragma: "no-cache",
+            },
+          });
+
+          if (!response.ok)
+            throw new Error("Fetch failed: " + response.statusText);
           icalData = await response.text();
         } catch (err) {
-          console.warn("Primary proxy failed, trying fallback 1:", err.message);
-          try {
-            const response = await fetch(proxy2);
-            if (!response.ok) throw new Error("Fallback 1 failed");
-            icalData = await response.text();
-          } catch (err2) {
-            console.warn(
-              "Fallback 1 failed, trying fallback 2 (corsproxy):",
-              err2.message,
-            );
-            const response = await fetch(proxy3);
-            if (!response.ok) throw new Error("All proxies failed");
-            icalData = await response.text();
-
-            // corsproxy.io might return the raw string or wrapping JSON depending on headers
-            try {
-              const json = JSON.parse(icalData);
-              if (json.contents) icalData = json.contents;
-            } catch (e) {
-              // Ignore JSON parse error, it's raw text
-            }
-          }
+          console.error("Direct fetch failed:", err.message);
+          throw err;
         }
 
-        if (!icalData) throw new Error("No data received from proxy");
+        if (!icalData) throw new Error("No data received");
 
         // Handle base64 encoded data URI if proxy returns it that way
         if (
