@@ -91,6 +91,8 @@ const TodayButton = styled.button`
   }
 `;
 
+import { useUser } from "../authentication/useUser";
+
 function CalendarOperations({
   currentMonth,
   onPrevMonth,
@@ -102,6 +104,8 @@ function CalendarOperations({
   showSync,
   onToggleSync,
 }) {
+  const { user } = useUser();
+
   return (
     <StyledCalendarOperations>
       <TopRow>
@@ -150,26 +154,28 @@ function CalendarOperations({
               ))}
           </optgroup>
         </StyledSelect>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button
-            onClick={onToggleSync}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4rem",
-              fontSize: "1.2rem",
-              color: showSync
-                ? "var(--color-brand-700)"
-                : "var(--color-grey-500)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <HiOutlineCog8Tooth />
-            {showSync ? "Hide Sync Settings" : "Sync Management"}
-          </button>
-        </div>
+        {user?.email === "gouravkashiv@zohomail.in" && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              onClick={onToggleSync}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "1.2rem",
+                color: showSync
+                  ? "var(--color-brand-700)"
+                  : "var(--color-grey-500)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <HiOutlineCog8Tooth />
+              {showSync ? "Hide Sync Settings" : "Sync Management"}
+            </button>
+          </div>
+        )}
       </SelectContainer>
     </StyledCalendarOperations>
   );

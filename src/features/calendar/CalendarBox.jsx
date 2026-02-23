@@ -513,7 +513,7 @@ function CalendarBox({
                 style={{ cursor: isExternal ? "default" : "pointer" }}
               >
                 <DayNumber>{format(day, "d")}</DayNumber>
-                <DayPrice $status={status} $isExternal={isExternal}>
+                <DayPrice $status={displayStatus} $isExternal={isExternal}>
                   {formatCurrencyNoDecimals(dailyRate)}
                 </DayPrice>
 

@@ -28,13 +28,14 @@ serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // Fetch bookings (confirmed or blocked)
+    // Fetch bookings (confirmed, checked-in, or blocked)
     const { data: bookings, error } = await supabase
       .from("bookings")
       .select(
-        "id, startDate, endDate, status, guests(fullName), booking_rooms(roomId), booking_cabins(cabinId)",
+        "id, startDate, endDate, status, observations, guests(fullName), booking_rooms(roomId), booking_cabins(cabinId)",
       )
-      .in("status", ["confirmed", "unconfirmed", "blocked"]);
+      .in("status", ["confirmed", "checked-in", "blocked"])
+      .neq("observations", "ADMIN_BLOCK_UNCONFIRMED"); // Just in case any old unconfirmed blocks lingered
 
     if (error) throw error;
 
