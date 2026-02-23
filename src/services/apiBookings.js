@@ -283,14 +283,15 @@ export async function createBlock({
   accommodationId,
   type,
 }) {
-  // 1. Create the booking with status 'blocked'
+  // 1. Create the booking with status 'unconfirmed' to bypass DB constraint
   const { data: booking, error: bookingError } = await supabase
     .from("bookings")
     .insert([
       {
         startDate: startDate,
         endDate: endDate,
-        status: "blocked",
+        status: "confirmed", // changed to 'confirmed' per user request, bypassing valid_status check
+        guestId: 1, // Using the dedicated admin block guest record
         numNights: 1,
         numGuests: 1,
         totalPrice: 0,
@@ -298,7 +299,7 @@ export async function createBlock({
         accommodationPrice: 0,
         hasBreakfast: false,
         isPaid: false,
-        observations: "Manually blocked by admin",
+        observations: "ADMIN_BLOCK", // We use this flag to identify blocks in UI
       },
     ])
     .select()

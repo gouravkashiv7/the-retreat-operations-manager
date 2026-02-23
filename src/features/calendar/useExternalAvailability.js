@@ -18,18 +18,27 @@ export function useExternalAvailability(id, url, enabled = false) {
         let icalData;
 
         try {
-          const response = await fetch(timestampedUrl, {
-            headers: {
-              Accept:
-                "text/calendar, text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8",
-              "Accept-Language": "en-US,en;q=0.5",
-              "Cache-Control": "no-cache",
-              Pragma: "no-cache",
+          // We must use our Supabase Edge Function to proxy the request and bypass strict CORS
+          const response = await fetch(
+            "https://kckngulhvwryekywvutn.supabase.co/functions/v1/fetch-calendar",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Supabase anon key needed to invoke public function
+                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({ url: timestampedUrl }),
             },
-          });
+          );
 
-          if (!response.ok)
-            throw new Error("Fetch failed: " + response.statusText);
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+              `Edge Function failed: ${response.statusText} - ${errText}`,
+            );
+          }
+
           icalData = await response.text();
         } catch (err) {
           console.error("Direct fetch failed:", err.message);

@@ -10,16 +10,19 @@ import {
   isAfter,
   isBefore,
   parseISO,
+  subDays,
+  addDays,
 } from "date-fns";
 import {
   HiOutlineChevronLeft,
   HiOutlineChevronRight,
   HiOutlineRefresh,
 } from "react-icons/hi";
-import { subDays } from "date-fns";
 import { useCreateBlock, useUnblock } from "./useCalendarBookings";
 import { formatCurrencyNoDecimals } from "../../utils/helpers";
 import Spinner from "../../ui/Spinner";
+import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const StyledCalendarBox = styled.div`
   background-color: var(--color-grey-0);
@@ -240,6 +243,111 @@ const Tooltip = styled.div`
   }
 `;
 
+const BookingsListContainer = styled.div`
+  margin-top: 3.2rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid var(--color-grey-100);
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+`;
+
+const BookingsListTitle = styled.h4`
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-grey-700);
+  margin-bottom: 0.8rem;
+`;
+
+const BookingsList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+`;
+
+const BookingListItem = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.6rem;
+  background-color: var(--color-grey-50);
+  border: 1px solid var(--color-grey-100);
+  border-radius: var(--border-radius-sm);
+  font-size: 1.4rem;
+`;
+
+const BookingListDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+`;
+
+const BookingDateRange = styled.span`
+  font-weight: 600;
+  color: var(--color-grey-800);
+`;
+
+const BookingGuestName = styled.span`
+  color: var(--color-grey-500);
+  font-size: 1.2rem;
+`;
+
+const BookingLink = styled(Link)`
+  color: var(--color-brand-600);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: underline;
+  margin-left: 0.8rem;
+
+  &:hover {
+    color: var(--color-brand-700);
+  }
+`;
+
+const StatusBadge = styled.span`
+  width: fit-content;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.4rem 1.2rem;
+  border-radius: 100px;
+
+  /* Dynamically style based on status */
+  ${(props) => {
+    if (props.$isExternal) {
+      if (props.$platform === "goibibo") {
+        return `
+          color: #fff;
+          background-color: #f36f21;
+        `;
+      }
+      return `
+        color: #fff;
+        background-color: var(--color-grey-600);
+      `;
+    }
+
+    if (props.$status === "confirmed") {
+      return `
+        color: var(--color-brand-700);
+        background-color: var(--color-brand-100);
+      `;
+    }
+    if (props.$status === "unconfirmed") {
+      return `
+        color: var(--color-blue-700);
+        background-color: var(--color-blue-100);
+      `;
+    }
+    if (props.$status === "blocked") {
+      return `
+        color: var(--color-grey-700);
+        background-color: var(--color-grey-200);
+      `;
+    }
+  }}
+`;
+
 function CalendarBox({
   item,
   type,
@@ -299,25 +407,25 @@ function CalendarBox({
   // Calculate daily rate for the selected item
   const dailyRate = item.regularPrice - (item.discount || 0);
 
-  function handleDayClick(day, booking) {
+  function handleDayClick(day, booking, displayStatus) {
     if (isBlocking || isUnblocking) return;
 
     // 1. If it's an external booking, do nothing
     if (booking?.isExternal) return;
 
-    // 2. If it's a confirmed/unconfirmed booking, don't allow blocking (must delete booking first)
-    if (booking && booking.status !== "blocked") {
-      toast.error(
-        "Day has an active booking. Please manage the booking instead.",
-      );
-      return;
-    }
-
-    // 3. If it's already blocked, unblock it
-    if (booking?.status === "blocked") {
+    // 2. If it's already blocked, unblock it
+    if (displayStatus === "blocked") {
       if (window.confirm("Do you want to open this room for this date?")) {
         unblockRoom(booking.id);
       }
+      return;
+    }
+
+    // 3. If it's a confirmed/unconfirmed booking, don't allow blocking (must delete booking first)
+    if (booking && displayStatus !== "blocked") {
+      toast.error(
+        "Day has an active booking. Please manage the booking instead.",
+      );
       return;
     }
 
@@ -385,18 +493,23 @@ function CalendarBox({
 
           {days.map((day) => {
             const booking = getBookingForDay(day);
-            const status = booking?.status;
             const isExternal = booking?.isExternal;
             const platform = booking?.platform;
+
+            // Re-derive status logic to support ADMIN_BLOCK flag
+            let displayStatus = booking?.status;
+            if (booking?.observations === "ADMIN_BLOCK") {
+              displayStatus = "blocked";
+            }
 
             return (
               <Day
                 key={day.toString()}
                 $isToday={isToday(day)}
-                $status={status}
+                $status={displayStatus}
                 $isExternal={isExternal}
                 $platform={platform}
-                onClick={() => handleDayClick(day, booking)}
+                onClick={() => handleDayClick(day, booking, displayStatus)}
                 style={{ cursor: isExternal ? "default" : "pointer" }}
               >
                 <DayNumber>{format(day, "d")}</DayNumber>
@@ -416,9 +529,13 @@ function CalendarBox({
                       </>
                     ) : (
                       <>
-                        <strong>{booking.guests?.fullName || "Guest"}</strong>
+                        <strong>
+                          {displayStatus === "blocked"
+                            ? "Admin Block"
+                            : booking.guests?.fullName || "Guest"}
+                        </strong>
                         <br />
-                        Status: {status}
+                        Status: {displayStatus}
                       </>
                     )}
                   </Tooltip>
@@ -457,6 +574,99 @@ function CalendarBox({
           <span>Today</span>
         </LegendItem>
       </StyledLegend>
+
+      {/* Booked and Blocked Dates List */}
+      <BookingsListContainer>
+        <BookingsListTitle>Bookings & Blocks this Month</BookingsListTitle>
+        <BookingsList>
+          {(() => {
+            // Combine all local and external bookings relevant to the month
+            const allMonthBookings = [
+              ...itemBookings,
+              ...externalBookings,
+            ].filter((b) => {
+              const checkIn = parseISO(b.startDate);
+              const checkOut = parseISO(b.endDate);
+              // Include if it starts or ends within this month, or spans entirely across it
+              return (
+                ((isSameDay(checkIn, start) || isAfter(checkIn, start)) &&
+                  isBefore(checkIn, end)) ||
+                ((isSameDay(checkOut, start) || isAfter(checkOut, start)) &&
+                  isBefore(checkOut, end)) ||
+                (isBefore(checkIn, start) && isAfter(checkOut, end))
+              );
+            });
+
+            // Sort by start date chronologically
+            const sortedBookings = allMonthBookings.sort(
+              (a, b) =>
+                new Date(a.startDate).getTime() -
+                new Date(b.startDate).getTime(),
+            );
+
+            if (sortedBookings.length === 0) {
+              return (
+                <p
+                  style={{ color: "var(--color-grey-500)", fontSize: "1.4rem" }}
+                >
+                  No dates blocked or booked for this month.
+                </p>
+              );
+            }
+
+            return sortedBookings.map((booking, index) => {
+              const startDateFormatted = format(
+                parseISO(booking.startDate),
+                "MMM dd, yyyy",
+              );
+              const endDateFormatted = format(
+                parseISO(booking.endDate),
+                "MMM dd, yyyy",
+              );
+
+              const isExternal = booking.isExternal;
+
+              let displayStatus = booking.status;
+              if (booking.observations === "ADMIN_BLOCK") {
+                displayStatus = "blocked";
+              }
+
+              const statusString = isExternal
+                ? booking.platform || "External Sync"
+                : displayStatus;
+
+              return (
+                <BookingListItem key={booking.id || `ext-${index}`}>
+                  <BookingListDetails>
+                    <BookingDateRange>
+                      {startDateFormatted} — {endDateFormatted}
+                    </BookingDateRange>
+                    {booking.guests?.fullName && (
+                      <div>
+                        <BookingGuestName>
+                          Guest: {booking.guests.fullName}
+                        </BookingGuestName>
+                        {booking.status !== "blocked" && !isExternal && (
+                          <BookingLink to={`/bookings/${booking.id}`}>
+                            (Booking #{booking.id})
+                          </BookingLink>
+                        )}
+                      </div>
+                    )}
+                  </BookingListDetails>
+                  <StatusBadge
+                    $status={displayStatus}
+                    $isExternal={isExternal}
+                    $platform={booking.platform}
+                  >
+                    {statusString}
+                  </StatusBadge>
+                </BookingListItem>
+              );
+            });
+          })()}
+        </BookingsList>
+      </BookingsListContainer>
     </StyledCalendarBox>
   );
 }

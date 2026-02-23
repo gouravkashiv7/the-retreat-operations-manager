@@ -18,7 +18,7 @@ We pull external calendar feeds to ensure the admin sees "Real-Time" availabilit
 - **Hook**: `src/features/calendar/useExternalAvailability.js`
 - **Data Storage**: Inbound iCal URLs are stored in the `icalUrl` column of the `rooms` and `cabins` tables.
 - **Mechanism**:
-  1. **CORS Proxy**: Because browsers block direct fetches to OTA domains, we use `api.allorigins.win` to proxy the request.
+  1. **Edge Function Proxy**: Because browsers strictly block direct fetches to OTA domains due to CORS, we use a custom Supabase Edge Function (`supabase/functions/fetch-calendar/index.ts`) as a secure server-side proxy. The reactant app POSTs the target URL to the edge function, which then fetches the `.ics` data from the OTA and returns it with proper CORS headers (`Access-Control-Allow-Origin: *`). **Important Deployment Note**: This edge function must be deployed using the `--no-verify-jwt` flag so it is accessible as a public proxy.
   2. **ICal Parsing**: We use regex to parse the `.ics` data for `VEVENT` blocks.
   3. **Date Alignment**: All start/end dates are normalized to `startOfDay` (midnight) to ensure they overlap correctly with our grid days.
 - **UI Management**: Use the **"Sync Management"** button in the Calendar view to save/update these URLs for each room.
@@ -47,6 +47,7 @@ Admins can manually toggle availability without creating a full guest booking.
 - **API**: `createBlock` in `apiBookings.js`. This creates a booking entry with `status: 'blocked'`.
 - **UI Interaction**: In `CalendarBox.jsx`, clicking an empty date triggers `handleDayClick`, which prompts to create a block.
 - **Visuals**: Blocked dates are solid grey (`--color-grey-400`).
+- **Sync Delay (Important)**: When a block is created here, it is _instantly_ published to our outbound iCal feed limit. However, **this will not reflect on OTAs (like Goibibo or MakeMyTrip) at the exact same time.** OTAs operate on a polling system (they fetch our iCal URL on their own schedule), which means it usually takes anywhere from 15 minutes to a few hours for the block to appear on their platform, depending strictly on the OTA's specific refresh policies.
 
 ---
 

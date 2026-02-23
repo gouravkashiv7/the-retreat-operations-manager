@@ -24,7 +24,7 @@ export const apiGuests = {
           endDate,
           status
         )
-      `
+      `,
       )
       .order("created_at", { ascending: false });
 
@@ -82,6 +82,13 @@ export const apiGuests = {
 
   // Delete guest
   async deleteGuest(id) {
+    // Prevent deletion of the dummy guest used for admin blocks
+    if (String(id) === "1" || id === 1) {
+      throw new Error(
+        "This is the system admin block guest record. It cannot be deleted.",
+      );
+    }
+
     const { error } = await supabase.from("guests").delete().eq("id", id);
 
     if (error) throw new Error(error.message);
@@ -93,7 +100,7 @@ export const apiGuests = {
       .from("guests")
       .select("*")
       .or(
-        `fullName.ilike.%${query}%,email.ilike.%${query}%,nationalId.ilike.%${query}%,id.eq.${query}`
+        `fullName.ilike.%${query}%,email.ilike.%${query}%,nationalId.ilike.%${query}%,id.eq.${query}`,
       )
       .order("created_at", { ascending: false });
 

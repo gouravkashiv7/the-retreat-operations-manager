@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 import BookingDataBox from "./BookingDataBox";
 import Row from "../../ui/Row";
-import Heading from "../../ui/Heading";
 import Tag from "../../ui/Tag";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
@@ -19,6 +18,8 @@ import { useDeleteBooking } from "./useDeleteBooking";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import ItemHeader from "../../ui/ItemHeader";
 import { useAuthorization } from "../../features/authentication/useAuthorization";
+import { useConfirmBooking } from "./useConfirmBooking";
+import ConfirmAction from "../../ui/ConfirmAction";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ function BookingDetail() {
   const navigate = useNavigate();
   const { checkout, isCheckingOut } = useCheckout();
   const { isDeleting, deleteBooking } = useDeleteBooking();
+  const { confirmBooking, isConfirming } = useConfirmBooking();
   const { isGuest } = useAuthorization();
 
   const moveBack = useMoveBack();
@@ -60,6 +62,22 @@ function BookingDetail() {
 
       <ButtonGroup>
         {!isGuest && status === "unconfirmed" && (
+          <Modal>
+            <Modal.Open opens="confirm-booking">
+              <Button>Confirm</Button>
+            </Modal.Open>
+            <Modal.Window name="confirm-booking">
+              <ConfirmAction
+                resourceName={`Booking #${bookingId}`}
+                actionName="confirm"
+                actionDescription="This will lock the room on the calendar. Have you received the advanced payment for this booking?"
+                onConfirm={() => confirmBooking(bookingId)}
+                disabled={isConfirming}
+              />
+            </Modal.Window>
+          </Modal>
+        )}
+        {!isGuest && (status === "unconfirmed" || status === "confirmed") && (
           <Button onClick={() => navigate(`/checkin/${bookingId}`)}>
             Check-In
           </Button>
@@ -72,7 +90,10 @@ function BookingDetail() {
         {!isGuest && (
           <Modal>
             <Modal.Open opens="delete-booking">
-              <Button $variation="danger" disabled={isCheckingOut}>
+              <Button
+                $variation="danger"
+                disabled={isCheckingOut || isConfirming}
+              >
                 Delete
               </Button>
             </Modal.Open>

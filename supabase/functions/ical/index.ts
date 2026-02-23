@@ -66,7 +66,7 @@ serve(async (req: Request) => {
       const start = b.startDate.replace(/-/g, "").split("T")[0];
       const end = b.endDate.replace(/-/g, "").split("T")[0];
       const summary =
-        b.status === "blocked"
+        b.status === "blocked" || b.observations === "ADMIN_BLOCK"
           ? "Blocked by Admin"
           : `Booking: ${b.guests?.fullName || "Confirmed"}`;
 
