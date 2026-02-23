@@ -50,8 +50,12 @@ const StyledCalendarBox = styled.div`
     }
   }
 
+  @media (max-width: 768px) {
+    padding: 2.4rem;
+  }
+
   @media (max-width: 600px) {
-    padding: 1.6rem;
+    padding: 1.2rem;
     gap: 1.6rem;
   }
 `;
@@ -69,6 +73,13 @@ const SyncStatus = styled.div`
   padding: 0.4rem 0.8rem;
   border-radius: var(--border-radius-sm);
   z-index: 5;
+
+  @media (max-width: 600px) {
+    top: 0.4rem;
+    right: 0.4rem;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+  }
 `;
 
 const BoxHeader = styled.div`
@@ -78,24 +89,41 @@ const BoxHeader = styled.div`
   border-bottom: 1px solid var(--color-grey-100);
   padding-bottom: 1.6rem;
   padding-right: 10rem; /* Space for SyncStatus */
+
+  @media (max-width: 600px) {
+    padding-right: 0;
+    padding-top: 2rem; /* Make room for absolute sync status */
+  }
 `;
 
 const AccommodationName = styled.h3`
   font-size: 2.4rem;
   font-weight: 700;
   color: var(--color-grey-800);
+
+  @media (max-width: 600px) {
+    font-size: 2rem;
+  }
 `;
 
 const AccommodationDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-grey-500);
   font-style: italic;
+
+  @media (max-width: 600px) {
+    font-size: 1.4rem;
+  }
 `;
 
 const CalendarGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.8rem;
+
+  @media (max-width: 600px) {
+    gap: 0.4rem;
+  }
 `;
 
 const DayName = styled.div`
@@ -105,6 +133,11 @@ const DayName = styled.div`
   color: var(--color-grey-500);
   text-align: center;
   padding-bottom: 0.8rem;
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    padding-bottom: 0.4rem;
+  }
 `;
 
 const StyledLegend = styled.div`
@@ -114,6 +147,13 @@ const StyledLegend = styled.div`
   margin-top: 2.4rem;
   padding-top: 1.6rem;
   border-top: 1px solid var(--color-grey-100);
+
+  @media (max-width: 600px) {
+    gap: 1.2rem;
+    margin-top: 1.6rem;
+    padding-top: 1.2rem;
+    justify-content: center;
+  }
 `;
 
 const LegendItem = styled.div`
@@ -144,6 +184,11 @@ const Day = styled.div`
   cursor: default;
   transition: all 0.2s;
   padding: 0.8rem;
+  min-width: 0; /* Prevents flex/grid blowout */
+
+  @media (max-width: 600px) {
+    padding: 0.2rem;
+  }
 
   background: ${(props) => {
     if (props.$isExternal) {
@@ -192,12 +237,21 @@ const Day = styled.div`
 
 const DayNumber = styled.span`
   font-size: 1.6rem;
+
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const DayPrice = styled.span`
   font-size: 1rem;
   opacity: 0.9;
   margin-top: 0.4rem;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+  }
 
   ${(props) => props.$isExternal && "display: none;"}
   ${(props) =>
@@ -241,6 +295,31 @@ const Tooltip = styled.div`
     visibility: visible;
     opacity: 1;
   }
+
+  @media (max-width: 600px) {
+    width: 120px;
+    padding: 6px;
+    font-size: 1rem;
+    bottom: 110%; /* Closer to the element to avoid getting cut off by top edge */
+
+    /* Ensure tooltips at the extreme edges don't overflow the screen */
+    ${Day}:nth-child(7n+1) & {
+      left: 0;
+      transform: translateX(0);
+      &::after {
+        left: 20%;
+      }
+    }
+
+    ${Day}:nth-child(7n) & {
+      left: auto;
+      right: 0;
+      transform: translateX(0);
+      &::after {
+        left: 80%;
+      }
+    }
+  }
 `;
 
 const BookingsListContainer = styled.div`
@@ -274,6 +353,13 @@ const BookingListItem = styled.li`
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-sm);
   font-size: 1.4rem;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: 1.2rem;
+  }
 `;
 
 const BookingListDetails = styled.div`

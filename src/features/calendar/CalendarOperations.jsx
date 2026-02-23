@@ -49,17 +49,36 @@ const SelectLabel = styled.label`
 `;
 
 const StyledSelect = styled.select`
-  padding: 0.8rem 1.2rem;
+  font-size: 1.4rem;
+  padding: 0.8rem 3.2rem 0.8rem 1.2rem;
   border: 1px solid var(--color-grey-300);
   border-radius: var(--border-radius-sm);
   background-color: var(--color-grey-0);
-  font-size: 1.4rem;
   color: var(--color-grey-700);
   width: 100%;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234b5563%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem top 50%;
+  background-size: 1.2rem auto;
+  transition: all 0.2s;
 
   &:focus {
     outline: none;
     border-color: var(--color-brand-600);
+    box-shadow: 0 0 0 3px var(--color-brand-100);
+  }
+
+  &:hover {
+    border-color: var(--color-brand-300);
+  }
+
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+    padding: 0.6rem 2.8rem 0.6rem 0.8rem;
+    background-size: 1rem auto;
   }
 `;
 
@@ -106,6 +125,14 @@ function CalendarOperations({
 }) {
   const { user } = useUser();
 
+  const sortedCabins = accommodations
+    .filter((acc) => acc.type === "cabin")
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+  const sortedRooms = accommodations
+    .filter((acc) => acc.type === "room")
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
   return (
     <StyledCalendarOperations>
       <TopRow>
@@ -136,22 +163,18 @@ function CalendarOperations({
           onChange={(e) => onItemChange(e.target.value)}
         >
           <optgroup label="Cabins">
-            {accommodations
-              .filter((acc) => acc.type === "cabin")
-              .map((acc) => (
-                <option key={acc.id} value={`${acc.type}-${acc.id}`}>
-                  {acc.name} - {acc.description}
-                </option>
-              ))}
+            {sortedCabins.map((acc) => (
+              <option key={acc.id} value={`${acc.type}-${acc.id}`}>
+                {acc.name} - {acc.description}
+              </option>
+            ))}
           </optgroup>
           <optgroup label="Rooms">
-            {accommodations
-              .filter((acc) => acc.type === "room")
-              .map((acc) => (
-                <option key={acc.id} value={`${acc.type}-${acc.id}`}>
-                  {acc.name} - {acc.description}
-                </option>
-              ))}
+            {sortedRooms.map((acc) => (
+              <option key={acc.id} value={`${acc.type}-${acc.id}`}>
+                {acc.name} - {acc.description}
+              </option>
+            ))}
           </optgroup>
         </StyledSelect>
         {user?.email === "gouravkashiv@zohomail.in" && (

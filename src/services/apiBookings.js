@@ -337,6 +337,7 @@ export async function getBookingsInDateRange(startDate, endDate) {
       startDate,
       endDate,
       status,
+      observations,
       guests (fullName),
       booking_cabins (cabinId),
       booking_rooms (roomId)
