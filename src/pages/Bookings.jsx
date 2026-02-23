@@ -30,10 +30,10 @@ function Bookings() {
         <ItemHeader title="All Bookings" as="h1" />
         <HeaderActions>
           <BookingTableOperations />
+          <AddBooking />
         </HeaderActions>
       </Row>
       <BookingTable />
-      <AddBooking />
     </>
   );
 }

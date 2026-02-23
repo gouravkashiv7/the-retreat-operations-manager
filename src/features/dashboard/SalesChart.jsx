@@ -126,6 +126,8 @@ function SalesChart({ bookings, numDays }) {
 
   const { width, height } = getResponsiveValues();
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
+
   const { isDarkMode } = useDarkMode();
   const colors = isDarkMode
     ? {
@@ -151,15 +153,15 @@ function SalesChart({ bookings, numDays }) {
         <AreaChart data={data}>
           <XAxis
             dataKey="label"
-            tick={{ fill: colors.text, fontSize: 12 }}
+            tick={{ fill: colors.text, fontSize: isMobile ? 10 : 12 }}
             tickLine={{ stroke: colors.text }}
             interval="preserveStartEnd"
           />
           <YAxis
             unit="₹"
-            tick={{ fill: colors.text, fontSize: 12 }}
+            tick={{ fill: colors.text, fontSize: isMobile ? 10 : 12 }}
             tickLine={{ stroke: colors.text }}
-            width={60}
+            width={isMobile ? 42 : 60}
           />
           <CartesianGrid strokeDasharray="4" />
           <Tooltip

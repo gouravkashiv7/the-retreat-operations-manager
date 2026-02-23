@@ -1,5 +1,5 @@
 import { PAGE_SIZE } from "../utils/constants";
-import { getToday } from "../utils/helpers";
+import { getToday, getTodayIST } from "../utils/helpers";
 import supabase from "./supabase";
 import { getAccommodationName } from "../utils/helpers";
 
@@ -35,6 +35,8 @@ export async function getBookings({ filter, sortBy, page }) {
 
   //Filter
   if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
+  // Always exclude admin blocks (guestId = 1) from the bookings list
+  query = query.neq("guestId", 1);
   //Sort
   if (sortBy)
     query = query.order(sortBy.field, {
@@ -201,11 +203,13 @@ export async function getStaysTodayActivity() {
     throw new Error("Bookings could not get loaded");
   }
 
-  // Then filter manually for today
-  const today = new Date().toISOString().split("T")[0];
+  // Then filter manually for today — use IST date to avoid midnight boundary issues
+  const today = getTodayIST(); // e.g. "2026-02-23" in IST
   const todayActivity = (data || []).filter((booking) => {
-    const startDate = new Date(booking.startDate).toISOString().split("T")[0];
-    const endDate = new Date(booking.endDate).toISOString().split("T")[0];
+    // booking.startDate and endDate are stored as date strings ("YYYY-MM-DD")
+    // Direct string comparison is correct here since they have no time component
+    const startDate = booking.startDate?.split("T")[0];
+    const endDate = booking.endDate?.split("T")[0];
 
     return (
       (booking.status === "unconfirmed" && startDate === today) ||

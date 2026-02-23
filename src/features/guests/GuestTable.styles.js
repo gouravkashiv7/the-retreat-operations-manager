@@ -1,86 +1,48 @@
 import styled from "styled-components";
 
-export const Table = styled.div`
+/* ── Desktop table ── */
+export const DesktopTable = styled.div`
   background: var(--color-grey-0);
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   width: 100%;
-  min-width: 1000px;
   border: 1px solid var(--color-grey-100);
-  transition: all 0.2s ease;
 
-  /* Desktop - allow horizontal scroll on smaller screens */
-  @media (max-width: 1200px) {
-    min-width: 1000px;
-    overflow-x: auto;
-  }
-
-  /* Tablet - smaller min-width */
-  @media (max-width: 1024px) {
-    min-width: 900px;
-  }
-
-  /* Large Mobile - switch to vertical layout */
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-    min-width: unset;
-    overflow-x: visible;
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-xs);
-    border: 1px solid var(--color-grey-200);
-    background: transparent;
-  }
-
-  /* Mobile */
-  @media (max-width: 480px) {
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--color-grey-200);
+  @media (max-width: 640px) {
+    display: none;
   }
 `;
 
 export const TableHeader = styled.div`
   display: grid;
-  grid-template-columns: 120px 1.2fr 2.5fr 1.5fr 1fr 100px;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
+  grid-template-columns: 80px 1.4fr 2fr 1.4fr 1fr 60px;
+  gap: 1.2rem;
+  padding: 1.4rem 2rem;
   background-color: var(--color-grey-50);
-  border-bottom: 1px solid var(--color-grey-200);
-  font-weight: 600;
-  color: var(--color-grey-700);
+  border-bottom: 2px solid var(--color-grey-200);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-grey-500);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
   align-items: center;
-  transition: all 0.2s ease;
 
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    background-color: var(--color-dark-500);
-    border-bottom-color: var(--color-dark-300);
-    color: var(--color-grey-300);
-  `}
-
-  /* Tablet */
-  @media (max-width: 1024px) {
-    padding: 1.2rem 1.5rem;
-    gap: 0.8rem;
-  }
-
-  /* Mobile - hide header completely */
-  @media (max-width: 768px) {
-    display: none;
+  @media (max-width: 900px) {
+    grid-template-columns: 60px 1.2fr 1.8fr 1.2fr 1fr 50px;
+    padding: 1.2rem 1.6rem;
   }
 `;
 
 export const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 120px 1.2fr 2.5fr 1.5fr 1fr 100px;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
+  grid-template-columns: 80px 1.4fr 2fr 1.4fr 1fr 60px;
+  gap: 1.2rem;
+  padding: 1.4rem 2rem;
   border-bottom: 1px solid var(--color-grey-100);
-  align-items: start;
+  align-items: center;
   background: var(--color-grey-0);
-  transition: all 0.2s ease;
+  transition: background 0.15s;
 
   &:last-child {
     border-bottom: none;
@@ -90,434 +52,170 @@ export const TableRow = styled.div`
     background-color: var(--color-grey-50);
   }
 
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    background: var(--color-dark-600);
-    border-bottom-color: var(--color-dark-400);
-    
-    &:hover {
-      background-color: var(--color-dark-500);
-    }
-  `}
-
-  /* Tablet */
-  @media (max-width: 1024px) {
-    padding: 1.2rem 1.5rem;
-    gap: 0.8rem;
-  }
-
-  /* Mobile - switch to card layout */
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 0.8rem;
-    gap: 1.2rem;
-    padding: 1.8rem 1.5rem;
-    border-bottom: 1px solid var(--color-grey-200);
-    background: var(--color-grey-0);
-    margin: 0.5rem;
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-xs);
-    align-items: baseline;
-
-    &:last-child {
-      border-bottom: 1px solid var(--color-grey-200);
-    }
-
-    &:hover {
-      background-color: var(--color-grey-0);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Dark mode mobile */
-    ${(props) =>
-      props.theme === "dark" &&
-      `
-      background: var(--color-dark-600);
-      border-bottom-color: var(--color-dark-400);
-      
-      &:hover {
-        background: var(--color-dark-600);
-        box-shadow: var(--shadow-sm-dark);
-      }
-    `}
-  }
-
-  /* Small Mobile */
-  @media (max-width: 480px) {
-    padding: 1.5rem 1.2rem;
-    margin-bottom: 0.6rem;
-    gap: 1rem;
-    margin: 0.3rem;
-    border-radius: var(--border-radius-xs);
-  }
-
-  /* Very Small Mobile */
-  @media (max-width: 360px) {
-    padding: 1.2rem 1rem;
-    gap: 0.8rem;
+  @media (max-width: 900px) {
+    grid-template-columns: 60px 1.2fr 1.8fr 1.2fr 1fr 50px;
+    padding: 1.2rem 1.6rem;
   }
 `;
 
-export const Cell = styled.div`
+/* ── Mobile card list ── */
+export const MobileCardList = styled.div`
+  display: none;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  @media (max-width: 640px) {
+    display: flex;
+  }
+`;
+
+export const GuestCard = styled.div`
+  background: var(--color-grey-0);
+  border: 1px solid var(--color-grey-100);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+`;
+
+export const GuestCardHeader = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.4rem 1.6rem 1rem;
+  gap: 1.2rem;
+`;
+
+export const GuestCardName = styled.div`
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--color-grey-700);
+  line-height: 1.3;
+`;
+
+export const GuestCardEmail = styled.div`
+  font-size: 1.3rem;
+  color: var(--color-grey-500);
+  margin-top: 0.2rem;
+  word-break: break-all;
+`;
+
+export const GuestCardIdBadge = styled.div`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-grey-500);
+  background: var(--color-grey-100);
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+`;
+
+export const GuestCardGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.6rem;
+  padding: 0.8rem 1.6rem 1.2rem;
+  border-top: 1px solid var(--color-grey-100);
+  background: var(--color-grey-50);
+`;
+
+export const GuestCardField = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 40px;
-  justify-content: center;
-  border-right: 1px solid var(--color-grey-100);
-  transition: all 0.2s ease;
+  gap: 0.2rem;
 
-  &:last-child {
-    border-right: none;
-  }
-
-  & > * {
-    width: 100%;
-  }
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    border-right-color: var(--color-dark-400);
-  `}
-
-  /* Mobile - card layout */
-  @media (max-width: 768px) {
-    border-right: none;
-    border-bottom: none;
-    padding-bottom: 0;
-    min-height: auto;
-    width: 100%;
-
-    /* Header section - ID and Name side by side */
-    &.id,
-    &.actions {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      width: auto;
-      order: 1;
-    }
-
-    &.id {
-      margin-right: auto; /* Push to left */
-    }
-
-    &.actions {
-      margin-left: auto; /* Push to right */
-    }
-
-    /* Move name below */
-    &.name {
-      order: 2;
-      width: 100%;
-      margin-top: 0.5rem;
-      display: flex;
-      flex-direction: row;
-    }
-
-    /* Contact info - full width */
-    &.email {
-      order: 3;
-      padding: 0.8rem 0;
-      border-top: 1px solid var(--color-grey-100);
-      border-bottom: 1px solid var(--color-grey-100);
-      background: var(--color-grey-50);
-      margin: 0 -1.5rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-
-      /* Dark mode */
-      ${(props) =>
-        props.theme === "dark" &&
-        `
-        border-top-color: var(--color-dark-400);
-        border-bottom-color: var(--color-dark-400);
-        background: var(--color-dark-500);
-      `}
-    }
-
-    /* National ID and Bookings side by side */
-    &.nationalId,
-    &.bookings {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 0.5rem 0;
-      order: 5;
-      width: 100%;
-    }
-
-    &.nationalId {
-      order: 4;
-    }
-
-    &.bookings {
-      order: 5;
-    }
-
-    /* Actions - full width at bottom */
-    &.actions {
-      grid-area: unset;
-    }
-  }
-
-  /* Small Mobile adjustments */
-  @media (max-width: 480px) {
-    &.id,
-    &.name {
-      gap: 0.8rem;
-    }
-
-    &.email {
-      margin: 0 -1.2rem;
-      padding-left: 1.2rem;
-      padding-right: 1.2rem;
-    }
-
-    &.nationalId,
-    &.bookings {
-      gap: 0.8rem;
-      padding: 0.3rem 0;
-    }
-
-    &.actions {
-      padding-top: 0.8rem;
-    }
-  }
-
-  /* Very Small Mobile */
-  @media (max-width: 360px) {
-    &.id,
-    &.name {
-      gap: 0.6rem;
-    }
-
-    &.email {
-      margin: 0 -1rem;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    &.nationalId,
-    &.bookings {
-      gap: 0.6rem;
-    }
-  }
-`;
-
-export const MobileLabel = styled.span`
-  display: none;
-  font-weight: 600;
-  color: var(--color-grey-700);
-  font-size: 1.3rem;
-  min-width: 85px;
-  transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    color: var(--color-grey-400);
-  `}
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-
-  /* Small Mobile */
-  @media (max-width: 480px) {
-    font-size: 1.2rem;
-    min-width: 75px;
-  }
-
-  /* Very Small Mobile */
-  @media (max-width: 360px) {
+  & .label {
     font-size: 1.1rem;
-    min-width: 70px;
+    font-weight: 700;
+    color: var(--color-grey-400);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  & .value {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--color-grey-700);
+    word-break: break-word;
   }
 `;
 
+export const GuestCardFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.6rem;
+  border-top: 1px solid var(--color-grey-100);
+  gap: 0.8rem;
+  flex-wrap: wrap;
+`;
+
+export const BookingBadges = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+/* ── Desktop cell types ── */
 export const Name = styled.div`
   font-weight: 600;
   color: var(--color-grey-800);
   font-size: 1.4rem;
-  line-height: 1.3;
-  transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    color: var(--color-grey-100);
-  `}
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.4rem;
-  }
 `;
 
 export const Email = styled.div`
   color: var(--color-grey-600);
-  font-size: 1.4rem;
-  line-height: 1.3;
+  font-size: 1.3rem;
   word-break: break-word;
-  transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    color: var(--color-grey-400);
-  `}
-
-  @media (max-width: 768px) {
-    font-size: 1.3rem;
-  }
 `;
 
 export const Detail = styled.div`
-  color: var(--color-grey-700);
-  font-size: 1.4rem;
-  line-height: 1.3;
-  transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    color: var(--color-grey-300);
-  `}
-
-  @media (max-width: 768px) {
-    font-size: 1.3rem;
-  }
+  color: var(--color-grey-600);
+  font-size: 1.3rem;
 `;
 
 export const GuestId = styled.div`
-  font-size: 1.4rem;
-  font-weight: 500;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-grey-600);
+  background: var(--color-grey-100);
+  padding: 0.3rem 0.6rem;
+  border-radius: 100px;
   text-align: center;
-  background: var(--color-grey-50);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--color-grey-200);
-  color: var(--color-grey-700);
-  transition: all 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    background: var(--color-dark-500);
-    border-color: var(--color-dark-400);
-    color: var(--color-grey-300);
-  `}
-
-  @media (max-width: 768px) {
-    font-size: 1.3rem;
-    padding: 0.3rem 0.6rem;
-  }
 `;
 
 export const BookingId = styled.div`
   color: var(--color-brand-600);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.3rem;
-  line-height: 1.4;
-  transition: color 0.2s ease;
+  background: var(--color-brand-50, #eef2ff);
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  display: inline-block;
 
-  /* Dark mode */
-  ${(props) =>
-    props.theme === "dark" &&
-    `
-    color: var(--color-brand-400);
-  `}
-
-  &:not(:last-child) {
-    margin-bottom: 0.3rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
 export const BookingContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
 `;
 
 export const ActionsContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  align-items: center; /* Ensure vertical center */
-
-  @media (max-width: 768px) {
-    justify-content: center;
-    align-items: center; /* Center vertically */
-    height: 100%; /* Take full height of parent */
-  }
+  justify-content: center;
+  align-items: center;
 `;
 
-// Additional mobile-specific components
-export const MobileCard = styled.div`
-  @media (max-width: 768px) {
-    background: var(--color-grey-0);
-    border-radius: var(--border-radius-sm);
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    box-shadow: var(--shadow-xs);
-    transition: all 0.2s ease;
-
-    /* Dark mode */
-    ${(props) =>
-      props.theme === "dark" &&
-      `
-      background: var(--color-dark-600);
-      box-shadow: var(--shadow-xs-dark);
-    `}
-  }
+// Keep old exports for backward compat
+export const Cell = styled.div``;
+export const MobileLabel = styled.span`
+  display: none;
 `;
-
-export const InfoRow = styled.div`
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 0.5rem 0;
-    transition: border-color 0.2s ease;
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--color-grey-100);
-    }
-
-    /* Dark mode */
-    ${(props) =>
-      props.theme === "dark" &&
-      `
-      &:not(:last-child) {
-        border-bottom-color: var(--color-dark-400);
-      }
-    `}
-  }
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 0.3rem;
-    align-items: stretch;
-  }
-`;
+export const MobileCard = styled.div``;
+export const InfoRow = styled.div``;
+export const Table = DesktopTable;

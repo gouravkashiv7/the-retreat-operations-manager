@@ -25,6 +25,21 @@ export async function getOrders() {
   return data;
 }
 
+export async function getOrdersByBookingId(bookingId) {
+  const { data, error } = await supabase
+    .from("orders")
+    .select(`*, order_items(*, menu_items(*))`)
+    .eq("bookingId", bookingId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    throw new Error("Orders could not be loaded.");
+  }
+
+  return data;
+}
+
 export async function getCheckedInBookings() {
   const { data, error } = await supabase
     .from("bookings")

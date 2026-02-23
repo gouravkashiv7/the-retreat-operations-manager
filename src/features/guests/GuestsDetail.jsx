@@ -35,11 +35,14 @@ function GuestsDetail() {
     }
   };
 
+  // Exclude the internal admin block guest (id=1)
+  const visibleGuests = guests?.filter((g) => g.id !== 1);
+
   const displayGuests =
     searchQuery.trim() && searchGuestsMutation.data
-      ? searchGuestsMutation.data
+      ? searchGuestsMutation.data.filter((g) => g.id !== 1)
       : searchQuery.trim()
-        ? guests?.filter(
+        ? visibleGuests?.filter(
             (guest) =>
               guest.fullName
                 ?.toLowerCase()
@@ -50,7 +53,7 @@ function GuestsDetail() {
                 .includes(searchQuery.toLowerCase()) ||
               guest.id?.toString().includes(searchQuery),
           ) || []
-        : guests;
+        : visibleGuests;
 
   if (isLoading) return <Spinner />;
   if (error) return <div>Error: {error.message}</div>;
@@ -83,18 +86,18 @@ function GuestsDetail() {
 
       <Stats>
         <StatCard>
-          <StatNumber>{guests?.length || 0}</StatNumber>
+          <StatNumber>{visibleGuests?.length || 0}</StatNumber>
           <StatLabel>Total Guests</StatLabel>
         </StatCard>
         <StatCard>
           <StatNumber>
-            {guests?.filter((guest) => guest.email).length || 0}
+            {visibleGuests?.filter((guest) => guest.email).length || 0}
           </StatNumber>
           <StatLabel>With Email ID</StatLabel>
         </StatCard>
         <StatCard>
           <StatNumber>
-            {guests?.filter((guest) => guest.phone).length || 0}
+            {visibleGuests?.filter((guest) => guest.phone).length || 0}
           </StatNumber>
           <StatLabel>With Phone Number</StatLabel>
         </StatCard>

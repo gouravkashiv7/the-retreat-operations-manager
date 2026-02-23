@@ -154,16 +154,16 @@ export const Stats = styled.div`
     margin-bottom: 2rem;
   }
 
-  /* Small Mobile */
+  /* Small Mobile - 3 equal compact columns */
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
     margin-bottom: 1.5rem;
   }
 
   /* Very Small Mobile */
   @media (max-width: 360px) {
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 `;
 

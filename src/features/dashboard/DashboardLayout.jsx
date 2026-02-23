@@ -73,12 +73,42 @@ const StyledDashboardLayout = styled.div`
 
   /* Mobile */
   @media (max-width: 480px) {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
-  /* Very Small Mobile */
-  @media (max-width: 360px) {
-    gap: 1rem;
+  /* Very Small Mobile — single column for stats */
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+
+    & > *:nth-child(1) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(2) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(3) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(4) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(5) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(6) {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    & > *:nth-child(7) {
+      grid-column: 1;
+      grid-row: auto;
+    }
   }
 `;
 
