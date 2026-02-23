@@ -106,6 +106,18 @@ const AccommodationName = styled.h3`
   }
 `;
 
+const CalendarMonth = styled.span`
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--color-grey-400);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  @media (max-width: 600px) {
+    font-size: 1.4rem;
+  }
+`;
+
 const AccommodationDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-grey-500);
@@ -553,7 +565,16 @@ function CalendarBox({
       ) : null}
 
       <BoxHeader>
-        <AccommodationName>{item.name}</AccommodationName>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "baseline",
+          }}
+        >
+          <AccommodationName>{item.name}</AccommodationName>
+          <CalendarMonth>{format(month, "MMMM yyyy")}</CalendarMonth>
+        </div>
         {item.description && (
           <AccommodationDescription>
             {item.description}
