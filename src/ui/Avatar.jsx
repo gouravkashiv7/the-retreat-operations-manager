@@ -39,8 +39,20 @@ const InitialsFallback = styled.div`
 function Avatar({ src, fullName, alt, size = "4rem", fontSize = "1.4rem" }) {
   // If we have an avatar URL and it's not the generic default, display the image
   if (src && src !== "default-user.jpg") {
+    // Extract numeric value from size string (e.g., "3.6rem" -> 36 assuming 10px base)
+    const numericSize = size.includes("rem")
+      ? parseFloat(size) * 10
+      : parseInt(size) || 40;
+
     return (
-      <StyledImg src={src} alt={alt || `Avatar of ${fullName}`} $size={size} />
+      <StyledImg
+        src={src}
+        alt={alt || `Avatar of ${fullName}`}
+        $size={size}
+        width={numericSize}
+        height={numericSize}
+        loading="lazy"
+      />
     );
   }
 

@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { useOrders } from "../orders/useOrders";
 import { useParams } from "react-router-dom";
 import { useMoveBack } from "../../hooks/useMoveBack";
@@ -408,11 +406,26 @@ function BookingReceipt() {
       // Force light mode for the capture
       element.classList.add("light-mode-forced");
 
+      // Dynamic imports for heavy libraries
+      const [html2canvas, { jsPDF }] = await Promise.all([
+        import("html2canvas").then((m) => m.default),
+        import("jspdf"),
+      ]);
+
       const canvas = await html2canvas(element, {
         scale: 2, // Higher quality
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
+        windowWidth: 1024,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.querySelector(".light-mode-forced");
+          if (el) {
+            el.style.width = "800px";
+            el.style.maxWidth = "800px";
+            el.style.padding = "4.8rem";
+          }
+        },
       });
 
       // Remove light mode force after capture
@@ -756,7 +769,13 @@ function BookingReceipt() {
           </div>
 
           <SignatureBox>
-            <img src="/validation.png" alt="Authorized Signature" />
+            <img
+              src="/validation.png"
+              alt="Authorized Signature"
+              width="122"
+              height="60"
+              loading="lazy"
+            />
             <span>Authorized Signatory</span>
           </SignatureBox>
         </ReceiptFooter>

@@ -15,7 +15,13 @@ function Logo() {
   const src = isDarkMode ? "/logo-darkw.png" : "/logo-light.png";
   return (
     <StyledLogo>
-      <Img src={src} alt="Logo" />
+      <Img
+        src={src}
+        alt="The Retreat Cottage Logo"
+        width="144"
+        height="96"
+        fetchpriority="high"
+      />
     </StyledLogo>
   );
 }
