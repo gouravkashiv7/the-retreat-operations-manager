@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { useCreateGuest, useUpdateGuest } from "./useGuests";
 import Button from "../../ui/Button";
 import Spinner from "../../ui/Spinner";
+import supabase from "../../services/supabase";
+import toast from "react-hot-toast";
+import { HiOutlineIdentification, HiMiniSparkles } from "react-icons/hi2";
 import {
   Form,
   FormRow,
@@ -17,6 +20,11 @@ import {
   FullWidth,
   FormHeader,
   RequiredIndicator,
+  ScanSection,
+  ScanTitle,
+  ScanButton,
+  HiddenInput,
+  ScanningOverlay,
 } from "./GuestForm.styles";
 
 const COUNTRIES = [
@@ -56,12 +64,15 @@ function GuestForm({ guest, onCloseModal }) {
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
+    setValue,
   } = useForm();
   const createGuestMutation = useCreateGuest();
   const updateGuestMutation = useUpdateGuest();
 
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedIdType, setSelectedIdType] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
     if (guest) {
@@ -97,7 +108,7 @@ function GuestForm({ guest, onCloseModal }) {
             reset();
             onCloseModal?.();
           },
-        }
+        },
       );
     } else {
       createGuestMutation.mutate(guestData, {
@@ -109,9 +120,106 @@ function GuestForm({ guest, onCloseModal }) {
     }
   };
 
+  const handleScan = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsScanning(true);
+    const toastId = toast.loading("Scanning ID document...");
+
+    try {
+      // 1. Convert image to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve) => {
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+      const base64Image = await base64Promise;
+
+      // 2. Call the Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke(
+        "extract-id-data",
+        {
+          body: { image: base64Image },
+        },
+      );
+
+      if (error) throw error;
+
+      // 3. Populate form fields using setValue for individual updates
+      if (data.fullName) setValue("fullName", data.fullName);
+      if (data.nationalId) setValue("nationalId", data.nationalId);
+      if (data.address) setValue("address", data.address);
+
+      // Handle selects separately
+      if (data.idType) {
+        // Map to our ID_TYPES
+        const matchedType = ID_TYPES.find(
+          (t) => t.toLowerCase() === data.idType.toLowerCase(),
+        );
+        if (matchedType) {
+          setSelectedIdType(matchedType);
+          setValue("idType", matchedType);
+        }
+      }
+
+      if (data.country) {
+        // Map to our COUNTRIES
+        const matchedCountry = COUNTRIES.find((c) =>
+          c.toLowerCase().includes(data.country.toLowerCase()),
+        );
+        if (matchedCountry) {
+          setSelectedCountry(matchedCountry);
+          setValue("country", matchedCountry);
+        }
+      }
+
+      toast.success("ID scanned and data autofilled!", { id: toastId });
+    } catch (err) {
+      console.error("Scan Error:", err);
+      toast.error("Failed to scan ID. Please fill the form manually.", {
+        id: toastId,
+      });
+    } finally {
+      setIsScanning(false);
+      // Clear input so same file can be scanned again if needed
+      e.target.value = "";
+    }
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormHeader>{guest ? "Edit Guest" : "Add New Guest"}</FormHeader>
+
+      {!guest && (
+        <ScanSection>
+          <ScanTitle>
+            <HiOutlineIdentification size={24} />
+            Autofill with ID Picture
+          </ScanTitle>
+          {isScanning ? (
+            <ScanningOverlay>
+              <Spinner size="large" />
+              <span>AI is analyzing the document...</span>
+            </ScanningOverlay>
+          ) : (
+            <ScanButton
+              type="button"
+              onClick={() => document.getElementById("id-scan-input").click()}
+            >
+              <HiMiniSparkles />
+              Upload Photo for Magic Fill
+            </ScanButton>
+          )}
+          <HiddenInput
+            id="id-scan-input"
+            type="file"
+            accept="image/*"
+            onChange={handleScan}
+            disabled={isScanning}
+          />
+        </ScanSection>
+      )}
 
       <FormRow>
         <FormGroup>

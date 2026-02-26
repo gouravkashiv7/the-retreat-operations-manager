@@ -37,6 +37,9 @@ const Calendar = lazy(() => import("./pages/Calendar"));
 const Receipts = lazy(() => import("./pages/Receipts"));
 const Receipt = lazy(() => import("./pages/Receipt"));
 
+import { ThemeProvider } from "styled-components";
+import { useDarkMode } from "./context/DarkModeContext";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -59,102 +62,114 @@ const PageLoader = () => (
   </div>
 );
 
+function AppWrapper({ children }) {
+  const { isDarkMode } = useDarkMode();
+  const theme = { name: isDarkMode ? "dark" : "light", darkMode: isDarkMode };
+
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+}
+
 function App() {
   return (
     <DarkModeProvider>
       <MobileProvider>
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <GlobalStyles />
-          <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route
-                  element={
-                    <ProtectedRoute>
-                      <Suspense fallback={<PageLoader />}>
-                        <AppLayout />
-                      </Suspense>
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route index element={<Navigate replace to="dashboard" />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="account" element={<Account />} />
-
-                  {/* Admin, Staff, and Guests can access most things */}
+          <AppWrapper>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <GlobalStyles />
+            <BrowserRouter>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
                   <Route
                     element={
-                      <ProtectedRoute
-                        allowedRoles={["admin", "staff", "guest"]}
-                      >
-                        <Outlet />
+                      <ProtectedRoute>
+                        <Suspense fallback={<PageLoader />}>
+                          <AppLayout />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   >
-                    <Route path="guests" element={<Guests />} />
-                    <Route path="bookings" element={<Bookings />} />
-                    <Route path="bookings/:bookingId" element={<Booking />} />
-                    <Route path="checkin/:bookingId" element={<Checkin />} />
-                    <Route path="rooms" element={<Rooms />} />
-                    <Route path="cabins" element={<Cabins />} />
-                    <Route path="receipts" element={<Receipts />} />
-                    <Route path="receipts/:bookingId" element={<Receipt />} />
-                  </Route>
+                    <Route
+                      index
+                      element={<Navigate replace to="dashboard" />}
+                    />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="account" element={<Account />} />
 
-                  {/* Cook has access to the Menu/Orders, guests can look at it too */}
-                  <Route
-                    element={
-                      <ProtectedRoute
-                        allowedRoles={["admin", "staff", "cook", "guest"]}
-                      >
-                        <Outlet />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route path="menu" element={<Menu />} />
-                    <Route path="orders" element={<Orders />} />
-                  </Route>
+                    {/* Admin, Staff, and Guests can access most things */}
+                    <Route
+                      element={
+                        <ProtectedRoute
+                          allowedRoles={["admin", "staff", "guest"]}
+                        >
+                          <Outlet />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route path="guests" element={<Guests />} />
+                      <Route path="bookings" element={<Bookings />} />
+                      <Route path="bookings/:bookingId" element={<Booking />} />
+                      <Route path="checkin/:bookingId" element={<Checkin />} />
+                      <Route path="rooms" element={<Rooms />} />
+                      <Route path="cabins" element={<Cabins />} />
+                      <Route path="receipts" element={<Receipts />} />
+                      <Route path="receipts/:bookingId" element={<Receipt />} />
+                    </Route>
 
-                  {/* Only Admin can manage users and settings */}
-                  <Route
-                    element={
-                      <ProtectedRoute allowedRoles={["admin"]}>
-                        <Outlet />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route path="users" element={<Users />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="calendar" element={<Calendar />} />
+                    {/* Cook has access to the Menu/Orders, guests can look at it too */}
+                    <Route
+                      element={
+                        <ProtectedRoute
+                          allowedRoles={["admin", "staff", "cook", "guest"]}
+                        >
+                          <Outlet />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route path="menu" element={<Menu />} />
+                      <Route path="orders" element={<Orders />} />
+                    </Route>
+
+                    {/* Only Admin can manage users and settings */}
+                    <Route
+                      element={
+                        <ProtectedRoute allowedRoles={["admin"]}>
+                          <Outlet />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route path="users" element={<Users />} />
+                      <Route path="settings" element={<Settings />} />
+                      <Route path="calendar" element={<Calendar />} />
+                    </Route>
                   </Route>
-                </Route>
-                <Route path="login" element={<Login />} />
-                <Route path="guest-menu" element={<GuestMenu />} />
-                <Route path="*" element={<PageNotFound />} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-          <Toaster
-            position="top-center"
-            gutter={12}
-            containerStyle={{ margin: "8px" }}
-            toastOptions={{
-              success: {
-                duration: 3000,
-              },
-              error: {
-                duration: 5000,
-              },
-              style: {
-                fontSize: "16px",
-                padding: "16px 24px",
-                maxWidth: "500px",
-                backgroundColor: "var(--color-grey-0)",
-                color: "var(--color-grey-700)",
-              },
-            }}
-          />
+                  <Route path="login" element={<Login />} />
+                  <Route path="guest-menu" element={<GuestMenu />} />
+                  <Route path="*" element={<PageNotFound />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+            <Toaster
+              position="top-center"
+              gutter={12}
+              containerStyle={{ margin: "8px" }}
+              toastOptions={{
+                success: {
+                  duration: 3000,
+                },
+                error: {
+                  duration: 5000,
+                },
+                style: {
+                  fontSize: "16px",
+                  padding: "16px 24px",
+                  maxWidth: "500px",
+                  backgroundColor: "var(--color-grey-0)",
+                  color: "var(--color-grey-700)",
+                },
+              }}
+            />
+          </AppWrapper>
         </QueryClientProvider>
       </MobileProvider>
     </DarkModeProvider>

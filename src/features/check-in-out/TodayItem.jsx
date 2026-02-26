@@ -111,7 +111,9 @@ function TodayItem({ activity }) {
     <StyledTodayItem>
       {/* ── Desktop grid layout ── */}
       <DesktopTag>
-        {status === "unconfirmed" && <Tag type="green">Arriving</Tag>}
+        {(status === "unconfirmed" || status === "confirmed") && (
+          <Tag type="green">Arriving</Tag>
+        )}
         {status === "checked-in" && <Tag type="blue">Departing</Tag>}
       </DesktopTag>
       <DesktopFlag>
@@ -122,7 +124,7 @@ function TodayItem({ activity }) {
         {numNights === 1 ? "1 night" : `${numNights} nights`}
       </DesktopNights>
       <DesktopAction>
-        {status === "unconfirmed" && (
+        {(status === "unconfirmed" || status === "confirmed") && (
           <Button
             $variation="primary"
             $size="small"
@@ -139,12 +141,14 @@ function TodayItem({ activity }) {
       <CardTop>
         <Flag src={guests.countryFlag} alt={`Flag of ${guests.country}`} />
         <GuestName>{guests.fullName}</GuestName>
-        {status === "unconfirmed" && <Tag type="green">Arriving</Tag>}
+        {(status === "unconfirmed" || status === "confirmed") && (
+          <Tag type="green">Arriving</Tag>
+        )}
         {status === "checked-in" && <Tag type="blue">Departing</Tag>}
       </CardTop>
       <CardBottom>
         <Nights>{numNights === 1 ? "1 night" : `${numNights} nights`}</Nights>
-        {status === "unconfirmed" && (
+        {(status === "unconfirmed" || status === "confirmed") && (
           <Button
             $variation="primary"
             $size="small"

@@ -10,9 +10,9 @@ export const PageLayout = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: var(--color-dark-900);
+    background: var(--color-grey-50);
   `}
 
   /* Tablet */
@@ -76,7 +76,7 @@ export const Title = styled.h1`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     background: linear-gradient(
       135deg,
@@ -209,15 +209,15 @@ export const StatCard = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: linear-gradient(135deg, var(--color-dark-600), var(--color-dark-500));
+    background: linear-gradient(135deg, var(--color-grey-100), var(--color-grey-0));
     border-left-color: var(--color-brand-400);
-    border-color: var(--color-dark-400);
-    box-shadow: var(--shadow-md-dark);
+    border-color: var(--color-grey-200);
+    box-shadow: 0 0.6rem 2.4rem rgba(0, 0, 0, 0.3);
     
     &:hover {
-      box-shadow: var(--shadow-lg-dark);
+      box-shadow: 0 2.4rem 3.2rem rgba(0, 0, 0, 0.4);
     }
 
     &::before {
@@ -263,7 +263,7 @@ export const StatNumber = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-100);
   `}
@@ -298,7 +298,7 @@ export const StatLabel = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-400);
   `}
@@ -349,11 +349,11 @@ export const Card = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: var(--color-dark-600);
-    border-color: var(--color-dark-400);
-    box-shadow: var(--shadow-sm-dark);
+    background: var(--color-grey-100);
+    border-color: var(--color-grey-300);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   `}
 
   /* Mobile */

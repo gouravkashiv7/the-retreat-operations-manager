@@ -195,7 +195,7 @@ export async function getStaysTodayActivity() {
   const { data, error } = await supabase
     .from("bookings")
     .select("*, guests(fullName, country, countryFlag)")
-    .in("status", ["unconfirmed", "checked-in"])
+    .in("status", ["unconfirmed", "confirmed", "checked-in"])
     .order("created_at");
 
   if (error) {
@@ -212,7 +212,8 @@ export async function getStaysTodayActivity() {
     const endDate = booking.endDate?.split("T")[0];
 
     return (
-      (booking.status === "unconfirmed" && startDate === today) ||
+      ((booking.status === "unconfirmed" || booking.status === "confirmed") &&
+        startDate === today) ||
       (booking.status === "checked-in" && endDate === today)
     );
   });

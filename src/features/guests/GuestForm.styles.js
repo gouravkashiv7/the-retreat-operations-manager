@@ -70,7 +70,7 @@ export const Label = styled.label`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-200);
   `}
@@ -120,16 +120,16 @@ export const Input = styled.input`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: var(--color-dark-600);
-    border-color: var(--color-dark-400);
+    background: var(--color-grey-100);
+    border-color: var(--color-grey-200);
     color: var(--color-grey-100);
 
     &:focus {
       border-color: var(--color-brand-400);
       box-shadow: 0 0 0 4px var(--color-brand-900);
-      background: var(--color-dark-500);
+      background: var(--color-grey-100);
     }
 
     &.error {
@@ -197,16 +197,16 @@ export const Select = styled.select`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: var(--color-dark-600);
-    border-color: var(--color-dark-400);
-    color: var(--color-grey-100);
+    background: var(--color-grey-100);
+    border-color: var(--color-grey-300);
+    color: var(--color-grey-900);
 
     &:focus {
-      border-color: var(--color-brand-400);
-      box-shadow: 0 0 0 4px var(--color-brand-900);
-      background: var(--color-dark-500);
+      border-color: var(--color-brand-600);
+      box-shadow: 0 0 0 4px var(--color-brand-800);
+      background: var(--color-grey-50);
     }
 
     &.error {
@@ -276,16 +276,16 @@ export const TextArea = styled.textarea`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    background: var(--color-dark-600);
-    border-color: var(--color-dark-400);
-    color: var(--color-grey-100);
+    background: var(--color-grey-100);
+    border-color: var(--color-grey-300);
+    color: var(--color-grey-900);
 
     &:focus {
-      border-color: var(--color-brand-400);
-      box-shadow: 0 0 0 4px var(--color-brand-900);
-      background: var(--color-dark-500);
+      border-color: var(--color-brand-600);
+      box-shadow: 0 0 0 4px var(--color-brand-800);
+      background: var(--color-grey-50);
     }
 
     &.error {
@@ -340,7 +340,7 @@ export const ErrorMessage = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-red-400);
   `}
@@ -367,9 +367,9 @@ export const ButtonGroup = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
-    border-top-color: var(--color-dark-400);
+    border-top-color: var(--color-grey-300);
   `}
 
   /* Tablet */
@@ -414,7 +414,7 @@ export const FormHeader = styled.h2`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-100);
   `}
@@ -444,7 +444,7 @@ export const RequiredIndicator = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-red-400);
   `}
@@ -460,7 +460,7 @@ export const FormDescription = styled.p`
 
   /* Dark mode */
   ${(props) =>
-    props.theme === "dark" &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-400);
   `}
@@ -476,4 +476,105 @@ export const FormDescription = styled.p`
     font-size: 1.2rem;
     margin-bottom: 1.2rem;
   }
+`;
+
+export const ScanSection = styled.div`
+  background-color: var(--color-brand-50);
+  border: 2px dashed var(--color-brand-300);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--color-brand-100);
+    border-color: var(--color-brand-400);
+  }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    background-color: var(--color-grey-100);
+    border-color: var(--color-grey-300);
+    
+    &:hover {
+      background-color: var(--color-grey-200);
+      border-color: var(--color-brand-600);
+    }
+  `}
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    gap: 1.2rem;
+  }
+`;
+
+export const ScanTitle = styled.h3`
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-brand-800);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    color: var(--color-brand-400);
+  `}
+`;
+
+export const ScanButton = styled.button`
+  background-color: var(--color-brand-600);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    background-color: var(--color-brand-700);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:disabled {
+    background-color: var(--color-grey-400);
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+export const HiddenInput = styled.input`
+  display: none;
+`;
+
+export const ScanningOverlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-brand-700);
+  font-weight: 600;
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    color: var(--color-brand-400);
+  `}
 `;

@@ -25,7 +25,7 @@ export const RetreatCountSection = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-100);
     border-color: var(--color-grey-300);
@@ -88,7 +88,7 @@ export const RetreatCard = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-0);
     border-color: var(--color-grey-300);
@@ -132,7 +132,7 @@ export const RetreatHeader = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     border-bottom-color: var(--color-grey-300);
   `}
@@ -156,7 +156,7 @@ export const RetreatTitle = styled.h4`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-800);
   `}
@@ -208,7 +208,7 @@ export const DetailLabel = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-500);
   `}
@@ -227,7 +227,7 @@ export const DetailValue = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-700);
   `}
@@ -247,7 +247,7 @@ export const PriceDisplay = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-brand-500);
   `}
@@ -271,7 +271,7 @@ export const ErrorMessage = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-red-400);
     background: var(--color-red-900);
@@ -316,7 +316,7 @@ export const StyledSelect = styled.select`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-0);
     border-color: var(--color-grey-400);
@@ -389,7 +389,7 @@ export const StyledInput = styled.input`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-0);
     border-color: var(--color-grey-400);
@@ -450,7 +450,7 @@ export const RemoveButton = styled.button`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-red-900);
     border-color: var(--color-red-800);
@@ -483,7 +483,7 @@ export const TotalPriceSection = styled.div`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-100);
     border-color: var(--color-grey-300);
@@ -510,7 +510,7 @@ export const TotalPriceLabel = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-800);
   `}
@@ -529,7 +529,7 @@ export const TotalPriceValue = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-brand-500);
   `}
@@ -566,7 +566,7 @@ export const PriceSuffix = styled.span`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     color: var(--color-grey-500);
   `}
@@ -628,7 +628,7 @@ export const NumberButton = styled.button`
 
   /* Dark mode */
   ${(props) =>
-    props.theme.darkMode &&
+    props.theme.name === "dark" &&
     `
     background: var(--color-grey-200);
     border-color: var(--color-grey-400);
