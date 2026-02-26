@@ -11,39 +11,54 @@ import { formatCurrency } from "../../utils/helpers";
 
 const Img = styled.img`
   display: block;
-  width: 6.4rem;
+  width: 100%;
+  max-width: 12rem;
   aspect-ratio: 3 / 2;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.5) translateX(-7px);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: var(--shadow-md);
+  }
 
   @media (max-width: 768px) {
-    width: 4.8rem;
-    transform: scale(1.2) translateX(-4px);
+    max-width: 8rem;
   }
 `;
 
 const ImgPlaceholder = styled.div`
-  width: 6.4rem;
+  width: 100%;
+  max-width: 12rem;
   aspect-ratio: 3 / 2;
   background-color: var(--color-grey-100);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-grey-400);
-  font-size: 2.4rem;
-  border-radius: var(--border-radius-sm);
+  font-size: 3.2rem;
+  border-radius: var(--border-radius-md);
 
   @media (max-width: 768px) {
-    width: 4.8rem;
+    max-width: 8rem;
+    font-size: 2.4rem;
   }
 `;
 
 const Item = styled.div`
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--color-grey-600);
   font-family: "Sono";
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Price = styled.div`

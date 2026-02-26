@@ -33,7 +33,7 @@ function ProtectedRoute({ children, allowedRoles }) {
 
   if (isAuthenticated) {
     if (allowedRoles && allowedRoles.length > 0) {
-      const userRole = user?.user_metadata?.role || "guest";
+      const userRole = user?.app_metadata?.role || "guest";
       if (!allowedRoles.includes(userRole)) {
         toast.error(`You do not have permission to view this page.`);
         // Redirect to dashboard or a safe page

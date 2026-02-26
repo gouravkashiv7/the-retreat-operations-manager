@@ -3,7 +3,7 @@ import { useUser } from "./useUser";
 export function useAuthorization() {
   const { user, isAuthenticated, isLoading } = useUser();
 
-  const role = user?.user_metadata?.role || "guest"; // Default to guest if no role is found
+  const role = user?.app_metadata?.role || "guest"; // Default to guest if no role is found
 
   const isAdmin = role === "admin";
   const isStaff = role === "staff";

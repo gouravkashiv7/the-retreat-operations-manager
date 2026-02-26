@@ -52,11 +52,26 @@ export async function signup({ fullName, email, password, role = "guest" }) {
       data: {
         fullName,
         avatar: "",
-        role,
       },
     },
   });
   if (error) throw new Error(error.message);
+
+  if (data?.user?.id) {
+    // Call RPC using the MAIN client which has the admin's session
+    const { error: rpcError } = await supabase.rpc("set_user_role", {
+      target_user_id: data.user.id,
+      new_role: role,
+    });
+
+    if (rpcError) {
+      console.error("Failed to set user role:", rpcError);
+      throw new Error(
+        "User created but role assignment failed: " + rpcError.message,
+      );
+    }
+  }
+
   return data;
 }
 

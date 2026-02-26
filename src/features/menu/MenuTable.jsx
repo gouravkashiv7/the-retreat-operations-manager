@@ -210,7 +210,7 @@ function MenuTable() {
       <DesktopTable>
         <Table
           columns={
-            isGuest ? "0.6fr 1.8fr 1.2fr 1fr" : "0.6fr 1.8fr 1.2fr 1fr 0.5fr"
+            isGuest ? "12rem 1.8fr 1.2fr 1fr" : "12rem 1.8fr 1.2fr 1fr 0.5fr"
           }
         >
           <Table.Header>

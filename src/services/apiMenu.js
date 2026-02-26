@@ -31,22 +31,36 @@ export async function deleteMenuItem(id) {
 }
 
 export async function createUpdateMenuItem(newItem, id) {
-  const hasImagePath = newItem.image?.startsWith?.(supabaseUrl);
+  // 1. Check if we have a new image file or just a string path
+  const isImageFile = newItem.image instanceof File;
+  const hasImagePath =
+    typeof newItem.image === "string" &&
+    newItem.image?.startsWith?.(supabaseUrl);
 
-  const imageName = newItem.image?.name
-    ? `${Math.random()}-${newItem.image.name}`.replaceAll("/", "")
-    : "";
+  let imagePath = newItem.image;
+  let imageName;
 
-  const imagePath = hasImagePath
-    ? newItem.image
-    : imageName
-      ? `${supabaseUrl}/storage/v1/object/public/menu-images/${imageName}`
-      : newItem.image; // Fallback to whatever it is if no new file is provided
+  // 2. If it's a new file, generate name and path
+  if (isImageFile) {
+    imageName = `${Math.random()}-${newItem.image.name}`.replaceAll("/", "");
+    imagePath = `${supabaseUrl}/storage/v1/object/public/menu-images/${imageName}`;
+  }
 
-  // 1. Create/edit menu item
+  // 3. Get the old item if we are updating, to delete old image later
+  let oldItem = null;
+  if (id && isImageFile) {
+    const { data } = await supabase
+      .from("menu_items")
+      .select("image")
+      .eq("id", id)
+      .single();
+    oldItem = data;
+  }
+
+  // 4. Create/edit menu item
   let query = supabase.from("menu_items");
 
-  // Prepare data (strip internal fields that shouldn't be updated manually)
+  // Prepare data
   const { id: _id, created_at, ...updateData } = newItem;
   const finalData = { ...updateData, image: imagePath };
 
@@ -63,20 +77,29 @@ export async function createUpdateMenuItem(newItem, id) {
     throw new Error(`Menu item could not be ${id ? "updated" : "created"}`);
   }
 
-  // 2. Upload image only if it's a new file
-  if (hasImagePath || !imageName) return data;
+  // 5. Upload image only if it's a new file
+  if (!isImageFile) return data;
 
   const { error: storageError } = await supabase.storage
     .from("menu-images")
     .upload(imageName, newItem.image);
 
-  // 3. Delete the menu item IF there was an error uploading image (only for new creations)
+  // 6. Error handling for storage
   if (storageError) {
+    // If it was a new creation, rollback the database entry
     if (!id) await supabase.from("menu_items").delete().eq("id", data.id);
-    console.error(storageError);
+    console.error("Storage Error Details:", storageError);
     throw new Error(
-      "Menu item image could not be uploaded and the item was not saved",
+      `Menu item image could not be uploaded (${storageError.message || "Unknown error"}) and the item was not saved`,
     );
+  }
+
+  // 7. Delete old image if a new one was successfully uploaded
+  if (oldItem?.image) {
+    const oldImageName = oldItem.image.split("/").pop();
+    if (oldImageName) {
+      await supabase.storage.from("menu-images").remove([oldImageName]);
+    }
   }
 
   return data;

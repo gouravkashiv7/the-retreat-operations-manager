@@ -20,7 +20,7 @@ function Logo() {
         alt="The Retreat Cottage Logo"
         width="144"
         height="96"
-        fetchpriority="high"
+        fetchPriority="high"
       />
     </StyledLogo>
   );
