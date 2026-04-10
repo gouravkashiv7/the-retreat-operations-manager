@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HiPencil } from "react-icons/hi2";
+import { HiPencil, HiOutlineIdentification } from "react-icons/hi2";
 import Modal from "../../ui/Modal";
 import Menus from "../../ui/Menus";
 import Button from "../../ui/Button";
@@ -68,6 +68,25 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                 <div>
                   <Detail>{guest.idType || "—"}</Detail>
                   <Detail>{guest.nationalId || "N/A"}</Detail>
+                  {guest.guestIDCard && (
+                    <a
+                      href={guest.guestIDCard}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        color: "var(--color-brand-600)",
+                        fontSize: "1rem",
+                        marginTop: "0.4rem",
+                        fontWeight: "600",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      <HiOutlineIdentification /> View ID Document
+                    </a>
+                  )}
                 </div>
 
                 <BookingContainer>
@@ -138,6 +157,24 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                   <span className="value">
                     {guest.idType ? `${guest.idType}: ` : ""}
                     {guest.nationalId || "N/A"}
+                    {guest.guestIDCard && (
+                      <a
+                        href={guest.guestIDCard}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.4rem",
+                          color: "var(--color-brand-600)",
+                          fontSize: "1.1rem",
+                          marginTop: "0.4rem",
+                          textDecoration: "underline"
+                        }}
+                      >
+                        <HiOutlineIdentification /> View ID
+                      </a>
+                    )}
                   </span>
                 </GuestCardField>
                 <GuestCardField style={{ gridColumn: "1 / -1" }}>

@@ -73,8 +73,8 @@ function BookingRow({
   const { isGuest } = useAuthorization();
 
   return (
-    <Table.Row>
-      <Modal>
+    <Modal>
+      <Table.Row>
         <Accomodation>{accommodationName}</Accomodation>
 
         <Stacked>
@@ -151,8 +151,8 @@ function BookingRow({
             </Modal.Window>
           </>
         )}
-      </Modal>
-    </Table.Row>
+      </Table.Row>
+    </Modal>
   );
 }
 

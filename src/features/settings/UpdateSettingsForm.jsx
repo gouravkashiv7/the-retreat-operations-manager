@@ -17,8 +17,10 @@ function UpdateSettingsForm() {
       maxGuestsPerBooking,
       breakfastPrice,
       extraGuestPrice,
+      syncTillDate,
     } = {},
   } = useItems("settings", getSettings);
+
 
   const { isUpdating, updateSetting } = useUpdateSetting();
   const { isGuest } = useAuthorization();
@@ -77,6 +79,16 @@ function UpdateSettingsForm() {
           onBlur={(e) => handleSubmit(e, "extraGuestPrice")}
         />
       </FormRow>
+      <FormRow label="Synchronize external calendars until">
+        <Input
+          type="date"
+          id="syncTillDate"
+          disabled={isUpdating || isGuest}
+          defaultValue={syncTillDate}
+          onBlur={(e) => handleSubmit(e, "syncTillDate")}
+        />
+      </FormRow>
+
     </Form>
   );
 }

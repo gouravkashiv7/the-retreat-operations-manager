@@ -1,4 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+
 import styled from "styled-components";
 import { HiArrowDownTray } from "react-icons/hi2";
 import { FaFacebook, FaYoutube, FaInstagram, FaGlobe } from "react-icons/fa";
@@ -160,6 +162,14 @@ function GuestMenuDisplay() {
   const menuRef = useRef();
   const [isGenerating, setIsGenerating] = useState(false);
   const { isLoading, items: menuItems } = useItems("menu", getMenuItems);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (!isLoading && menuItems?.length > 0 && searchParams.get("download") === "true") {
+      handleDownloadPDF();
+    }
+  }, [isLoading, menuItems, searchParams]);
+
 
   if (isLoading) return <Spinner />;
   if (!menuItems?.length) return <Empty resourceName="menu" />;

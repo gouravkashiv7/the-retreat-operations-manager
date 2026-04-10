@@ -124,7 +124,7 @@ export const Input = styled.input`
     `
     background: var(--color-grey-100);
     border-color: var(--color-grey-200);
-    color: var(--color-grey-100);
+    color: var(--color-grey-900);
 
     &:focus {
       border-color: var(--color-brand-400);
@@ -201,7 +201,7 @@ export const Select = styled.select`
     `
     background: var(--color-grey-100);
     border-color: var(--color-grey-300);
-    color: var(--color-grey-900);
+    color: var(--color-grey-800);
 
     &:focus {
       border-color: var(--color-brand-600);
@@ -280,7 +280,7 @@ export const TextArea = styled.textarea`
     `
     background: var(--color-grey-100);
     border-color: var(--color-grey-300);
-    color: var(--color-grey-900);
+    color: var(--color-grey-800);
 
     &:focus {
       border-color: var(--color-brand-600);
@@ -576,5 +576,217 @@ export const ScanningOverlay = styled.div`
     props.theme.name === "dark" &&
     `
     color: var(--color-brand-400);
+  `}
+`;
+
+// ==========================================
+// Wizard / 2-Step Added Components
+// ==========================================
+
+export const WizardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  width: 100%;
+`;
+
+export const WizardHeader = styled.div`
+  text-align: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--color-grey-900);
+    margin-bottom: 0.8rem;
+  }
+
+  p {
+    color: var(--color-grey-600);
+    font-size: 1.5rem;
+  }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    h2 { color: var(--color-grey-100); }
+    p { color: var(--color-grey-400); }
+  `}
+`;
+
+export const OptionsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const OptionCard = styled.div`
+  border: 2px solid ${(props) => (props.$selected ? "var(--color-brand-600)" : "var(--color-grey-300)")};
+  background-color: ${(props) => (props.$selected ? "var(--color-brand-50)" : "var(--color-grey-0)")};
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  h3 {
+    font-size: 1.6rem;
+    color: var(--color-grey-800);
+  }
+
+  p {
+    font-size: 1.3rem;
+    color: var(--color-grey-500);
+  }
+
+  svg {
+    font-size: 3.2rem;
+    color: ${(props) => (props.$selected ? "var(--color-brand-600)" : "var(--color-grey-400)")};
+  }
+
+  &:hover {
+    border-color: var(--color-brand-600);
+    background-color: var(--color-brand-50);
+  }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    background-color: ${props.$selected ? "var(--color-brand-900)" : "var(--color-grey-100)"};
+    border-color: ${props.$selected ? "var(--color-brand-500)" : "var(--color-grey-300)"};
+    
+    h3 { color: var(--color-grey-100); }
+    p { color: var(--color-grey-400); }
+    svg { color: ${props.$selected ? "var(--color-brand-400)" : "var(--color-grey-400)"}; }
+
+    &:hover {
+      background-color: var(--color-brand-900);
+      border-color: var(--color-brand-500);
+    }
+  `}
+`;
+
+export const UploadGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const UploadBox = styled.label`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  border: 2px dashed ${(props) => (props.$hasImage ? "var(--color-brand-500)" : "var(--color-grey-400)")};
+  border-radius: var(--border-radius-md);
+  background-color: ${(props) => (props.$hasImage ? "var(--color-brand-50)" : "var(--color-grey-50)")};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  height: 160px;
+
+  input {
+    display: none;
+  }
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.5rem;
+  }
+
+  svg {
+    font-size: 3.2rem;
+    color: var(--color-grey-500);
+    margin-bottom: 0.8rem;
+    z-index: 1;
+  }
+
+  span {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--color-grey-700);
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: var(--color-brand-100);
+    border-color: var(--color-brand-600);
+  }
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    background-color: ${props.$hasImage ? "var(--color-brand-900)" : "var(--color-grey-100)"};
+    border-color: ${props.$hasImage ? "var(--color-brand-500)" : "var(--color-grey-300)"};
+    
+    span { color: var(--color-grey-300); }
+    svg { color: var(--color-grey-400); }
+
+    &:hover {
+      background-color: var(--color-brand-900);
+      border-color: var(--color-brand-500);
+    }
+  `}
+`;
+
+export const RemoveButton = styled.button`
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: var(--color-red-600);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    background: var(--color-red-700);
+  }
+`;
+
+export const StepNavigation = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-grey-200);
+
+  /* Dark mode */
+  ${(props) =>
+    props.theme.name === "dark" &&
+    `
+    border-top-color: var(--color-grey-300);
   `}
 `;

@@ -16,8 +16,11 @@ export function useRecentBookings() {
   const filteredBookings =
     bookings?.filter(
       (booking) =>
-        booking.status !== "blocked" && booking.observations !== "ADMIN_BLOCK",
+        booking.status !== "blocked" &&
+        booking.observations !== "ADMIN_BLOCK" &&
+        booking.observations !== "EXTERNAL_SYNC",
     ) || [];
+
 
   return { isLoading, bookings: filteredBookings, numDays };
 }

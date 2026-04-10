@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { parse } from "date-fns";
 
-const PROXY_URL = "https://api.allorigins.win/get?url=";
-const FALLBACK_PROXY_URL = "https://api.codetabs.com/v1/proxy?quest=";
-
+/**
+ * Fetches external availability from a Supabase Edge Function
+ * that already handles fetching and parsing iCal data for a specific accommodation.
+ */
 export function useExternalAvailability(id, url, enabled = false) {
   const {
     isLoading,
@@ -12,109 +12,57 @@ export function useExternalAvailability(id, url, enabled = false) {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["external-availability", id, url],
+    queryKey: ["external-availability", id],
     queryFn: async () => {
-      if (!url) return [];
+      if (!id) return [];
       try {
-        const timestampedUrl = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
-        let icalData;
+        const type = id.split("-")[0]; // 'room' or 'cabin'
+        const rawId = id.split("-")[1];
+        const paramName = type === "room" ? "roomId" : "cabinId";
 
-        try {
-          // We must use our Supabase Edge Function to proxy the request and bypass strict CORS
-          const response = await fetch(
-            "https://kckngulhvwryekywvutn.supabase.co/functions/v1/fetch-calendar",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                // Supabase anon key needed to invoke public function
-                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-              },
-              body: JSON.stringify({ url: timestampedUrl }),
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-live-availability?${paramName}=${rawId}`,
+          {
+            method: "GET", // The function uses url.searchParams, so GET is appropriate
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
             },
+          },
+        );
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(
+            `Failed to fetch live availability: ${response.statusText} - ${errText}`,
           );
-
-          if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(
-              `Edge Function failed: ${response.statusText} - ${errText}`,
-            );
-          }
-
-          icalData = await response.text();
-        } catch (err) {
-          console.error("Direct fetch failed:", err.message);
-          throw err;
         }
 
-        if (!icalData) throw new Error("No data received");
+        const data = await response.json();
 
-        // Handle base64 encoded data URI if proxy returns it that way
-        if (
-          typeof icalData === "string" &&
-          icalData.startsWith("data:text/calendar;base64,")
-        ) {
-          const base64Part = icalData.split(",")[1];
-          icalData = atob(base64Part);
-        }
-
-        const events = [];
-        const veventRegex = /BEGIN:VEVENT[\s\S]*?END:VEVENT/g;
-        let match;
-
-        while ((match = veventRegex.exec(icalData)) !== null) {
-          const eventContent = match[0];
-
-          // Improved robust regex for dates and summary
-          const startMatch = eventContent.match(
-            /DTSTART(?:;VALUE=DATE)?:?\s*(\d{8})/,
-          );
-          const endMatch = eventContent.match(
-            /DTEND(?:;VALUE=DATE)?:?\s*(\d{8})/,
-          );
-          const summaryMatch = eventContent.match(/SUMMARY(?:;|:)\s*(.*)/);
-          if (startMatch) {
-            const startDateStr = startMatch[1];
-            const endDateStr =
-              endMatch && endMatch[1] ? endMatch[1] : startDateStr;
-
-            const summary = summaryMatch
-              ? summaryMatch[1].trim().replace(/\\,/g, ",")
-              : "External Booking";
-
-            const platform =
-              summary.toLowerCase().includes("ingoibibo") ||
-              summary.toLowerCase().includes("mmt") ||
-              summary.toLowerCase().includes("makemytrip")
-                ? "goibibo"
-                : "external";
-
-            events.push({
-              startDate: parse(
-                startMatch[1],
-                "yyyyMMdd",
-                new Date(),
-              ).toISOString(),
-              endDate: parse(endDateStr, "yyyyMMdd", new Date()).toISOString(),
-              summary,
-              platform,
-              isExternal: true,
-              status: "confirmed",
-            });
-          }
-        }
-
-        return events;
+        // Map the backend structure to the frontend structure
+        // Backend returns: { blocked_dates: [{ startDate, endDate, source, ... }] }
+        // We filter for external_ota events (internal ones are handled by useCalendarBookings)
+        return (data.blocked_dates || [])
+          .filter((b) => b.source === "external_ota")
+          .map((booking) => ({
+            startDate: new Date(booking.startDate).toISOString(),
+            endDate: new Date(booking.endDate).toISOString(),
+            summary: "External Booking",
+            platform: "external",
+            isExternal: true,
+            status: "confirmed",
+          }));
       } catch (err) {
-        // Log and throw the error so React Query captures it and passes to the UI!
         console.error("External Calendar could not be loaded:", err.message);
         throw err;
       }
     },
-    enabled: enabled && !!url,
+    enabled: enabled && !!id,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
   });
 
   return { isLoading, isFetching, externalBookings, error, refetch };
 }
+
+

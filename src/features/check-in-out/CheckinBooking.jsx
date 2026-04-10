@@ -122,7 +122,7 @@ function CheckinBooking() {
           onChange={() => setConfirmPaid((confirm) => !confirm)}
           disabled={confirmPaid || isCheckingIn || isGuest}
         >
-          I confirm that ${guests.fullName} has paid the full amount of{" "}
+          I confirm that {guests.fullName} has paid the full amount of{" "}
           {!addBreakfast
             ? formatCurrency(totalPrice)
             : `${formatCurrency(totalPrice + optionalBreakfastPrice)} (

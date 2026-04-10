@@ -196,7 +196,9 @@ export async function getStaysTodayActivity() {
     .from("bookings")
     .select("*, guests(fullName, country, countryFlag)")
     .in("status", ["unconfirmed", "confirmed", "checked-in"])
+    .neq("guestId", 1) // Exclude blocks and syncs
     .order("created_at");
+
 
   if (error) {
     console.error(error);
