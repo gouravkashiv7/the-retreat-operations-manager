@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HiPencil, HiOutlineIdentification } from "react-icons/hi2";
+import { HiPencil, HiOutlineIdentification, HiEye } from "react-icons/hi2";
 import Modal from "../../ui/Modal";
 import Menus from "../../ui/Menus";
 import Button from "../../ui/Button";
@@ -26,7 +26,30 @@ import {
   BookingId,
   BookingContainer,
   ActionsContainer,
+  IdGallery,
+  IdImageContainer
 } from "./GuestTable.styles";
+
+function GuestIdPreview({ guest }) {
+  if (!guest.guestIDCard && !guest.guestIDCardBack) return <Detail>No ID documents uploaded</Detail>;
+
+  return (
+    <IdGallery>
+      {guest.guestIDCard && (
+        <IdImageContainer>
+          <span>Front Side</span>
+          <img src={guest.guestIDCard} alt={`${guest.fullName} - Front ID`} />
+        </IdImageContainer>
+      )}
+      {guest.guestIDCardBack && (
+        <IdImageContainer>
+          <span>Back Side</span>
+          <img src={guest.guestIDCardBack} alt={`${guest.fullName} - Back ID`} />
+        </IdImageContainer>
+      )}
+    </IdGallery>
+  );
+}
 
 function GuestTable({ guests, allBookings: bookingsData }) {
   const getGuestBookings = (guestId) =>
@@ -34,7 +57,6 @@ function GuestTable({ guests, allBookings: bookingsData }) {
 
   return (
     <>
-      {/* ── Desktop Table ── */}
       <Menus>
         <DesktopTable>
           <TableHeader>
@@ -48,6 +70,8 @@ function GuestTable({ guests, allBookings: bookingsData }) {
 
           {guests.map((guest) => {
             const guestBookings = getGuestBookings(guest.id);
+            const hasId = !!(guest.guestIDCard || guest.guestIDCardBack);
+
             return (
               <TableRow key={guest.id}>
                 <GuestId>#{guest.id}</GuestId>
@@ -57,7 +81,7 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                 </div>
 
                 <div>
-                  <Email>{guest.email}</Email>
+                  <Email>{guest.email || "No email"}</Email>
                   {guest.phone && (
                     <Detail style={{ fontSize: "1.2rem", marginTop: "0.2rem" }}>
                       +{guest.phone}
@@ -65,27 +89,37 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                   )}
                 </div>
 
-                <div>
-                  <Detail>{guest.idType || "—"}</Detail>
-                  <Detail>{guest.nationalId || "N/A"}</Detail>
-                  {guest.guestIDCard && (
-                    <a
-                      href={guest.guestIDCard}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.4rem",
-                        color: "var(--color-brand-600)",
-                        fontSize: "1rem",
-                        marginTop: "0.4rem",
-                        fontWeight: "600",
-                        textDecoration: "underline"
-                      }}
-                    >
-                      <HiOutlineIdentification /> View ID Document
-                    </a>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                  <div>
+                    <Detail style={{ fontWeight: "600" }}>{guest.idType || "—"}</Detail>
+                    <Detail>{guest.nationalId || "N/A"}</Detail>
+                  </div>
+                  
+                  {hasId && (
+                    <Modal>
+                      <Modal.Open opens={`view-id-${guest.id}`}>
+                        <button
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.6rem",
+                            color: "var(--color-brand-600)",
+                            fontSize: "1.2rem",
+                            fontWeight: "600",
+                            background: "none",
+                            border: "none",
+                            padding: "4px 0",
+                            cursor: "pointer",
+                            textDecoration: "underline"
+                          }}
+                        >
+                          <HiOutlineIdentification size={16} /> View ID Docs
+                        </button>
+                      </Modal.Open>
+                      <Modal.Window name={`view-id-${guest.id}`}>
+                        <GuestIdPreview guest={guest} />
+                      </Modal.Window>
+                    </Modal>
                   )}
                 </div>
 
@@ -97,14 +131,7 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                       </Link>
                     ))
                   ) : (
-                    <Detail
-                      style={{
-                        color: "var(--color-grey-400)",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      None
-                    </Detail>
+                    <Detail style={{ color: "var(--color-grey-400)", fontStyle: "italic" }}>None</Detail>
                   )}
                 </BookingContainer>
 
@@ -116,9 +143,20 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                         <Modal.Open opens={`edit-guest-${guest.id}`}>
                           <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
                         </Modal.Open>
+                        
+                        {hasId && (
+                          <Modal.Open opens={`view-id-menu-${guest.id}`}>
+                            <Menus.Button icon={<HiEye />}>View ID</Menus.Button>
+                          </Modal.Open>
+                        )}
                       </Menus.List>
+
                       <Modal.Window name={`edit-guest-${guest.id}`}>
                         <GuestForm guest={guest} />
+                      </Modal.Window>
+                      
+                      <Modal.Window name={`view-id-menu-${guest.id}`}>
+                        <GuestIdPreview guest={guest} />
                       </Modal.Window>
                     </Menus.Menu>
                   </Modal>
@@ -133,14 +171,14 @@ function GuestTable({ guests, allBookings: bookingsData }) {
       <MobileCardList>
         {guests.map((guest) => {
           const guestBookings = getGuestBookings(guest.id);
+          const hasId = !!(guest.guestIDCard || guest.guestIDCardBack);
+
           return (
             <GuestCard key={guest.id}>
               <GuestCardHeader>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <GuestCardName>{guest.fullName}</GuestCardName>
-                  {guest.email && (
-                    <GuestCardEmail>{guest.email}</GuestCardEmail>
-                  )}
+                  {guest.email && <GuestCardEmail>{guest.email}</GuestCardEmail>}
                 </div>
                 <GuestCardIdBadge>#{guest.id}</GuestCardIdBadge>
               </GuestCardHeader>
@@ -154,28 +192,37 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                 )}
                 <GuestCardField>
                   <span className="label">National ID</span>
-                  <span className="value">
-                    {guest.idType ? `${guest.idType}: ` : ""}
-                    {guest.nationalId || "N/A"}
-                    {guest.guestIDCard && (
-                      <a
-                        href={guest.guestIDCard}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.4rem",
-                          color: "var(--color-brand-600)",
-                          fontSize: "1.1rem",
-                          marginTop: "0.4rem",
-                          textDecoration: "underline"
-                        }}
-                      >
-                        <HiOutlineIdentification /> View ID
-                      </a>
+                  <div className="value">
+                    <Detail style={{ fontWeight: "600", fontSize: "1.4rem" }}>{guest.idType || "N/A"}</Detail>
+                    <Detail>{guest.nationalId || "—"}</Detail>
+                    
+                    {hasId && (
+                      <Modal>
+                        <Modal.Open opens={`view-id-mob-${guest.id}`}>
+                          <button
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.6rem",
+                              color: "var(--color-brand-600)",
+                              fontSize: "1.3rem",
+                              fontWeight: "600",
+                              background: "none",
+                              border: "none",
+                              padding: "6px 0",
+                              cursor: "pointer",
+                              textDecoration: "underline"
+                            }}
+                          >
+                            <HiOutlineIdentification size={18} /> View Docs
+                          </button>
+                        </Modal.Open>
+                        <Modal.Window name={`view-id-mob-${guest.id}`}>
+                          <GuestIdPreview guest={guest} />
+                        </Modal.Window>
+                      </Modal>
                     )}
-                  </span>
+                  </div>
                 </GuestCardField>
                 <GuestCardField style={{ gridColumn: "1 / -1" }}>
                   <span className="label">Bookings</span>
@@ -187,15 +234,7 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                         </Link>
                       ))
                     ) : (
-                      <span
-                        style={{
-                          fontSize: "1.3rem",
-                          color: "var(--color-grey-400)",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        No bookings yet
-                      </span>
+                      <span style={{ fontSize: "1.3rem", color: "var(--color-grey-400)", fontStyle: "italic" }}>No bookings yet</span>
                     )}
                   </BookingBadges>
                 </GuestCardField>
@@ -203,17 +242,31 @@ function GuestTable({ guests, allBookings: bookingsData }) {
 
               <GuestCardFooter>
                 <span />
-                <Modal>
-                  <Modal.Open opens={`edit-guest-mobile-${guest.id}`}>
-                    <Button $size="small" $variation="secondary">
-                      <HiPencil style={{ marginRight: "0.4rem" }} />
-                      Edit
-                    </Button>
-                  </Modal.Open>
-                  <Modal.Window name={`edit-guest-mobile-${guest.id}`}>
-                    <GuestForm guest={guest} />
-                  </Modal.Window>
-                </Modal>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  {hasId && (
+                    <Modal>
+                      <Modal.Open opens={`view-id-card-mob-${guest.id}`}>
+                        <Button $size="small" $variation="secondary">
+                          <HiEye style={{ marginRight: "0.4rem" }} /> ID
+                        </Button>
+                      </Modal.Open>
+                      <Modal.Window name={`view-id-card-mob-${guest.id}`}>
+                        <GuestIdPreview guest={guest} />
+                      </Modal.Window>
+                    </Modal>
+                  )}
+                  
+                  <Modal>
+                    <Modal.Open opens={`edit-guest-mobile-${guest.id}`}>
+                      <Button $size="small" $variation="secondary">
+                        <HiPencil style={{ marginRight: "0.4rem" }} /> Edit
+                      </Button>
+                    </Modal.Open>
+                    <Modal.Window name={`edit-guest-mobile-${guest.id}`}>
+                      <GuestForm guest={guest} />
+                    </Modal.Window>
+                  </Modal>
+                </div>
               </GuestCardFooter>
             </GuestCard>
           );

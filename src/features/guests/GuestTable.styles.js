@@ -211,6 +211,38 @@ export const ActionsContainer = styled.div`
   align-items: center;
 `;
 
+/* ── ID Preview Gallery ── */
+export const IdGallery = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 600px;
+  width: 100%;
+`;
+
+export const IdImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  
+  & img {
+    max-width: 100%;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-grey-200);
+  }
+  
+  & span {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-grey-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+`;
+
 // Keep old exports for backward compat
 export const Cell = styled.div``;
 export const MobileLabel = styled.span`
