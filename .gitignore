@@ -30,3 +30,9 @@ dist-ssr
 # Markdown
 *.md
 !README.md
+
+# Temporary data and logs
+output.json
+scratch/
+*.sql.temp
+dump.sql
