@@ -25,7 +25,7 @@ dist-ssr
 *.sw?
 
 # Supabase
-supabase/
+# Allow supabase folder but sub-gitignore handles specific ignores
 
 # Markdown
 *.md
