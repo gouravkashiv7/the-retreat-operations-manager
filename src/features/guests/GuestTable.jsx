@@ -31,17 +31,25 @@ import {
 } from "./GuestTable.styles";
 
 function GuestIdPreview({ guest }) {
-  if (!guest.guestIDCard && !guest.guestIDCardBack) return <Detail>No ID documents uploaded</Detail>;
+  const hasFront = guest.guestIDCard && guest.guestIDCard.trim() !== "";
+  const hasBack = guest.guestIDCardBack && guest.guestIDCardBack.trim() !== "";
+
+  if (!hasFront && !hasBack) return (
+    <div style={{ padding: "2rem", textAlign: "center" }}>
+      <HiOutlineIdentification size={48} style={{ color: "var(--color-grey-300)", marginBottom: "1rem" }} />
+      <Detail>No ID documents have been uploaded for this guest yet.</Detail>
+    </div>
+  );
 
   return (
     <IdGallery>
-      {guest.guestIDCard && (
+      {hasFront && (
         <IdImageContainer>
           <span>Front Side</span>
           <img src={guest.guestIDCard} alt={`${guest.fullName} - Front ID`} />
         </IdImageContainer>
       )}
-      {guest.guestIDCardBack && (
+      {hasBack && (
         <IdImageContainer>
           <span>Back Side</span>
           <img src={guest.guestIDCardBack} alt={`${guest.fullName} - Back ID`} />
@@ -70,7 +78,7 @@ function GuestTable({ guests, allBookings: bookingsData }) {
 
           {guests.map((guest) => {
             const guestBookings = getGuestBookings(guest.id);
-            const hasId = !!(guest.guestIDCard || guest.guestIDCardBack);
+            const hasId = Boolean(guest.guestIDCard?.trim() || guest.guestIDCardBack?.trim());
 
             return (
               <TableRow key={guest.id}>
@@ -144,11 +152,9 @@ function GuestTable({ guests, allBookings: bookingsData }) {
                           <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
                         </Modal.Open>
                         
-                        {hasId && (
-                          <Modal.Open opens={`view-id-menu-${guest.id}`}>
-                            <Menus.Button icon={<HiEye />}>View ID</Menus.Button>
-                          </Modal.Open>
-                        )}
+                        <Modal.Open opens={`view-id-menu-${guest.id}`}>
+                          <Menus.Button icon={<HiEye />}>View ID</Menus.Button>
+                        </Modal.Open>
                       </Menus.List>
 
                       <Modal.Window name={`edit-guest-${guest.id}`}>
@@ -171,7 +177,7 @@ function GuestTable({ guests, allBookings: bookingsData }) {
       <MobileCardList>
         {guests.map((guest) => {
           const guestBookings = getGuestBookings(guest.id);
-          const hasId = !!(guest.guestIDCard || guest.guestIDCardBack);
+          const hasId = Boolean(guest.guestIDCard?.trim() || guest.guestIDCardBack?.trim());
 
           return (
             <GuestCard key={guest.id}>
@@ -243,18 +249,16 @@ function GuestTable({ guests, allBookings: bookingsData }) {
               <GuestCardFooter>
                 <span />
                 <div style={{ display: "flex", gap: "1rem" }}>
-                  {hasId && (
-                    <Modal>
-                      <Modal.Open opens={`view-id-card-mob-${guest.id}`}>
-                        <Button $size="small" $variation="secondary">
-                          <HiEye style={{ marginRight: "0.4rem" }} /> ID
-                        </Button>
-                      </Modal.Open>
-                      <Modal.Window name={`view-id-card-mob-${guest.id}`}>
-                        <GuestIdPreview guest={guest} />
-                      </Modal.Window>
-                    </Modal>
-                  )}
+                  <Modal>
+                    <Modal.Open opens={`view-id-card-mob-${guest.id}`}>
+                      <Button $size="small" $variation="secondary">
+                        <HiEye style={{ marginRight: "0.4rem" }} /> ID Docs
+                      </Button>
+                    </Modal.Open>
+                    <Modal.Window name={`view-id-card-mob-${guest.id}`}>
+                      <GuestIdPreview guest={guest} />
+                    </Modal.Window>
+                  </Modal>
                   
                   <Modal>
                     <Modal.Open opens={`edit-guest-mobile-${guest.id}`}>
