@@ -30,6 +30,7 @@ dist-ssr
 # Markdown
 *.md
 !README.md
+guest_id_storage_protocol.md
 
 # Temporary data and logs
 output.json

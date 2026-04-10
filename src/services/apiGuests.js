@@ -90,7 +90,9 @@ export const apiGuests = {
       const filePath = `guest-${data.id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCard);
 
-      if (!storageError) {
+      if (storageError) {
+        console.error("Front ID Upload Error:", storageError);
+      } else {
         updates.guestIDCard = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
         hasUpdates = true;
       }
@@ -102,7 +104,9 @@ export const apiGuests = {
       const filePath = `guest-${data.id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCardBack);
 
-      if (!storageError) {
+      if (storageError) {
+        console.error("Back ID Upload Error:", storageError);
+      } else {
         updates.guestIDCardBack = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
         hasUpdates = true;
       }
@@ -141,7 +145,9 @@ export const apiGuests = {
       const fileName = `${Math.random()}-${guestIDCard.name}`.replaceAll("/", "");
       const filePath = `guest-${id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCard);
-      if (!storageError) {
+      if (storageError) {
+        console.error("Update Front ID Upload Error:", storageError);
+      } else {
         updatePayload.guestIDCard = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
       }
     } else if (guestIDCard === null || typeof guestIDCard === 'string') {
@@ -153,7 +159,9 @@ export const apiGuests = {
       const fileName = `${Math.random()}-back-${guestIDCardBack.name}`.replaceAll("/", "");
       const filePath = `guest-${id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCardBack);
-      if (!storageError) {
+      if (storageError) {
+        console.error("Update Back ID Upload Error:", storageError);
+      } else {
         updatePayload.guestIDCardBack = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
       }
     } else if (guestIDCardBack === null || typeof guestIDCardBack === 'string') {
