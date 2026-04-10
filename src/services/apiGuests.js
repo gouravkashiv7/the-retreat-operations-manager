@@ -27,8 +27,8 @@ export const apiGuests = {
   async enrichGuestWithUrls(guest) {
     if (!guest) return guest;
     const enriched = { ...guest };
-    if (enriched.guestIDCard) enriched.guestIDCard = await this.getSignedUrl(enriched.guestIDCard);
-    if (enriched.guestIDCardBack) enriched.guestIDCardBack = await this.getSignedUrl(enriched.guestIDCardBack);
+    if (enriched.guestIDCard) enriched.guestIDCard = await apiGuests.getSignedUrl(enriched.guestIDCard);
+    if (enriched.guestIDCardBack) enriched.guestIDCardBack = await apiGuests.getSignedUrl(enriched.guestIDCardBack);
     return enriched;
   },
   // Get all guests
@@ -41,7 +41,7 @@ export const apiGuests = {
     if (error) throw new Error(error.message);
     
     // Enrich all guests with signed URLs in parallel
-    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    const enrichedData = await Promise.all(data.map(g => apiGuests.enrichGuestWithUrls(g)));
     return enrichedData;
   },
 
@@ -63,7 +63,7 @@ export const apiGuests = {
 
     if (error) throw new Error(error.message);
 
-    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    const enrichedData = await Promise.all(data.map(g => apiGuests.enrichGuestWithUrls(g)));
     return enrichedData;
   },
 
@@ -100,7 +100,7 @@ export const apiGuests = {
       .single();
 
     if (error) throw new Error(error.message);
-    return await this.enrichGuestWithUrls(data);
+    return await apiGuests.enrichGuestWithUrls(data);
   },
 
   // Create new guest
@@ -211,7 +211,7 @@ export const apiGuests = {
       .single();
 
     if (error) throw new Error(error.message);
-    return await this.enrichGuestWithUrls(data);
+    return await apiGuests.enrichGuestWithUrls(data);
   },
 
   // Delete guest
@@ -233,7 +233,7 @@ export const apiGuests = {
 
     if (error) throw new Error(error.message);
     
-    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    const enrichedData = await Promise.all(data.map(g => apiGuests.enrichGuestWithUrls(g)));
     return enrichedData;
   },
 };
