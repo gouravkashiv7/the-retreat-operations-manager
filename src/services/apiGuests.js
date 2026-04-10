@@ -1,6 +1,36 @@
 import supabase, { supabaseUrl } from "./supabase";
 
 export const apiGuests = {
+  // Helper to generate signed URLs for secure private images
+  async getSignedUrl(filePathOrUrl) {
+    if (!filePathOrUrl) return null;
+    if (filePathOrUrl.startsWith('blob:')) return filePathOrUrl;
+
+    let path = filePathOrUrl;
+    if (filePathOrUrl.includes('/storage/v1/object/public/guest-ids/')) {
+        path = filePathOrUrl.split('/storage/v1/object/public/guest-ids/')[1];
+    } else if (filePathOrUrl.includes('/storage/v1/object/sign/guest-ids/')) {
+        path = filePathOrUrl.split('/storage/v1/object/sign/guest-ids/')[1].split('?')[0];
+    }
+    
+    // If it's an external HTTP link, return as is
+    if (path.startsWith('http')) return path;
+
+    const { data, error } = await supabase.storage.from('guest-ids').createSignedUrl(path, 60 * 60); // 1 hour expiry
+    if (error) {
+       console.error("Error creating signed URL:", error);
+       return filePathOrUrl;
+    }
+    return data.signedUrl;
+  },
+
+  async enrichGuestWithUrls(guest) {
+    if (!guest) return guest;
+    const enriched = { ...guest };
+    if (enriched.guestIDCard) enriched.guestIDCard = await this.getSignedUrl(enriched.guestIDCard);
+    if (enriched.guestIDCardBack) enriched.guestIDCardBack = await this.getSignedUrl(enriched.guestIDCardBack);
+    return enriched;
+  },
   // Get all guests
   async getGuests() {
     const { data, error } = await supabase
@@ -9,7 +39,10 @@ export const apiGuests = {
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data;
+    
+    // Enrich all guests with signed URLs in parallel
+    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    return enrichedData;
   },
 
   async getGuestsWithBookings() {
@@ -29,7 +62,9 @@ export const apiGuests = {
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data;
+
+    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    return enrichedData;
   },
 
   // Get all guest bookings separately
@@ -65,7 +100,7 @@ export const apiGuests = {
       .single();
 
     if (error) throw new Error(error.message);
-    return data;
+    return await this.enrichGuestWithUrls(data);
   },
 
   // Create new guest
@@ -93,7 +128,7 @@ export const apiGuests = {
       if (storageError) {
         console.error("Front ID Upload Error:", storageError);
       } else {
-        updates.guestIDCard = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
+        updates.guestIDCard = filePath;
         hasUpdates = true;
       }
     }
@@ -107,7 +142,7 @@ export const apiGuests = {
       if (storageError) {
         console.error("Back ID Upload Error:", storageError);
       } else {
-        updates.guestIDCardBack = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
+        updates.guestIDCardBack = filePath;
         hasUpdates = true;
       }
     }
@@ -148,7 +183,7 @@ export const apiGuests = {
       if (storageError) {
         console.error("Update Front ID Upload Error:", storageError);
       } else {
-        updatePayload.guestIDCard = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
+        updatePayload.guestIDCard = filePath;
       }
     } else if (guestIDCard === null || typeof guestIDCard === 'string') {
       updatePayload.guestIDCard = guestIDCard;
@@ -162,7 +197,7 @@ export const apiGuests = {
       if (storageError) {
         console.error("Update Back ID Upload Error:", storageError);
       } else {
-        updatePayload.guestIDCardBack = `${supabaseUrl}/storage/v1/object/public/guest-ids/${filePath}`;
+        updatePayload.guestIDCardBack = filePath;
       }
     } else if (guestIDCardBack === null || typeof guestIDCardBack === 'string') {
       updatePayload.guestIDCardBack = guestIDCardBack;
@@ -176,7 +211,7 @@ export const apiGuests = {
       .single();
 
     if (error) throw new Error(error.message);
-    return data;
+    return await this.enrichGuestWithUrls(data);
   },
 
   // Delete guest
@@ -197,6 +232,8 @@ export const apiGuests = {
       .order("created_at", { ascending: false });
 
     if (error) throw new Error(error.message);
-    return data;
+    
+    const enrichedData = await Promise.all(data.map(g => this.enrichGuestWithUrls(g)));
+    return enrichedData;
   },
 };
