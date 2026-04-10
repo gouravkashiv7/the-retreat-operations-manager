@@ -121,7 +121,8 @@ export const apiGuests = {
 
     // 2. Upload Front ID
     if (guestIDCard instanceof File) {
-      const fileName = `${Math.random()}-${guestIDCard.name}`.replaceAll("/", "");
+      const sanitizedName = guestIDCard.name.replace(/[^a-z0-9.]/gi, '-').replace(/-+/g, '-');
+      const fileName = `${Math.random()}-${sanitizedName}`;
       const filePath = `guest-${data.id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCard);
 
@@ -135,7 +136,8 @@ export const apiGuests = {
 
     // 3. Upload Back ID
     if (guestIDCardBack instanceof File) {
-      const fileName = `${Math.random()}-back-${guestIDCardBack.name}`.replaceAll("/", "");
+      const sanitizedName = guestIDCardBack.name.replace(/[^a-z0-9.]/gi, '-').replace(/-+/g, '-');
+      const fileName = `${Math.random()}-back-${sanitizedName}`;
       const filePath = `guest-${data.id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCardBack);
 
@@ -177,7 +179,8 @@ export const apiGuests = {
 
     // Handle Front ID
     if (guestIDCard instanceof File) {
-      const fileName = `${Math.random()}-${guestIDCard.name}`.replaceAll("/", "");
+      const sanitizedName = guestIDCard.name.replace(/[^a-z0-9.]/gi, '-').replace(/-+/g, '-');
+      const fileName = `${Math.random()}-${sanitizedName}`;
       const filePath = `guest-${id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCard);
       if (storageError) {
@@ -191,7 +194,8 @@ export const apiGuests = {
 
     // Handle Back ID
     if (guestIDCardBack instanceof File) {
-      const fileName = `${Math.random()}-back-${guestIDCardBack.name}`.replaceAll("/", "");
+      const sanitizedName = guestIDCardBack.name.replace(/[^a-z0-9.]/gi, '-').replace(/-+/g, '-');
+      const fileName = `${Math.random()}-back-${sanitizedName}`;
       const filePath = `guest-${id}/${fileName}`;
       const { error: storageError } = await supabase.storage.from("guest-ids").upload(filePath, guestIDCardBack);
       if (storageError) {
