@@ -211,7 +211,7 @@ serve(async (req: Request) => {
             if (formattedEnd >= todayStr) {
               // Apply syncTillDate restriction if configured
               if (syncTillDate && new Date(formattedStart) > syncTillDate) {
-                return; // skip this event
+                continue; // skip this event
               }
 
               events.push({
