@@ -31,6 +31,14 @@ serve(async (req: Request) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+    
+    // Fetch global sync settings
+    const { data: settings } = await supabase.from("settings").select("syncTillDate").single();
+    const syncTillDate = settings?.syncTillDate ? new Date(settings.syncTillDate) : null;
+    
+    if (syncTillDate) {
+      console.log(`[iCal Export] Restricting export for ${settings.syncTillDate}`);
+    }
 
     // Fetch bookings (confirmed, checked-in, or blocked)
     const { data: bookings, error } = await supabase
@@ -68,6 +76,11 @@ serve(async (req: Request) => {
     ];
 
     filteredBookings.forEach((b: any) => {
+      // Respect syncTillDate if set
+      if (syncTillDate && new Date(b.startDate) > syncTillDate) {
+        return;
+      }
+
       const start = b.startDate.replace(/-/g, "").split("T")[0];
       const end = b.endDate.replace(/-/g, "").split("T")[0];
       const summary =

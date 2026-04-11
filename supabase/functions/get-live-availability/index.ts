@@ -23,6 +23,14 @@ serve(async (req: Request) => {
     );
 
     const today = new Date().toISOString().split("T")[0];
+    
+    // Fetch global sync settings
+    const { data: settings } = await supabase.from("settings").select("syncTillDate").single();
+    const syncTillDate = settings?.syncTillDate ? new Date(settings.syncTillDate) : null;
+    
+    if (syncTillDate) {
+      console.log(`[Setting] Filtering external dates past: ${settings.syncTillDate}`);
+    }
 
     // 1. Fetch Internal Bookings (Confirmed, Unconfirmed, Blocked) that haven't passed yet
     const { data: bookings, error: bookingsError } = await supabase
@@ -201,6 +209,11 @@ serve(async (req: Request) => {
 
             // Skip past events — guests can't book dates that have already passed
             if (formattedEnd >= todayStr) {
+              // Apply syncTillDate restriction if configured
+              if (syncTillDate && new Date(formattedStart) > syncTillDate) {
+                return; // skip this event
+              }
+
               events.push({
                 [property.type === "room" ? "roomId" : "cabinId"]: property.id,
                 type: property.type,
