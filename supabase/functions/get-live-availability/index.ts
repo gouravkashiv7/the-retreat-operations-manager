@@ -149,7 +149,7 @@ serve(async (req: Request) => {
         const fetchResponse = await fetch(timestampedUrl, {
           headers: {
             Accept: "text/calendar, */*",
-            "User-Agent": "Mozilla/5.0 (compatible; CalendarSync/1.0)",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Cache-Control": "no-cache",
           },
         });
@@ -180,17 +180,24 @@ serve(async (req: Request) => {
           const eventContent = match[0];
           // Support both DTSTART;VALUE=DATE:20260303 and DTSTART:20260303T120000Z formats
           const startMatch = eventContent.match(
-            /DTSTART(?:;VALUE=DATE)?:?\s*(\d{4})(\d{2})(\d{2})/,
+            /DTSTART[^:]*:?\s*(\d{4})(\d{2})(\d{2})/,
           );
           const endMatch = eventContent.match(
-            /DTEND(?:;VALUE=DATE)?:?\s*(\d{4})(\d{2})(\d{2})/,
+            /DTEND[^:]*:?\s*(\d{4})(\d{2})(\d{2})/,
           );
 
           if (startMatch) {
             const formattedStart = `${startMatch[1]}-${startMatch[2]}-${startMatch[3]}`;
-            const formattedEnd = endMatch
+            // If endMatch is missing, assume it's a 1-day event (standard iCal behavior for DATE values)
+            let formattedEnd = endMatch
               ? `${endMatch[1]}-${endMatch[2]}-${endMatch[3]}`
-              : formattedStart;
+              : null;
+            
+            if (!formattedEnd) {
+              const endDate = new Date(formattedStart);
+              endDate.setDate(endDate.getDate() + 1);
+              formattedEnd = endDate.toISOString().split("T")[0];
+            }
 
             // Skip past events — guests can't book dates that have already passed
             if (formattedEnd >= todayStr) {

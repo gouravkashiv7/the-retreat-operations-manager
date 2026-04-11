@@ -507,7 +507,7 @@ function CalendarBox({
   const end = endOfMonth(month);
   const days = eachDayOfInterval({ start, end });
 
-  const hasExternalSync = externalBookings.length > 0 || externalError;
+  const hasExternalSync = !!item.icalUrl || !!externalError;
 
   // Get days to pad at the start of the grid
   const startDay = getDay(start); // 0 (Sun) to 6 (Sat)

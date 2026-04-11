@@ -86,12 +86,21 @@ serve(async (req) => {
 
         while ((match = veventRegex.exec(icalData)) !== null) {
           const eventContent = match[0];
-          const startMatch = eventContent.match(/DTSTART(?:;VALUE=DATE)?:?\s*(\d{4})(\d{2})(\d{2})/);
-          const endMatch = eventContent.match(/DTEND(?:;VALUE=DATE)?:?\s*(\d{4})(\d{2})(\d{2})/);
+          const startMatch = eventContent.match(/DTSTART[^:]*:?\s*(\d{4})(\d{2})(\d{2})/);
+          const endMatch = eventContent.match(/DTEND[^:]*:?\s*(\d{4})(\d{2})(\d{2})/);
 
-          if (startMatch && endMatch) {
+          if (startMatch) {
             const startDateStr = `${startMatch[1]}-${startMatch[2]}-${startMatch[3]}`;
-            const endDateStr = `${endMatch[1]}-${endMatch[2]}-${endMatch[3]}`;
+            // If endMatch is missing, assume it's a 1-day event
+            let endDateStr = endMatch 
+              ? `${endMatch[1]}-${endMatch[2]}-${endMatch[3]}`
+              : null;
+            
+            if (!endDateStr) {
+              const endDate = new Date(startDateStr);
+              endDate.setDate(endDate.getDate() + 1);
+              endDateStr = endDate.toISOString().split("T")[0];
+            }
             
             // Skip if record is past the sync horizon
             if (syncTillDate && new Date(startDateStr) > syncTillDate) {
