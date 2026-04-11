@@ -115,14 +115,16 @@ serve(async (req) => {
 
             // Skip common OTA "Safety Blocks" or "Not Available" placeholders
             // These often appear when a calendar has no inventory and causes a loop
-            const summaryMatch = eventContent.match(/SUMMARY:([\s\S]*?)(\r?\n|$)/);
-            const summary = summaryMatch ? summaryMatch[1].trim() : "";
+            const summaryMatch = eventContent.match(/SUMMARY:(.*)/i);
+            const summary = summaryMatch ? summaryMatch[1].trim() : "No Summary";
+            
             const isPlaceholder = summary.toLowerCase().includes("not available") || 
                                  summary.toLowerCase().includes("hold") ||
+                                 summary.toLowerCase().includes("blocked by admin") || // Don't import our own blocks back
                                  summary.toLowerCase().includes("ingoibibo");
             
             if (isPlaceholder) {
-              console.log(`[Sync] Skipping placeholder block: ${summary}`);
+              console.log(`[Sync] Skipping placeholder/internal block: "${summary}" for dates ${startDateStr} - ${endDateStr}`);
               continue;
             }
 
