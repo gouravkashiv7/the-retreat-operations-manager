@@ -119,9 +119,9 @@ serve(async (req) => {
             const summary = summaryMatch ? summaryMatch[1].trim() : "No Summary";
             
             const isPlaceholder = summary.toLowerCase().includes("not available") || 
+                                 summary.toLowerCase().includes("(not available)") ||
                                  summary.toLowerCase().includes("hold") ||
-                                 summary.toLowerCase().includes("blocked by admin") || // Don't import our own blocks back
-                                 summary.toLowerCase().includes("ingoibibo");
+                                 summary.toLowerCase().includes("blocked by admin");
             
             if (isPlaceholder) {
               console.log(`[Sync] Skipping placeholder/internal block: "${summary}" for dates ${startDateStr} - ${endDateStr}`);
