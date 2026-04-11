@@ -69,15 +69,21 @@ serve(async (req) => {
 
     for (const prop of properties) {
       try {
-        console.log(`[Sync] Fetching ${prop.type} #${prop.id}: ${prop.icalUrl}`);
-        const response = await fetch(prop.icalUrl, {
+        const timestampedUrl = `${prop.icalUrl.trim()}${prop.icalUrl.includes("?") ? "&" : "?"}t=${Date.now()}`;
+        console.log(`[Sync] Fetching ${prop.type} #${prop.id}: ${timestampedUrl}`);
+        
+        const response = await fetch(timestampedUrl, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Accept": "text/calendar, text/plain, */*",
+            "Cache-Control": "no-cache",
           }
         });
 
-        if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Fetch failed: ${response.status} - ${errorBody.substring(0, 100)}`);
+        }
         const icalData = await response.text();
 
         const veventRegex = /BEGIN:VEVENT[\s\S]*?END:VEVENT/g;
