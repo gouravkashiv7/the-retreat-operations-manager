@@ -113,6 +113,19 @@ serve(async (req) => {
               continue;
             }
 
+            // Skip common OTA "Safety Blocks" or "Not Available" placeholders
+            // These often appear when a calendar has no inventory and causes a loop
+            const summaryMatch = eventContent.match(/SUMMARY:([\s\S]*?)(\r?\n|$)/);
+            const summary = summaryMatch ? summaryMatch[1].trim() : "";
+            const isPlaceholder = summary.toLowerCase().includes("not available") || 
+                                 summary.toLowerCase().includes("hold") ||
+                                 summary.toLowerCase().includes("ingoibibo");
+            
+            if (isPlaceholder) {
+              console.log(`[Sync] Skipping placeholder block: ${summary}`);
+              continue;
+            }
+
             newBookings.push({
               startDate: startDateStr,
               endDate: endDateStr,
