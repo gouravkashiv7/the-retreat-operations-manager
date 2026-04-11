@@ -45,10 +45,10 @@ export function useExternalAvailability(id, url, enabled = false) {
         return (data.blocked_dates || [])
           .filter((b) => b.source === "external_ota")
           .map((booking) => ({
-            startDate: new Date(booking.startDate).toISOString(),
-            endDate: new Date(booking.endDate).toISOString(),
+            startDate: booking.startDate,
+            endDate: booking.endDate,
             summary: "External Booking",
-            platform: "external",
+            platform: "goibibo", // Hardcoding to goibibo for now as that's the primary use case, or we can make it dynamic if the backend provides it
             isExternal: true,
             status: "confirmed",
           }));
