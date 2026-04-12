@@ -368,7 +368,8 @@ export async function createBooking(newBookingData) {
         numNights,
         numGuests,
         accommodations: accommodationDetails,
-        totalPrice
+        totalPrice,
+        status: status || "unconfirmed"
       }
     }).then(({ error }) => {
       if (error) console.error("Error triggering booking confirmation email:", error);

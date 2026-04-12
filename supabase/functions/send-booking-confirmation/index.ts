@@ -26,9 +26,13 @@ serve(async (req) => {
       endDate, 
       numNights, 
       numGuests,
-      accommodations, // Array of objects { name, number } or strings (legacy)
-      totalPrice 
+      accommodations, // Array of objects { label, number, description, price } or strings (legacy)
+      totalPrice,
+      status // "unconfirmed", "confirmed", or "checked-in"
     } = await req.json();
+
+    const bookingStatus = status || "unconfirmed";
+    const isConfirmed = bookingStatus === "confirmed" || bookingStatus === "checked-in";
 
     if (!guestEmail) {
       throw new Error("Guest email is required.");
@@ -107,6 +111,56 @@ serve(async (req) => {
     const checkOutFormatted = formatDate(endDate);
     const formattedPrice = Number(totalPrice).toLocaleString('en-IN');
 
+    // Status-specific content
+    const statusBadge = isConfirmed
+      ? `<td style="background-color: #E8F5E9; border-radius: 30px; padding: 10px 28px;">
+           <span style="color: #2E7D32; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">✓ Reservation Confirmed</span>
+         </td>`
+      : `<td style="background-color: #FFF3E0; border-radius: 30px; padding: 10px 28px;">
+           <span style="color: #E65100; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">⏳ Awaiting Confirmation</span>
+         </td>`;
+
+    const greetingMessage = isConfirmed
+      ? `We are thrilled to confirm your reservation. Our team is preparing to welcome you to the tranquility of the Himalayas, where luxury and nature intertwine seamlessly.`
+      : `Thank you for your interest in The Retreat Cottage. We have received your reservation request and the details are noted below. Please note that your booking is not yet confirmed.`;
+
+    const unconfirmedNotice = !isConfirmed ? `
+            <!-- Unconfirmed Notice -->
+            <tr>
+              <td style="padding: 0 20px 25px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; overflow: hidden;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                          <td style="padding-bottom: 10px;">
+                            <span style="font-size: 15px; font-weight: 700; color: #E65100;">⚠ Action Required: Confirm Your Booking</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p style="margin: 0 0 12px; font-size: 14px; color: #555; line-height: 1.6;">
+                              To secure your stay, please pay the advance amount at your earliest convenience. You can reach us via WhatsApp or phone call:
+                            </p>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td style="background-color: #2E7D32; border-radius: 4px;">
+                                  <a href="tel:+919906039157" target="_blank" style="display: inline-block; padding: 12px 28px; font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none;">📞 Call +91 99060 39157</a>
+                                </td>
+                              </tr>
+                            </table>
+                            <p style="margin: 12px 0 0; font-size: 12px; color: #999; line-height: 1.5;">
+                              Your reservation will be held for a limited time. Unconfirmed bookings may be released to other guests.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>` : "";
+
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -146,14 +200,12 @@ serve(async (req) => {
               </td>
             </tr>
 
-            <!-- Confirmation Badge -->
+            <!-- Status Badge -->
             <tr>
               <td align="center" style="padding: 30px 30px 0;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td style="background-color: #E8F5E9; border-radius: 30px; padding: 10px 28px;">
-                      <span style="color: #2E7D32; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">✓ Reservation Confirmed</span>
-                    </td>
+                    ${statusBadge}
                   </tr>
                 </table>
               </td>
@@ -170,10 +222,12 @@ serve(async (req) => {
             <tr>
               <td style="padding: 0 30px 30px;">
                 <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #555;">
-                  We are thrilled to confirm your reservation. Our team is preparing to welcome you to the tranquility of the Himalayas, where luxury and nature intertwine seamlessly.
+                  ${greetingMessage}
                 </p>
               </td>
             </tr>
+
+            ${unconfirmedNotice}
             
             <!-- Booking Card -->
             <tr>
@@ -389,10 +443,14 @@ serve(async (req) => {
 </html>
     `;
 
+    const subjectLine = isConfirmed 
+      ? `Reservation Confirmed — Your Mountain Escape Awaits (#${bookingId})`
+      : `Reservation Received — Action Required to Confirm (#${bookingId})`;
+
     const info = await transporter.sendMail({
       from: `"The Retreat Cottage" <${Deno.env.get("EMAIL_USER")}>`,
       to: guestEmail,
-      subject: `Reservation Confirmed — Your Mountain Escape Awaits (#${bookingId})`,
+      subject: subjectLine,
       html: htmlContent,
     });
 
