@@ -342,7 +342,10 @@ export async function createBooking(newBookingData) {
   // 3. Trigger Email Confirmation (Background)
   // We don't await this to keep the UI responsive, or we can await it if we want to confirm success
   if (guestEmail) {
-    const accommodationNames = selectedAccommodations.map(acc => acc.name);
+    const accommodationDetails = selectedAccommodations.map(acc => ({
+      name: acc.displayName || acc.name,
+      number: acc.name
+    }));
     
     // Call Supabase Edge Function
     supabase.functions.invoke("send-booking-confirmation", {
@@ -354,7 +357,7 @@ export async function createBooking(newBookingData) {
         endDate,
         numNights,
         numGuests,
-        accommodations: accommodationNames,
+        accommodations: accommodationDetails,
         totalPrice
       }
     }).then(({ error }) => {
