@@ -349,40 +349,57 @@ serve(async (req) => {
             <tr>
               <td style="padding: 20px 30px;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <!-- Luxury Accommodations -->
                   <tr>
-                    <td style="padding-bottom: 18px;">
+                    <td style="padding-bottom: 20px;">
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td valign="top" style="padding-right: 12px; color: ${brandGold}; font-size: 16px;">✦</td>
+                          <td valign="top" style="padding-right: 14px; font-size: 20px;">🏡</td>
                           <td>
-                            <strong style="color: ${brandDark}; font-size: 15px;">Mountain Serenity</strong>
-                            <p style="margin: 4px 0 0; font-size: 13px; color: #888; line-height: 1.5;">Panoramic Himalayan views from your private balcony.</p>
+                            <strong style="color: ${brandDark}; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">Luxury Accommodations</strong>
+                            <p style="margin: 4px 0 0; font-size: 13px; color: #777; line-height: 1.5;">Exquisite architecture blending modern elegance with warm, homely comfort.</p>
                           </td>
                         </tr>
                       </table>
                     </td>
                   </tr>
+                  <!-- Dining Experience -->
                   <tr>
-                    <td style="padding-bottom: 18px;">
+                    <td style="padding-bottom: 20px;">
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td valign="top" style="padding-right: 12px; color: ${brandGold}; font-size: 16px;">✦</td>
+                          <td valign="top" style="padding-right: 14px; font-size: 20px;">🍴</td>
                           <td>
-                            <strong style="color: ${brandDark}; font-size: 15px;">Gourmet Dining</strong>
-                            <p style="margin: 4px 0 0; font-size: 13px; color: #888; line-height: 1.5;">Locally sourced, chef-curated meals in a scenic setting.</p>
+                            <strong style="color: ${brandDark}; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">Dining Experience</strong>
+                            <p style="margin: 4px 0 0; font-size: 13px; color: #777; line-height: 1.5;">Delicious vegetarian menu featuring homemade meals prepared with love.</p>
                           </td>
                         </tr>
                       </table>
                     </td>
                   </tr>
+                  <!-- Nature Immersion -->
+                  <tr>
+                    <td style="padding-bottom: 20px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td valign="top" style="padding-right: 14px; font-size: 20px;">🌲</td>
+                          <td>
+                            <strong style="color: ${brandDark}; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">Nature Immersion</strong>
+                            <p style="margin: 4px 0 0; font-size: 13px; color: #777; line-height: 1.5;">Fresh pine-scented air and panoramic Himalayan views from every corner.</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <!-- Evening Entertainment -->
                   <tr>
                     <td>
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td valign="top" style="padding-right: 12px; color: ${brandGold}; font-size: 16px;">✦</td>
+                          <td valign="top" style="padding-right: 14px; font-size: 20px;">🔥</td>
                           <td>
-                            <strong style="color: ${brandDark}; font-size: 15px;">Curated Experiences</strong>
-                            <p style="margin: 4px 0 0; font-size: 13px; color: #888; line-height: 1.5;">Nature trails, starlit evenings, and moments crafted just for you.</p>
+                            <strong style="color: ${brandDark}; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">Evening Entertainment</strong>
+                            <p style="margin: 4px 0 0; font-size: 13px; color: #777; line-height: 1.5;">Magical bonfire and barbecue sessions creating unforgettable memories.</p>
                           </td>
                         </tr>
                       </table>
