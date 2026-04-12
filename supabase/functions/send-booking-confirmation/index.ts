@@ -49,21 +49,43 @@ serve(async (req) => {
     const brandCream = "#FAF5F0";
     const brandAccent = "#855F37";
 
-    // Handle both object format { name, number } and legacy string format
+    // Handle both object format { label, number, description, price } and legacy string format
+    const formatAccPrice = (price: number) => {
+      return Number(price).toLocaleString('en-IN');
+    };
+
     const accommodationListHtml = (accommodations || [])
       .map((acc: any) => {
-        const accName = typeof acc === "string" ? acc : (acc.name || acc.number || "—");
-        const accNumber = typeof acc === "string" ? acc : (acc.number || "—");
-        
+        // Support legacy string format
+        if (typeof acc === "string") {
+          return `
+          <tr>
+            <td style="padding: 14px 16px; border-bottom: 1px solid #F0E6D6;">
+              <span style="font-weight: 700; font-size: 15px; color: ${brandDark};">${acc}</span>
+            </td>
+          </tr>`;
+        }
+
+        const label = acc.label || "Room";
+        const number = acc.number || "—";
+        const description = acc.description 
+          ? (acc.description.length > 120 ? acc.description.substring(0, 120) + "..." : acc.description)
+          : "";
+        const price = acc.price ? `₹${formatAccPrice(acc.price)}` : "";
+
         return `
         <tr>
-          <td style="padding: 14px 16px; border-bottom: 1px solid #F0E6D6;">
+          <td style="padding: 16px; border-bottom: 1px solid #F0E6D6;">
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
                 <td style="padding: 0;">
-                  <span style="font-weight: 700; font-size: 15px; color: ${brandDark}; display: block;">${accName}</span>
-                  <span style="font-size: 13px; color: ${brandAccent}; display: block; margin-top: 2px;">No. ${accNumber}</span>
+                  <span style="font-size: 11px; font-weight: 700; color: ${brandGold}; text-transform: uppercase; letter-spacing: 1px;">${label}</span>
+                  <span style="font-weight: 700; font-size: 17px; color: ${brandDark}; display: block; margin-top: 3px;">${label} ${number}</span>
+                  ${description ? `<p style="font-size: 12px; color: #888; margin: 6px 0 0; line-height: 1.5;">${description}</p>` : ""}
                 </td>
+                ${price ? `<td align="right" valign="top" style="padding-left: 10px; white-space: nowrap;">
+                  <span style="font-size: 16px; font-weight: 700; color: ${brandAccent};">${price}</span>
+                </td>` : ""}
               </tr>
             </table>
           </td>

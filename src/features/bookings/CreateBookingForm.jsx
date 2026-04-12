@@ -71,8 +71,8 @@ function CreateBookingForm({ onCloseModal }) {
     : [
         ...(cabins?.map((cabin) => ({
           id: cabin.id,
-          name: cabin.name, // This is the room number
-          displayName: cabin.name.startsWith("0") ? `Luxury Cabin ${cabin.name}` : cabin.name,
+          name: cabin.name,
+          displayName: `Cabin ${cabin.name}`,
           maxCapacity: cabin.maxCapacity,
           regularPrice: cabin.regularPrice,
           discount: cabin.discount,
@@ -81,8 +81,8 @@ function CreateBookingForm({ onCloseModal }) {
         })) || []),
         ...(rooms?.map((room) => ({
           id: room.id,
-          name: room.name, // This is the room number
-          displayName: room.name.match(/^\d+$/) ? `Premium Room ${room.name}` : room.name,
+          name: room.name,
+          displayName: `Room ${room.name}`,
           maxCapacity: room.maxCapacity,
           regularPrice: room.regularPrice,
           discount: room.discount,

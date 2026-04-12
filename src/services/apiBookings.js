@@ -275,6 +275,7 @@ export async function createBooking(newBookingData) {
   const { 
     selectedAccommodations, 
     guestCounts, 
+    customPrices,
     totalPrice, 
     accommodationPrice,
     extrasPrice,
@@ -342,10 +343,19 @@ export async function createBooking(newBookingData) {
   // 3. Trigger Email Confirmation (Background)
   // We don't await this to keep the UI responsive, or we can await it if we want to confirm success
   if (guestEmail) {
-    const accommodationDetails = selectedAccommodations.map(acc => ({
-      name: acc.displayName || acc.name,
-      number: acc.name
-    }));
+    const accommodationDetails = selectedAccommodations.map(acc => {
+      // Calculate the applied price for this accommodation
+      const discountAmount = Math.round((acc.regularPrice * (acc.discount || 0)) / 100);
+      const calculatedPrice = acc.regularPrice - discountAmount;
+      const appliedPrice = (customPrices && customPrices[acc.id]) || calculatedPrice;
+
+      return {
+        label: acc.type === "cabin" ? "Cabin" : "Room",
+        number: acc.name,
+        description: acc.description || "",
+        price: appliedPrice
+      };
+    });
     
     // Call Supabase Edge Function
     supabase.functions.invoke("send-booking-confirmation", {
