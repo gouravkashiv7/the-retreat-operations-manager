@@ -271,20 +271,101 @@ export async function deleteBooking(id) {
   return data;
 }
 
-export async function createBooking(newBooking) {
-  const { data, error } = await supabase
+export async function createBooking(newBookingData) {
+  const { 
+    selectedAccommodations, 
+    guestCounts, 
+    totalPrice, 
+    accommodationPrice,
+    extrasPrice,
+    guestId,
+    startDate,
+    endDate,
+    numNights,
+    numGuests,
+    hasBreakfast,
+    isPaid,
+    observations,
+    status,
+    guestEmail, // Added to pass to email function
+    guestName   // Added to pass to email function
+  } = newBookingData;
+
+  // 1. Create the main booking
+  const { data: booking, error: bookingError } = await supabase
     .from("bookings")
-    .insert([{ ...newBooking, status: newBooking.status || "unconfirmed" }])
+    .insert([
+      {
+        guestId,
+        startDate,
+        endDate,
+        numNights,
+        numGuests,
+        totalPrice,
+        accommodationPrice,
+        extrasPrice,
+        hasBreakfast,
+        isPaid,
+        observations,
+        status: status || "unconfirmed",
+      },
+    ])
     .select()
     .single();
 
-  if (error) {
-    console.error(error);
+  if (bookingError) {
     throw new Error("Booking could not be created");
   }
 
-  return data;
+  // 2. Link accommodations
+  const accommodationPromises = selectedAccommodations.map(async (acc) => {
+    const junctionTable = acc.type === "room" ? "booking_rooms" : "booking_cabins";
+    const foreignKey = acc.type === "room" ? "roomId" : "cabinId";
+
+    const { error: junctionError } = await supabase
+      .from(junctionTable)
+      .insert([{ 
+        bookingId: booking.id, 
+        [foreignKey]: acc.id,
+        // We might want to store guestCount per room if schema allows, 
+        // but current schema seems to just be a link
+      }]);
+
+    if (junctionError) {
+      console.error(`Error linking ${acc.type} ${acc.id}:`, junctionError);
+      throw new Error(`Failed to link ${acc.name}`);
+    }
+  });
+
+  await Promise.all(accommodationPromises);
+
+  // 3. Trigger Email Confirmation (Background)
+  // We don't await this to keep the UI responsive, or we can await it if we want to confirm success
+  if (guestEmail) {
+    const accommodationNames = selectedAccommodations.map(acc => acc.name);
+    
+    // Call Supabase Edge Function
+    supabase.functions.invoke("send-booking-confirmation", {
+      body: {
+        guestName,
+        guestEmail,
+        bookingId: booking.id,
+        startDate,
+        endDate,
+        numNights,
+        numGuests,
+        accommodations: accommodationNames,
+        totalPrice
+      }
+    }).then(({ error }) => {
+      if (error) console.error("Error triggering booking confirmation email:", error);
+      else console.log("Booking confirmation email triggered successfully");
+    });
+  }
+
+  return booking;
 }
+
 
 export async function createBlock({
   startDate,

@@ -52,9 +52,9 @@ export const FormSection = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: var(--color-grey-50);
+  background: var(--color-brand-50); /* Background Cream */
   border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-grey-200);
+  border: 1px solid var(--color-brand-200);
 
   @media (max-width: 768px) {
     padding: 1.2rem;
@@ -70,9 +70,11 @@ export const FormSection = styled.div`
 
 export const SectionTitle = styled.h3`
   font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--color-grey-800);
+  font-weight: 700;
+  color: var(--color-brand-primary-dark);
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 
   @media (max-width: 768px) {
     font-size: 1.6rem;
@@ -254,10 +256,17 @@ export const TextArea = styled.textarea`
 
 export const GuestInfoCard = styled.div`
   padding: 1.5rem;
-  background: var(--color-grey-50);
-  border: 2px solid var(--color-brand-200);
+  background: var(--color-grey-0);
+  border: 2px solid var(--color-brand-600);
   border-radius: var(--border-radius-md);
   margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+
+  h4 {
+    color: var(--color-brand-primary-dark);
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
 
   @media (max-width: 768px) {
     padding: 1.2rem;

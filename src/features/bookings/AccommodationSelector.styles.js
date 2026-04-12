@@ -18,18 +18,10 @@ export const RetreatCountSection = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: var(--color-grey-50);
+  background: var(--color-brand-50);
   border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-grey-200);
+  border: 1px solid var(--color-brand-200);
   transition: all 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    background: var(--color-grey-100);
-    border-color: var(--color-grey-300);
-  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -75,34 +67,16 @@ export const RetreatCard = styled.div`
   box-shadow: var(--shadow-sm);
 
   &:hover {
-    border-color: var(--color-brand-300);
+    border-color: var(--color-brand-600);
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
   }
 
   &.selected {
-    border-color: var(--color-brand-500);
+    border-color: var(--color-brand-600);
     background: var(--color-brand-50);
     box-shadow: var(--shadow-md);
   }
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    background: var(--color-grey-0);
-    border-color: var(--color-grey-300);
-
-    &:hover {
-      border-color: var(--color-brand-400);
-      box-shadow: var(--shadow-md);
-    }
-
-    &.selected {
-      border-color: var(--color-brand-500);
-      background: var(--color-brand-900);
-    }
-  `}
 
   /* Tablet */
   @media (max-width: 1024px) {
@@ -149,17 +123,12 @@ export const RetreatHeader = styled.div`
 
 export const RetreatTitle = styled.h4`
   font-size: 1.6rem;
-  font-weight: 600;
-  color: var(--color-grey-800);
+  font-weight: 700;
+  color: var(--color-brand-primary-dark);
   margin: 0;
   transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-grey-800);
-  `}
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   /* Mobile */
   @media (max-width: 480px) {
@@ -202,16 +171,11 @@ export const DetailItem = styled.div`
 
 export const DetailLabel = styled.span`
   font-size: 1.3rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-grey-600);
   transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-grey-500);
-  `}
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   /* Mobile */
   @media (max-width: 480px) {
@@ -222,15 +186,8 @@ export const DetailLabel = styled.span`
 export const DetailValue = styled.span`
   font-size: 1.4rem;
   color: var(--color-grey-800);
-  font-weight: ${(props) => (props.$bold ? "600" : "400")};
+  font-weight: ${(props) => (props.$bold ? "700" : "500")};
   transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-grey-700);
-  `}
 
   /* Mobile */
   @media (max-width: 480px) {
@@ -240,8 +197,8 @@ export const DetailValue = styled.span`
 
 export const PriceDisplay = styled.div`
   font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-brand-600);
+  font-weight: 700;
+  color: var(--color-brand-text-gold);
   text-align: right;
   transition: color 0.2s ease;
 
@@ -268,15 +225,6 @@ export const ErrorMessage = styled.div`
   border: 1px solid var(--color-red-200);
   border-radius: var(--border-radius-sm);
   transition: all 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-red-400);
-    background: var(--color-red-900);
-    border-color: var(--color-red-800);
-  `}
 
   /* Mobile */
   @media (max-width: 480px) {
@@ -314,33 +262,7 @@ export const StyledSelect = styled.select`
     color: var(--color-grey-500);
   }
 
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    background: var(--color-grey-0);
-    border-color: var(--color-grey-400);
-    color: var(--color-grey-900);
-
-    &:focus {
-      border-color: var(--color-brand-500);
-      box-shadow: 0 0 0 4px var(--color-brand-900);
-    }
-
-    &:disabled {
-      background-color: var(--color-grey-200);
-      color: var(--color-grey-600);
-    }
-
-    &::placeholder {
-      color: var(--color-grey-500);
-    }
-
-    option {
-      background: var(--color-grey-0);
-      color: var(--color-grey-900);
-    }
-  `}
+  /* Dark mode logic is already handled by CSS variables in StyledInput/StyledSelect */
 
   /* Mobile */
   @media (max-width: 768px) {
@@ -387,28 +309,7 @@ export const StyledInput = styled.input`
     color: var(--color-grey-500);
   }
 
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    background: var(--color-grey-0);
-    border-color: var(--color-grey-400);
-    color: var(--color-grey-900);
-
-    &:focus {
-      border-color: var(--color-brand-500);
-      box-shadow: 0 0 0 4px var(--color-brand-900);
-    }
-
-    &:disabled {
-      background-color: var(--color-grey-200);
-      color: var(--color-grey-600);
-    }
-
-    &::placeholder {
-      color: var(--color-grey-500);
-    }
-  `}
+  /* Dark mode logic is already handled by CSS variables */
 
   /* Mobile */
   @media (max-width: 768px) {
@@ -524,15 +425,8 @@ export const TotalPriceLabel = styled.span`
 export const TotalPriceValue = styled.span`
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--color-brand-600);
+  color: var(--color-brand-text-gold);
   transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-brand-500);
-  `}
 
   /* Mobile */
   @media (max-width: 480px) {
@@ -563,13 +457,6 @@ export const PriceSuffix = styled.span`
   color: var(--color-grey-600);
   white-space: nowrap;
   transition: color 0.2s ease;
-
-  /* Dark mode */
-  ${(props) =>
-    props.theme.name === "dark" &&
-    `
-    color: var(--color-grey-500);
-  `}
 
   /* Mobile */
   @media (max-width: 480px) {

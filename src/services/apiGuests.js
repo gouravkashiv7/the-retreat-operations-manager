@@ -93,14 +93,18 @@ export const apiGuests = {
 
   // Get guest by ID
   async getGuestById(id) {
+    // Using a regular select instead of single/maybeSingle to avoid any potential 406 errors
     const { data, error } = await supabase
       .from("guests")
       .select("*")
-      .eq("id", id)
-      .single();
+      .eq("id", id);
 
     if (error) throw new Error(error.message);
-    return await apiGuests.enrichGuestWithUrls(data);
+    
+    // If no guest found, return null instead of throwing 406
+    if (!data || data.length === 0) return null;
+    
+    return await apiGuests.enrichGuestWithUrls(data[0]);
   },
 
   // Create new guest

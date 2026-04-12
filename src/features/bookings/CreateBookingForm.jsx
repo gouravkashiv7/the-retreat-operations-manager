@@ -29,8 +29,10 @@ import {
 import { getRooms } from "../../services/apiRooms";
 import { getCabins } from "../../services/apiCabins";
 import AccommodationSelector from "./AccommodationSelector";
+import { useCreateBooking } from "./useCreateBooking";
 
 function CreateBookingForm({ onCloseModal }) {
+  const { createBooking, isLoading: isCreating } = useCreateBooking();
   const [step, setStep] = useState(1);
   const [guestId, setGuestId] = useState("");
   const [bookingData, setBookingData] = useState({
@@ -142,13 +144,28 @@ function CreateBookingForm({ onCloseModal }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Calculate prices
+    const breakfastPrice = bookingData.hasBreakfast ? bookingData.numGuests * 250 * bookingData.numNights : 0;
+    const accommodationPrice = accommodationData.totalPrice;
+    const extrasPrice = breakfastPrice;
+    const finalTotalPrice = accommodationPrice + extrasPrice;
+
     const finalBookingData = {
       ...bookingData,
       ...accommodationData,
+      accommodationPrice,
+      extrasPrice,
+      totalPrice: finalTotalPrice,
+      guestId: parseInt(guestId),
+      guestEmail: guest.email,
+      guestName: guest.fullName,
     };
 
-    // For now, since createBooking is commented out below, let's just close the modal
-    if (onCloseModal) onCloseModal();
+    createBooking(finalBookingData, {
+      onSuccess: () => {
+        if (onCloseModal) onCloseModal();
+      },
+    });
   };
 
   const goBack = () => {
@@ -311,7 +328,7 @@ function CreateBookingForm({ onCloseModal }) {
                   type="number"
                   min="1"
                   max="20"
-                  disabled="true"
+                  disabled={true}
                   value={bookingData.numGuests}
                   onChange={(e) =>
                     handleBookingDataChange(
@@ -405,8 +422,12 @@ function CreateBookingForm({ onCloseModal }) {
               >
                 Cancel
               </Button>
-              <Button type="submit" $variation="primary">
-                Create Booking
+              <Button 
+                type="submit" 
+                $variation="primary"
+                disabled={isCreating}
+              >
+                {isCreating ? "Creating..." : "Create Booking"}
               </Button>
             </ButtonGroup>
           </FormSection>
