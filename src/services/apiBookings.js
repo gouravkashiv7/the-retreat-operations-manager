@@ -96,6 +96,8 @@ export async function getBooking(id) {
         observations,
         extrasPrice,
         accommodationPrice,
+        paymenttype,
+        amountpaid,
         guests:guestId (
           fullName,
           email,
@@ -140,6 +142,8 @@ export async function getBooking(id) {
     observations: booking.observations || "",
     extrasPrice: booking.extrasPrice || 0,
     accommodationPrice: booking.accommodationPrice || 0,
+    paymentType: booking.paymenttype,
+    amountPaid: booking.amountpaid,
     guests: {
       fullName: booking.guests?.fullName || "",
       email: booking.guests?.email || "",
@@ -286,6 +290,8 @@ export async function createBooking(newBookingData) {
     numGuests,
     hasBreakfast,
     isPaid,
+    paymentType,
+    amountPaid,
     observations,
     status,
     guestEmail, // Added to pass to email function
@@ -307,6 +313,8 @@ export async function createBooking(newBookingData) {
         extrasPrice,
         hasBreakfast,
         isPaid,
+        paymenttype: paymentType,
+        amountpaid: amountPaid,
         observations,
         status: status || "unconfirmed",
       },
@@ -343,12 +351,8 @@ export async function createBooking(newBookingData) {
   // 3. Trigger Email Confirmation (Background)
   // We don't await this to keep the UI responsive, or we can await it if we want to confirm success
   if (guestEmail) {
-    const accommodationDetails = selectedAccommodations.map(acc => {
-      // Calculate the applied price for this accommodation
-      const discountAmount = Math.round((acc.regularPrice * (acc.discount || 0)) / 100);
-      const calculatedPrice = acc.regularPrice - discountAmount;
-      const appliedPrice = (customPrices && customPrices[acc.id]) || calculatedPrice;
-
+    const accommodationDetails = selectedAccommodations.map((acc) => {
+      const appliedPrice = customPrices?.[acc.id] || acc.price || 0;
       return {
         label: acc.type === "cabin" ? "Cabin" : "Room",
         number: acc.name,
@@ -356,20 +360,22 @@ export async function createBooking(newBookingData) {
         price: appliedPrice
       };
     });
-    
-    // Call Supabase Edge Function
+
     supabase.functions.invoke("send-booking-confirmation", {
       body: {
-        guestName,
-        guestEmail,
         bookingId: booking.id,
+        guestEmail,
+        guestName,
         startDate,
         endDate,
         numNights,
         numGuests,
         accommodations: accommodationDetails,
         totalPrice,
-        status: status || "unconfirmed"
+        status: status || "unconfirmed",
+        paymentType,
+        amountPaid,
+        isPaid
       }
     }).then(({ error }) => {
       if (error) console.error("Error triggering booking confirmation email:", error);

@@ -17,6 +17,7 @@ import { useDeleteBooking } from "./useDeleteBooking";
 import { useAuthorization } from "../../features/authentication/useAuthorization";
 import { useConfirmBooking } from "./useConfirmBooking";
 import { useOrdersByBooking } from "../orders/useOrdersByBooking";
+import { useSetFullPayment } from "./useSetFullPayment";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import ConfirmAction from "../../ui/ConfirmAction";
 import ItemHeader from "../../ui/ItemHeader";
@@ -290,6 +291,7 @@ function BookingDetail() {
   const { checkout, isCheckingOut } = useCheckout();
   const { isDeleting, deleteBooking } = useDeleteBooking();
   const { confirmBooking, isConfirming } = useConfirmBooking();
+  const { isSettingPayment, setFullPayment } = useSetFullPayment();
   const { isGuest } = useAuthorization();
   const moveBack = useMoveBack();
 
@@ -310,6 +312,8 @@ function BookingDetail() {
     extrasPrice,
     hasBreakfast,
     isPaid,
+    paymentType,
+    amountPaid,
     observations,
     created_at,
     guests: { fullName: guestName, email, country, countryFlag, nationalId },
@@ -322,6 +326,8 @@ function BookingDetail() {
     (sum, o) => sum + (o.totalPrice || 0),
     0,
   );
+
+  const remainingAmount = totalPrice - (amountPaid || 0);
 
   return (
     <Page>
@@ -427,17 +433,30 @@ function BookingDetail() {
           {/* Payment Banner */}
           <PayBanner $isPaid={isPaid}>
             <div>
-              <div className="amount">{formatCurrency(totalPrice)}</div>
-              {hasBreakfast && (
-                <div style={{ fontSize: "1.2rem", marginTop: "0.2rem" }}>
-                  {formatCurrency(accommodationPrice)} stay +{" "}
-                  {formatCurrency(extrasPrice)} breakfast
+              <div className="amount">{formatCurrency(totalPrice)} Total</div>
+              <div style={{ fontSize: "1.2rem", marginTop: "0.2rem", opacity: 0.8 }}>
+                {formatCurrency(accommodationPrice)} stay +{" "}
+                {formatCurrency(extrasPrice)} breakfast
+              </div>
+            </div>
+            
+            {isPaid ? (
+              <div style={{ textAlign: "right" }}>
+                <div className="status">
+                  ✓ {paymentType === "advance" ? "Advance" : "Full"} Paid
                 </div>
-              )}
-            </div>
-            <div className="status">
-              {isPaid ? "✓ Paid" : "Will pay at property"}
-            </div>
+                <div style={{ fontSize: "1.3rem", fontWeight: 600 }}>
+                  Paid: {formatCurrency(amountPaid || 0)}
+                </div>
+                {paymentType === "advance" && (
+                  <div style={{ fontSize: "1.2rem", color: "var(--color-red-700)" }}>
+                    Remaining: {formatCurrency(remainingAmount || 0)}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="status">Will pay at property</div>
+            )}
           </PayBanner>
         </CardBody>
       </Card>
@@ -543,6 +562,23 @@ function BookingDetail() {
                 actionDescription={`Are you sure you want to check out ${guestName}? This action cannot be undone.`}
                 onConfirm={() => checkout(bookingId)}
                 disabled={isCheckingOut}
+              />
+            </Modal.Window>
+          </Modal>
+        )}
+
+        {paymentType === "advance" && (
+          <Modal>
+            <Modal.Open opens="full-payment">
+              <Button icon={<HiOutlineCurrencyRupee />}>Mark Fully Paid</Button>
+            </Modal.Open>
+            <Modal.Window name="full-payment">
+              <ConfirmAction
+                resourceName={`Booking #${bookingId}`}
+                actionName="mark as fully paid"
+                actionDescription={`Are you sure you want to mark this booking as fully paid? This will update the paid amount to ${formatCurrency(totalPrice)}.`}
+                onConfirm={() => setFullPayment({ bookingId, totalPrice })}
+                disabled={isSettingPayment}
               />
             </Modal.Window>
           </Modal>

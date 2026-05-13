@@ -390,7 +390,12 @@ function BookingReceipt() {
     numNights,
     numGuests,
     hasBreakfast,
+    paymentType,
+    amountPaid,
+    isPaid,
   } = booking;
+
+  const remainingAmount = bookingTotalPrice - (amountPaid || 0);
 
   const nightlyRate = (accommodationPrice || 0) / numNights;
 
@@ -751,6 +756,31 @@ function BookingReceipt() {
             </span>
           </TotalBox>
         </TotalSection>
+
+        {receiptType === "stay" && isPaid && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem", alignItems: "flex-end", padding: "0 2.4rem" }}>
+            <div style={{ fontSize: "1.4rem", color: "var(--color-grey-500)", display: "flex", gap: "2rem" }}>
+              <span>Payment Type:</span>
+              <span style={{ fontWeight: 600, color: "var(--color-grey-700)" }}>
+                {paymentType === "advance" ? "Advance Payment" : "Full Payment"}
+              </span>
+            </div>
+            <div style={{ fontSize: "1.4rem", color: "var(--color-grey-500)", display: "flex", gap: "2rem" }}>
+              <span>Amount Paid:</span>
+              <span style={{ fontWeight: 700, color: "var(--color-green-700)" }}>
+                {formatCurrency(amountPaid || 0)}
+              </span>
+            </div>
+            {paymentType === "advance" && (
+              <div style={{ fontSize: "1.4rem", color: "var(--color-grey-500)", display: "flex", gap: "2rem" }}>
+                <span>Balance Due:</span>
+                <span style={{ fontWeight: 700, color: "var(--color-red-700)" }}>
+                  {formatCurrency(remainingAmount || 0)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         <ReceiptFooter>
           <div

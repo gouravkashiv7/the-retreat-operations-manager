@@ -28,11 +28,15 @@ serve(async (req) => {
       numGuests,
       accommodations, // Array of objects { label, number, description, price } or strings (legacy)
       totalPrice,
-      status // "unconfirmed", "confirmed", or "checked-in"
+      status, // "unconfirmed", "confirmed", or "checked-in"
+      paymentType,
+      amountPaid,
+      isPaid: isPaidProp
     } = await req.json();
 
     const bookingStatus = status || "unconfirmed";
     const isConfirmed = bookingStatus === "confirmed" || bookingStatus === "checked-in";
+    const isPaid = isPaidProp || false;
 
     if (!guestEmail) {
       throw new Error("Guest email is required.");
@@ -75,7 +79,11 @@ serve(async (req) => {
         const description = acc.description 
           ? (acc.description.length > 120 ? acc.description.substring(0, 120) + "..." : acc.description)
           : "";
-        const price = acc.price ? `₹${formatAccPrice(acc.price)}` : "";
+        
+        // Fix: Multiply price by numNights if it's per night
+        const perNightPrice = acc.price || 0;
+        const totalAccPrice = perNightPrice * (numNights || 1);
+        const priceDisplay = perNightPrice ? `₹${formatAccPrice(perNightPrice)} / night<br><span style="font-size: 13px; color: #888;">Total: ₹${formatAccPrice(totalAccPrice)}</span>` : "";
 
         return `
         <tr>
@@ -87,8 +95,8 @@ serve(async (req) => {
                   <span style="font-weight: 700; font-size: 17px; color: ${brandDark}; display: block; margin-top: 3px;">${label} ${number}</span>
                   ${description ? `<p style="font-size: 12px; color: #888; margin: 6px 0 0; line-height: 1.5;">${description}</p>` : ""}
                 </td>
-                ${price ? `<td align="right" valign="top" style="padding-left: 10px; white-space: nowrap;">
-                  <span style="font-size: 16px; font-weight: 700; color: ${brandAccent};">${price}</span>
+                ${priceDisplay ? `<td align="right" valign="top" style="padding-left: 10px; white-space: nowrap;">
+                  <span style="font-size: 16px; font-weight: 700; color: ${brandAccent};">${priceDisplay}</span>
                 </td>` : ""}
               </tr>
             </table>
@@ -110,6 +118,77 @@ serve(async (req) => {
     const checkInFormatted = formatDate(startDate);
     const checkOutFormatted = formatDate(endDate);
     const formattedPrice = Number(totalPrice).toLocaleString('en-IN');
+    
+    // Payment details
+    const remainingAmount = totalPrice - (amountPaid || 0);
+    const formattedAmountPaid = Number(amountPaid || 0).toLocaleString('en-IN');
+    const formattedRemainingAmount = Number(remainingAmount).toLocaleString('en-IN');
+
+    const paymentInfoHtml = isPaid ? `
+      <tr>
+        <td style="padding: 12px 20px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px;">Payment Method</td>
+              <td align="right" style="font-size: 15px; font-weight: 600; color: ${brandDark}; padding-bottom: 4px;">${paymentType === 'advance' ? 'Advance Payment' : 'Full Payment'}</td>
+            </tr>
+          </table>
+          <div style="border-bottom: 1px solid #F0E6D6; padding-top: 8px;"></div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 12px 20px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px;">Amount Received</td>
+              <td align="right" style="font-size: 15px; font-weight: 600; color: #2E7D32; padding-bottom: 4px;">₹${formattedAmountPaid}</td>
+            </tr>
+          </table>
+          <div style="border-bottom: 1px solid #F0E6D6; padding-top: 8px;"></div>
+        </td>
+      </tr>
+      ${paymentType === 'advance' ? `
+      <tr>
+        <td style="padding: 12px 20px 0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 4px;">Balance Amount</td>
+              <td align="right" style="font-size: 15px; font-weight: 700; color: #E65100; padding-bottom: 4px;">₹${formattedRemainingAmount}</td>
+            </tr>
+          </table>
+          <p style="margin: 4px 0 0; font-size: 11px; color: #888; text-align: right; font-style: italic;">To be settled at the time of Check-in or Check-out</p>
+          <div style="border-bottom: 1px solid #F0E6D6; padding-top: 8px;"></div>
+        </td>
+      </tr>` : ""}
+    ` : "";
+
+    const advanceNotice = (isPaid && paymentType === 'advance') ? `
+            <!-- Advance Payment Notice -->
+            <tr>
+              <td style="padding: 0 20px 25px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #E3F2FD; border: 1px solid #90CAF9; border-radius: 8px; overflow: hidden;">
+                  <tr>
+                    <td style="padding: 18px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                          <td style="padding-bottom: 8px;">
+                            <span style="font-size: 14px; font-weight: 700; color: #1565C0;">✔ Payment Information</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p style="margin: 0; font-size: 13px; color: #444; line-height: 1.6;">
+                              We have received your advance payment of <strong>₹${formattedAmountPaid}</strong> to confirm your booking. 
+                              The remaining balance of <strong>₹${formattedRemainingAmount}</strong> can be paid at your convenience during check-in or check-out.
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>` : "";
 
     // Status-specific content
     const statusBadge = isConfirmed
@@ -229,6 +308,8 @@ serve(async (req) => {
 
             ${unconfirmedNotice}
             
+            ${advanceNotice}
+            
             <!-- Booking Card -->
             <tr>
               <td style="padding: 0 20px;">
@@ -305,6 +386,8 @@ serve(async (req) => {
                       <div style="border-bottom: 1px solid #F0E6D6; padding-top: 8px;"></div>
                     </td>
                   </tr>
+
+                  ${paymentInfoHtml}
                   
                   <!-- Accommodations Section -->
                   <tr>
@@ -409,6 +492,40 @@ serve(async (req) => {
               </td>
             </tr>
             
+            <!-- Location & Navigation -->
+            <tr>
+              <td style="padding: 30px 30px 10px;">
+                <span style="font-size: 12px; font-weight: 700; color: ${brandDark}; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid ${brandGold}; padding-bottom: 5px; display: inline-block;">Location & Navigation</span>
+              </td>
+            </tr>
+            
+            <tr>
+              <td style="padding: 20px 30px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #F8F9FA; border: 1px solid #E9ECEF; border-radius: 8px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                          <td valign="top" style="padding-right: 15px; font-size: 24px;">📍</td>
+                          <td>
+                            <p style="margin: 0 0 10px; font-size: 15px; font-weight: 700; color: ${brandDark};">Find Us on Google Maps</p>
+                            <p style="margin: 0 0 15px; font-size: 13px; color: #666; line-height: 1.5;">Plan your journey to our mountain sanctuary. Click the button below to start your navigation.</p>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td style="background-color: #4285F4; border-radius: 4px;">
+                                  <a href="https://maps.app.goo.gl/qZZ8hoQ9UeCP17nk6" target="_blank" style="display: inline-block; padding: 10px 20px; font-size: 13px; font-weight: 700; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;">Open in Google Maps</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
             <!-- CTA Button -->
             <tr>
               <td align="center" style="padding: 25px 30px 40px;">

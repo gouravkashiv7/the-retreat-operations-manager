@@ -42,6 +42,8 @@ function CreateBookingForm({ onCloseModal }) {
     numGuests: 1,
     hasBreakfast: false,
     isPaid: false,
+    paymentType: "full",
+    amountPaid: 0,
     observations: "",
     status: "unconfirmed",
     // Remove accommodation-related state from here
@@ -109,10 +111,21 @@ function CreateBookingForm({ onCloseModal }) {
   };
 
   const handleBookingDataChange = (field, value) => {
-    setBookingData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setBookingData((prev) => {
+      const newData = { ...prev, [field]: value };
+      
+      // If marking as paid, and it was unconfirmed, switch to confirmed
+      if (field === "isPaid" && value === true && prev.status === "unconfirmed") {
+        newData.status = "confirmed";
+      }
+      
+      // Reset amount paid if payment type changes to full
+      if (field === "paymentType" && value === "full") {
+        newData.amountPaid = 0;
+      }
+
+      return newData;
+    });
   };
 
   // const handleAccommodationTypeChange = (type) => {
@@ -148,9 +161,14 @@ function CreateBookingForm({ onCloseModal }) {
 
     // Calculate prices
     const breakfastPrice = bookingData.hasBreakfast ? bookingData.numGuests * 250 * bookingData.numNights : 0;
-    const accommodationPrice = accommodationData.totalPrice;
+    const accommodationPrice = accommodationData.totalPrice * bookingData.numNights;
     const extrasPrice = breakfastPrice;
     const finalTotalPrice = accommodationPrice + extrasPrice;
+
+    // If payment is full, set amountPaid to total
+    const finalAmountPaid = bookingData.isPaid 
+      ? (bookingData.paymentType === "full" ? finalTotalPrice : bookingData.amountPaid)
+      : 0;
 
     const finalBookingData = {
       ...bookingData,
@@ -158,6 +176,7 @@ function CreateBookingForm({ onCloseModal }) {
       accommodationPrice,
       extrasPrice,
       totalPrice: finalTotalPrice,
+      amountPaid: finalAmountPaid,
       guestId: parseInt(guestId),
       guestEmail: guest.email,
       guestName: guest.fullName,
@@ -382,6 +401,41 @@ function CreateBookingForm({ onCloseModal }) {
               </FormGroup>
             </FormRow>
 
+            {/* Payment Details (Conditional) */}
+            {bookingData.isPaid && (
+              <FormRow>
+                <FormGroup>
+                  <Label htmlFor="paymentType">Payment Type</Label>
+                  <Select
+                    id="paymentType"
+                    value={bookingData.paymentType}
+                    onChange={(e) =>
+                      handleBookingDataChange("paymentType", e.target.value)
+                    }
+                  >
+                    <option value="full">Full Amount</option>
+                    <option value="advance">Advance Payment</option>
+                  </Select>
+                </FormGroup>
+                
+                {bookingData.paymentType === "advance" && (
+                  <FormGroup>
+                    <Label htmlFor="amountPaid">Advance Amount Paid (₹)</Label>
+                    <Input
+                      id="amountPaid"
+                      type="number"
+                      min="0"
+                      value={bookingData.amountPaid}
+                      onChange={(e) =>
+                        handleBookingDataChange("amountPaid", parseInt(e.target.value) || 0)
+                      }
+                      required
+                    />
+                  </FormGroup>
+                )}
+              </FormRow>
+            )}
+
             {/* Status */}
             <FormGroup>
               <Label htmlFor="status">Booking Status *</Label>
@@ -393,7 +447,9 @@ function CreateBookingForm({ onCloseModal }) {
                 }
                 required
               >
-                <option value="unconfirmed">Unconfirmed</option>
+                {!bookingData.isPaid && (
+                  <option value="unconfirmed">Unconfirmed</option>
+                )}
                 <option value="confirmed">Confirmed</option>
                 <option value="checked-in">Checked In</option>
               </Select>
