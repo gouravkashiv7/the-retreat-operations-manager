@@ -1,4 +1,9 @@
-export const getCroppedImg = async (imageSrc, pixelCrop) => {
+export const getCroppedImg = async (
+  imageSrc,
+  pixelCrop,
+  displayedWidth,
+  displayedHeight,
+) => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -7,21 +12,28 @@ export const getCroppedImg = async (imageSrc, pixelCrop) => {
     throw new Error("No 2d context");
   }
 
-  // Set canvas size to match the bounding box
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  // Calculate scaling factors between natural image size and displayed image size
+  const scaleX = image.naturalWidth / displayedWidth;
+  const scaleY = image.naturalHeight / displayedHeight;
 
-  // Draw the cropped image onto the canvas
+  // Set canvas size to match the scaled crop width and height (full resolution)
+  const cropWidth = pixelCrop.width * scaleX;
+  const cropHeight = pixelCrop.height * scaleY;
+
+  canvas.width = cropWidth;
+  canvas.height = cropHeight;
+
+  // Draw the cropped image onto the canvas using natural dimensions
   ctx.drawImage(
     image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    pixelCrop.x * scaleX,
+    pixelCrop.y * scaleY,
+    cropWidth,
+    cropHeight,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height,
+    cropWidth,
+    cropHeight,
   );
 
   // Extract the cropped image as a blob

@@ -70,14 +70,30 @@ function CreateMenuItemForm({ itemToEdit = {}, onCloseModal }) {
   // Handle image load to set initial crop
   function onImageLoad(e) {
     const { width, height } = e.currentTarget;
-    setCrop(centerAspectCrop(width, height, 3 / 2));
+    const initialCropPercent = centerAspectCrop(width, height, 3 / 2);
+    setCrop(initialCropPercent);
+
+    // Convert percent crop to pixels relative to the displayed size
+    const initialCropPixel = {
+      unit: "px",
+      x: (initialCropPercent.x / 100) * width,
+      y: (initialCropPercent.y / 100) * height,
+      width: (initialCropPercent.width / 100) * width,
+      height: (initialCropPercent.height / 100) * height,
+    };
+    setCompletedCrop(initialCropPixel);
   }
 
   // Perform the crop when user clicks "Apply Crop"
   async function onCropComplete() {
     if (completedCrop && imgRef.current && imgSrc) {
       try {
-        const croppedBlob = await getCroppedImg(imgSrc, completedCrop);
+        const croppedBlob = await getCroppedImg(
+          imgSrc,
+          completedCrop,
+          imgRef.current.width,
+          imgRef.current.height,
+        );
         // Create a File from the Blob
         const croppedFile = new File([croppedBlob], "cropped-image.jpeg", {
           type: "image/jpeg",
@@ -194,18 +210,16 @@ function CreateMenuItemForm({ itemToEdit = {}, onCloseModal }) {
         />
       </FormRow>
 
-      <FormRow label="Item photo">
+      <FormRow label="Item photo" error={errors?.image?.message}>
         <FileInput
           id="image"
           accept="image/*"
           {...register("image", {
-            required: isEditSession ? false : "This field is required",
+            required: false,
+            onChange: (e) => {
+              onSelectFile(e);
+            },
           })}
-          onChange={(e) => {
-            // Still register the input, but also trigger our custom file handler
-            register("image").onChange(e);
-            onSelectFile(e);
-          }}
         />
       </FormRow>
 
